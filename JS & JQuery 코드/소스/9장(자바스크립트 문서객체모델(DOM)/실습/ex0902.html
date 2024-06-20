@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM-2(요소접근)</title>
+    <!--
+        [D.O.M = Document Object Model = 문서 객체 모델]
+         : 웹 페이지를 기준으로 이를 구성하는 각 요소들을 객체화 된 프로퍼티로 취급함
+            (ex) head, body, p, input 등등의 내용을 객체지향으로 사전코딩해놓고, html 문서에 해당 속성들을 개별적으로 구축하고 접근가능하게 만듦(나중에 자세히 쓰자..)
+
+        [DOM 노드 인터페이스]
+         : DOM의 가장 기본이 되는 데이터 타입으로서, DOM을 구성하는 세포단위와 같은 개념
+            (= 모든 노드(요소 element 노드, 텍스트 text 노드, 속성 attribute노드)의 조상이기도 함.. 모든 장기 또한 세포로 구성된거와 같음)
+
+        [노드 3인방] -> element > attribute, text 로 element가 더 상위개념
+            1. element(요소) 노드   : p, div, input 같은 주요 태그명 이름
+            2. attribute(속성) 노드 : src, id, class, href 같은 element의 일부값으로서 세부값에 해당
+            3. text(텍스트) 노드    : element 태그 내에 입력된 text 그 자체 의미
+
+        [DOM 위치값 관련 함수] -> 이벤트 처리에 있어 기본이 되는 내용
+                                (이를 통해 문서객체의 요소를 맘대로 움직일 기반이 생김)
+
+        *RECOMMANDED
+        <DOM 노드 중 TEXT노드와 attribute 노드까지 접근(지정)가능 = 난이도로 보나 확장성(세부접근성)으로 보나 이게 낫다>
+        1. document.querySelector("태그명 or "#id명" or "".클래스명") :
+        2. document.querySelectorAll("태그명" or ."클래스명") :
+        
+        <DOM 노드 중 element 노드까지만 접근(지정)가능> : 단 요즘은 attribute 노드도 접근 가능한듯..
+        1. document.getElementById("id명") : id선택자가 있는 웹요소에 접근 시 사용하고 위치값을 잡음
+        2. document.getElementsByClass("class명")
+        3. document.getElementsByTagName("태그명")
+    -->  
+    <style>
+        #container{
+            width: 800px;
+            height: 500px;
+            margin: 0 auto;
+            padding: 20px 10px 0 50px;
+            border: 2px solid #ccc;
+        }
+
+        #img_load, #desc{
+            float: left;
+
+        }
+
+        #img_load img{
+            border: 1px solid #ccc;
+        }
+
+        #img_load{
+            margin-right: 10px;
+        }
+        
+        .spn{
+            font-weight: 700;
+            font-size: 1.0em;
+            font-style: italic;
+        }
+
+        .bright{
+            color: blue;
+        }
+
+        h1{
+            font-size: 1.8em;
+        }
+
+        h2{
+            font-size: 1.3em;
+            color: #222
+        }
+
+        p{
+            font-size: 0.9em;
+            line-height: 1.4;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1 id="text_head">국회의사당</h1>
+        <div id="img_load">
+            <img src="../images/load.png">
+        </div>
+
+        <div id="desc">
+            <h2 class="bright">Infomation</h2>
+            <p>국회의사당의 설립 연도? 
+                <span class="spn">대통령</span> 
+            </p>
+            <p class="bright">국회의사당? -> 모든 국k-1이 모여 안건 제시 제정하는 곳</p>
+        </div>
+    </div>
+</body>
+</html>

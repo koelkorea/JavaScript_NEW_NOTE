@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 강제 발생시키기-1(trigger())</title>
+    <style>
+        body{
+            font-size : 30px;
+        }
+
+        #btn1, #btn2{
+            font-size : 30px;
+        }
+
+        ul{
+            border: 1px solid black;
+        }
+
+        ul li{
+            border: 1px solid red;
+            margin: 20px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // 버튼A의 클릭 -> 버튼B의 이벤트 내용이 실행되도록 조치하기
+            $("#btnA").on("click", function(e){
+
+                // $위치값.trigger("이벤트명") : 해당 jQuery객체가 위치한 요소에 "이벤트명"으로 등록된 이벤트리스너가 강제로 실행 되도록 함
+                $("#btnB").trigger("click");     // 강제로 btnB에 이벤트가 발생되도록 함 (악용가능 쌉가능)
+            });
+
+            // 버튼B의 클릭이벤트 내용 등록
+            $("#btnB").on("click", function(e){
+                alert("버튼B가 클릭되었습니다.~");
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <button id="btnA">버튼A</button>
+    <button id="btnB">버튼B</button>
+</body>
+</html>

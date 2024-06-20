@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>클래스를 만들어서 구구단 출력</title>
+    <style>
+        #output {
+
+            border: 1px solid red;
+            width: 400px;
+            height: 400px;
+            font-size: 15px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: gray;
+        }
+
+
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        
+        $(document).ready(function(){
+
+            // 인스턴스 생성
+            var my99dan = new My99DAN();
+
+            // 3단 버튼 이벤트 등록
+            $("#3dan").click(function(){
+                my99dan.print3dan();
+            });
+
+            // 6단 버튼 이벤트 등록
+            $("#6dan").click(function(){
+                my99dan.print6dan();
+            });
+
+            // 9단 버튼 이벤트 등록
+            $("#9dan").click(function(){
+                my99dan.print9dan();
+            });
+            
+            // 지우기 이벤트 등록
+            $("#clear").click(function(){
+                my99dan.clear();
+            });
+
+        });
+
+        // 클래스 설계하기 (일반 함수와 구분 가능하게 하기)
+        function My99DAN(){
+
+            // id 속성값이 output인 출력 노드 찾아오기
+            this.$output = $("#output");
+        }
+
+        // print99dan() 멤버메서드를 프로토타입으로 만들기
+        My99DAN.prototype.print99dan = function(dan){
+
+            var str = "";
+
+            for(var i=1; i<=9; i++){
+                str += dan + " * " + i + " = " + (dan*i) + "<br/>";
+            }
+
+            // str에 적힌 구구단 결과를 id 속성값이 output인 div태그에 출력하기
+            this.$output.html(str);
+        }
+
+        // print99dan() 함수를 이용해 3단 내용 출력
+        My99DAN.prototype.print3dan = function(){
+            this.print99dan(3);
+        }
+
+        // print99dan() 함수를 이용해 6단 내용 출력
+        My99DAN.prototype.print6dan = function(){
+            this.print99dan(6);
+        }   
+
+        // print99dan() 함수를 이용해 9단 내용 출력
+        My99DAN.prototype.print9dan = function(){
+            this.print99dan(9);
+        }   
+
+        // 출력정보 지우기
+        My99DAN.prototype.clear = function(){
+            this.$output.html("");
+        }   
+
+    </script>
+</head>
+<body>
+    <div>
+        <button id="3dan">3단출력</button>
+        <button id="6dan">6단출력</button>
+        <button id="9dan">9단출력</button>
+        <button id="clear">지우기</button>
+    </div>
+    <div id="output">
+        구구단 출력부분
+    </div>
+</body>
+</html>

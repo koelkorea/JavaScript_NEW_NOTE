@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>클래스를 만들어서 구구단 출력-사용자의 값을 받아서 출력</title>
+    <style>
+        #output {
+
+            border: 1px solid red;
+            width: 400px;
+            height: 400px;
+            font-size: 15px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: gray;
+        }
+
+
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        
+        $(document).ready(function(){
+
+            // 인스턴스 생성
+            var my99dan = new My99DAN();
+            
+            var dan = prompt("출력을 원하는 단을 숫자로 입력하세요~~");
+
+            while(isNaN(dan)){
+                alert("숫자를 입력하라고...");
+                dan = prompt("출력을 원하는 단을 숫자로 입력하세요~~");
+            }
+
+            my99dan.print99dan(dan);
+            
+            
+            // 지우기 이벤트 등록
+            $("#clear").click(function(){
+                my99dan.clear();
+            });
+
+        });
+
+        // 클래스 설계하기 (일반 함수와 구분 가능하게 하기)
+        function My99DAN(){
+
+            // id 속성값이 output인 출력 노드 찾아오기
+            this.$output = $("#output");
+        }
+
+        // print99dan() 멤버메서드를 프로토타입으로 만들기
+        My99DAN.prototype.print99dan = function(dan){
+
+            var str = "";
+
+            for(var i=1; i<=9; i++){
+                str += dan + " * " + i + " = " + (dan*i) + "<br/>";
+            }
+
+            // str에 적힌 구구단 결과를 id 속성값이 output인 div태그에 출력하기
+            this.$output.html(str);
+        }
+
+        // 출력정보 지우기
+        My99DAN.prototype.clear = function(){
+            this.$output.html("");
+        }   
+
+    </script>
+</head>
+<body>
+    <div>
+        <button id="clear">지우기</button>
+    </div>
+    <div id="output">
+        구구단 출력부분
+    </div>
+</body>
+</html>

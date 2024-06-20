@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>윈도우의 스크롤 위치 정보 구하기(scrollTo(), scrollBy())</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #main {
+            border: 2px dotted red;
+            width: 1500px;
+            margin: 50px;         
+        }
+
+        #info {
+            border: 10px solid red;
+            position: fixed;    /* position: fixed = 브라우저 기준 좌표값에 스크롤이 지나가도 고정되게 함*/
+            left: 120px;
+            top: 100px;
+        }
+
+        #gotoTop, #gotoUp {
+            width: 100px;
+            height: 50px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // window : 브라우저에 내장된 객체(= 브라우저 화면의 최상위 객체로 screen보다 상위객체)로 js에서 접근가능
+        //          (= 전역객체에 접근 및 수정하는 방법 및 권한은 jQuery 라이브러리에서 접근하게 조치하지 않음)
+
+        // [스크롤 좌표 변경을 위한 window 객체의 함수 리스트]
+        //  1. scrollTo(너비, 높이) : 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수 
+        //                           (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+        //  2. scrollBy(너비, 높이) : 현재 스크롤 좌표위치를 기준으로, 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수 
+        //                           (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+
+        // [window객체 내 현재 브라우저(윈도우) 위치좌표 관련 프로퍼티]
+        //  1) 스크롤 위치 기준 
+        //   - window.pageXOffset : 현재 페이지 내 스크롤 위치 전역변수 x축 좌표 위치 정보
+        //   - window.pageYOffset  : 현재 페이지 내 스크롤 위치 전역변수 y축 좌표 위치 정보
+
+        //  2) 브라우저 창의 사용자 화면상에서의 위치
+        //   - window.screenLeft : 현재 브라우저 창의 사용자 시스템 화면상에서의 위치를 전역변수 x축 좌표 위치 정보
+        //   - window.screenTop  : 현재 브라우저 창의 사용자 시스템 화면상에서의 위치를 전역변수 y축 좌표 위치 정보
+
+
+        // [window객체 팝업창 관련]
+        // window.open("열려는 url명", "창이름", "창정보(ex width, height, scrollbars ..", "히스토리 영역생성 여부 boolean(생략가능)")
+        //  : 팝업창으로 새로 열려는 url을 입력된 해상도 정보를 통해 창 객체를 생성하여, 별개의 팝업창으로 열어주는 브라우저 최상위객체 window 내의 함수
+
+        // [팝업창 생성 함수 window.open() 의 후속함수] : 해당 함수를 통해 open()함수를 통해 반환된 창 객체를 통제 가능
+        //  1. resizeTo(너비, 높이) : 해당 팝업창의 화면 크기를 변경하는 함수 (= 해당 창객체의 화면크기 프로퍼티를 변경)
+        //  2. moveTo(너비, 높이) : 해당 팝업창의 화면 위치좌표를 변경하는 함수 (= 해당 창객체의 화면좌표 프로퍼티를 변경)
+        //  3. moveBy(너비, 높이) : 현재 좌표를 기준으로, 해당 팝업창의 화면 위치좌표를 변경하는 함수 (= 해당 창객체의 화면좌표 프로퍼티를 변경)
+
+        // To(너비, 높이) VS By(너비, 높이) : 절대 위치로 이동 VS (현재위치 기준) 상대 위치로 이동
+        //  -> To(너비, 높이) : 좌표정보 (너비, 높이)으로 창 자체의 절대 위치를 이동
+        //  -> By(너비, 높이) : 현재 좌표를 기준으로, 좌표정보 (너비, 높이) 만큼 창 자체의 상대 위치를 이동
+
+        // move VS scroll  
+        //  1. 브라우저 창의 좌표를 이동 VS 페이지 내의 스크롤의 좌표를 이동
+        //  2. move()   -> window.move() 팝업창객체의 후속함수
+        //     scroll() -> 브라우저 객체 최상위객체 window의 직속 함수(= open과 같은 반열)
+
+
+        // 윈도우의 스크롤 위치 구하는 코드
+        $(document).ready(function(){
+            
+            // window 객체가 scroll 된다면 -> 해당 브라우저의 scroll 위치를 출력하는 이벤트 리스너를 등록하는 코드
+            $(window).on("scroll", function(){
+
+                var str = "";
+
+                //  window.pageXOffset : 현재 페이지 내 스크롤 위치 전역변수 x축 위치 정보
+                //  window.pageYOffset  : 현재 페이지 내 스크롤 위치 전역변수 y축 위치 정보
+                str += "window.pageXOffset : " + window.pageXOffset + "</br>";
+                str += "window.pageYOffset : " + window.pageYOffset + "</br>";
+
+                // 스크롤 크기 정보 내용을 출력
+                $("#info").html(str);
+
+            });
+
+            // '처음으로' 버튼 클릭시 -> 스크롤 좌표 (0,0) 으로 이동
+            $("#gotoTop").click(function(){
+
+                    // window.scrollTo(너비, 높이)
+                    //  : 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수
+                    //    (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+
+                    // 스크롤 위치좌표를 절대좌표 기준으로 이동
+                    window.scrollTo(0, 0);
+
+            });
+
+            // '위, 옆으로' 버튼 클릭시 -> 현재 스크롤 좌표 기준 (100,100) 으로 추가 이동
+            $("#gotoUp").click(function(){
+
+                    // window.scrollBy(너비, 높이)
+                    //  : 현재 스크롤 좌표위치를 기준으로, 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수
+                    //    (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+
+                    // 현재 스크롤 위치를 기준으로 스크롤 위치좌표를 이동
+                    window.scrollBy(100, 100);
+
+            });
+
+        });    
+    </script>
+</head>
+<body>
+    <div id="main">
+        <p>안녕1</p><p>안녕2</p><p>안녕3</p><p>안녕4</p><p>안녕5</p>
+        <p>안녕6</p><p>안녕7</p><p>안녕8</p><p>안녕9</p><p>안녕10</p>
+        <p>안녕11</p><p>안녕12</p><p>안녕13</p><p>안녕14</p><p>안녕15</p>
+        <p>안녕16</p><p>안녕17</p><p>안녕18</p><p>안녕19</p><p>안녕20</p>
+        <p>안녕21</p><p>안녕22</p><p>안녕23</p><p>안녕24</p><p>안녕25</p>
+        <p>안녕26</p><p>안녕27</p><p>안녕28</p><p>안녕29</p><p>안녕30</p>
+        <button id="gotoTop">처음으로</button>
+        <button id="gotoUp">위, 옆으로</button>
+    </div>
+    <div id="info">
+        스크롤 정보 출력
+    </div>
+</body>
+</html>

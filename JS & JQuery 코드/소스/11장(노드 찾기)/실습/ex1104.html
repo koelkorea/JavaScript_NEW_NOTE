@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 다루기-eq() VS get()</title>
+    <style>
+        div {
+            width: 50px;
+            height: 50px;
+            float: left;
+            background-color: brown;
+            margin: 10px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 태그(element노드)요소로 위치값을 찾는경우, 배열로 리턴(한개면 배열 한개 짜리로 리턴되는듯)
+            var $divList = $("div");        // div가 5개 생성 -> div객체들을 길어 5짜리 배열로 저장
+
+            // eq()함수 VS get()함수
+            // : eq()는 jQuery값이 리턴, get()은 element(요소)노드로 리턴 = 그 이후 적용되는 메서드도 리턴값의 소속에 맞춰야 함
+            //    -> 결론 : eq() 쪽을 추천
+            var $div_two = $divList.eq(1);  // 2번째 div를 가져옴 -> jQuery객체로 리턴
+            var $div_one = $divList.get(0);  // 1번째 div를 가져옴 -> element(요소)노드로 리턴
+
+            // []로 인덱스 값을 넣어 원하는 순서의 노드를 찾을 수도 있다 -> element(요소)노드로 리턴
+            var $div_five = $divList[4];
+
+            // jQuery값이 리턴되니, jQuery메서드 적용가능
+            $div_two.css("background", "blue");
+            // element(요소)노드로 리턴하니, 스타일 설정은 js식으로 해줘야함
+            $div_one.style.border = "3px dashed red";
+            $div_five.style.background = "yellow";   
+        });
+    </script>
+</head>
+<body>
+    <div>div1</div>
+    <div>div2</div>
+    <div>div3</div>
+    <div>div4</div>
+    <div>div5</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>윈도우의 3가지 크기 구하기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #main {
+            border: 1px dotted red;
+            width: 1000px;
+            margin: 50px;
+        }
+
+        #info {
+            border: 10px solid red;
+            position: fixed;    /* fixed인 경우 포지션은 스크롤을 따라감*/
+            left: 120px;
+            top: 100px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // window : 브라우저에 내장된 객체(= 브라우저 화면의 최상위 객체로 screen보다 상위객체)로 js에서 접근가능
+        //          (= 전역객체에 접근 및 수정하는 방법 및 권한은 jQuery 라이브러리에서 접근하게 조치하지 않음)
+
+
+        // [window객체 내 현재 브라우저 해상도 크기 관련 프로퍼티]
+
+        // 1) (작업표시줄, 툴바, 스크롤바 전부 X) : 현재 브라우저 해상도(내부 크기) 크기
+        //  window.innerWidth  : 현재 브라우저 화면의 내부 해상도(기본크기) 너비(작업표시줄, 툴바, 스크롤바 전부 제외)를 출력
+        //  window.innerHeight : 현재 브라우저 화면의 내부 해상도(기본크기) 높이(작업표시줄, 툴바, 스크롤바 전부 제외)를 출력
+
+        // 2) (작업표시줄, 툴바, 스크롤바 전부 ㅇ) : 현재 브라우저 해상도 크기 
+        //  window.outerWidth  : 현재 브라우저 화면의 외부 해상도(기본크기 + 작업표시줄, 툴바) 너비(스크롤바 제외)를 출력
+        //  window.outerHeight : 현재 브라우저 화면의 외부 해상도(기본크기 + 작업표시줄, 툴바) 높이(스크롤바 제외)를 출력
+
+
+        // [(스크롤바만 X) : jQuery의 window객체 내의 함수를 통해 구하는 일반화면 크기]
+        //  - $(window).width()  : 현재 브라우저 화면의 일반 해상도(일반크기 = 기본크기 + 작업표시줄, 툴바) 너비(스크롤바 제외)를 출력하는 함수
+        //  - $(window).height() : 현재 브라우저 화면의 일반 해상도(일반크기 = 기본크기 + 작업표시줄, 툴바) 높이(스크롤바 제외)를 출력하는 함수
+
+        // (주의) jQuery로 접근한 메서드라도, window 객체 크기는 새로고침하지 않는 이상 변경X
+        //   <-> document가 웹페이지 크기를 바꾸면 실시간으로 변하는 것과 차이
+
+
+        // [window객체 내 현재 브라우저 위치좌표 관련 프로퍼티]
+        //  window.screenLeft : 현재 브라우저 화면이 위치한 x축 위치 정보
+        //  window.screenTop  : 현재 브라우저 화면이 위치한 y축 위치 정보
+
+        // window 객체 내부의 브라우저 해상도 관련 프로퍼티 출력
+        $(document).ready(function(){
+
+            // window : 브라우저에 내장된 객체(= 브라우저 화면의 최상위 객체로 screen보다 상위객체)로 js에서 접근가능
+            //          (= 전역객체에 접근 및 수정하는 방법 및 권한은 jQuery 라이브러리에서 접근하게 조치하지 않음)
+
+            var str = "";
+
+            // window.innerWidth : 현재 브라우저 화면의 내부 해상도(기본크기) 너비(작업표시줄, 툴바, 스크롤바 전부 제외)를 출력
+            //                     (= innerWidth 전역객체 window의 프로퍼티임을 명심)
+            str += "(작업표시줄 X, 툴바 X, 스크롤바 X - 브라우저 너비) window.innerWidth : " + window.innerWidth + "</br>";
+
+            // window.innerHeight : 현재 브라우저 화면의 내부 해상도(기본크기) 높이(작업표시줄, 툴바, 스크롤바 전부 제외)를 출력
+            //                     (= innerHeight 전역객체 window의 프로퍼티임을 명심)
+            str += "(작업표시줄 X, 툴바 X, 스크롤바 X - 브라우저 높이) window.innerHeight : " + window.innerHeight + "</br>";
+
+
+            // $(window).width() : 현재 브라우저 화면의 일반 해상도(일반크기 = 기본크기 + 작업표시줄, 툴바) 너비(스크롤바 제외)를 출력하는 함수
+            str += "(작업표시줄 X, 툴바 X, 스크롤바 ㅇ - 브라우저 너비) $(window).width() : " + $(window).width() + "</br>";
+
+            // $(window).height() : 현재 브라우저 화면의 일반 해상도(일반크기 = 기본크기 + 작업표시줄, 툴바) 높이(스크롤바 제외)를 출력하는 함수
+            str += "(작업표시줄 X, 툴바 X, 스크롤바 ㅇ - 브라우저 높이) $(window).height() : " + $(window).height() + "</br>";
+
+
+            // window.outerWidth : 현재 브라우저 화면의 외부 해상도(외부크기 = 기본크기 + 작업표시줄, 툴바, 스크롤바) 너비를 출력
+            //                     (= outerWidth 전역객체 window의 프로퍼티임을 명심)
+            str += "(작업표시줄 ㅇ, 툴바 ㅇ, 스크롤바 ㅇ - 브라우저 너비) window.outerWidth : " + window.outerWidth + "</br>";
+
+            // window.outerHeight : 현재 브라우저 화면의 외부 해상도(외부크기 = 기본크기 + 작업표시줄, 툴바, 스크롤바) 높이를 출력
+            //                     (= outerHeight 전역객체 window의 프로퍼티임을 명심)
+            str += "(작업표시줄 ㅇ, 툴바 ㅇ, 스크롤바 ㅇ - 브라우저 높이) window.outerHeight : " + window.outerHeight + "</br>";
+
+            $("#info").html(str);
+        });    
+    </script>
+</head>
+<body>
+    <div id="main">
+        <p>안녕1</p><p>안녕2</p><p>안녕3</p><p>안녕4</p><p>안녕5</p>
+        <p>안녕6</p><p>안녕7</p><p>안녕8</p><p>안녕9</p><p>안녕10</p>
+        <p>안녕11</p><p>안녕12</p><p>안녕13</p><p>안녕14</p><p>안녕15</p>
+    </div>
+    <div id="info">
+        문서의 크기를 출력
+    </div>
+</body>
+</html>

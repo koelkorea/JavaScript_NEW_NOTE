@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String클래스-5(replace())</title>
+    <script>
+        var str = "반갑다! X이여.... 난, 굴단이다~!"
+        var replaceStr = window.prompt("이름을 입력해주세요!");
+
+        // str.replace("from 문자열", "to 문자열") : 대체하고자 하는 문자열을 찾아, 다른 문자로 치환 -> 새로운 String 객체로 리턴
+        var resultStr = str.replace("X", replaceStr);
+        document.write(str + "</br>");
+        document.write(resultStr + "</br>");
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

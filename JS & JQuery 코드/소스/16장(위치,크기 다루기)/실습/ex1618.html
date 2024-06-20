@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>윈도우의 위치 설정하기(moveTo(), moveBy())</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #info {
+            border: 10px solid red;
+            position: fixed;
+            left: 120px;
+            top: 100px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // window : 브라우저에 내장된 객체(= 브라우저 화면의 최상위 객체로 screen보다 상위객체)로 js에서 접근가능
+        //          (= 전역객체에 접근 및 수정하는 방법 및 권한은 jQuery 라이브러리에서 접근하게 조치하지 않음)
+
+        // [스크롤 좌표 변경을 위한 window 객체의 함수 리스트]
+        //  1. scrollTo(너비, 높이) : 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수 
+        //                           (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+        //  2. scrollBy(너비, 높이) : 현재 스크롤 좌표위치를 기준으로, 현재 브라우저 화면(윈도우)의 스크롤 위치좌표를 이동시키는 함수 
+        //                           (= 엄밀하게는 window 객체의 scroll 프로퍼티를 함수의 리턴값으로 바꿔주는 것)
+
+        // [window객체 내 현재 브라우저(윈도우) 위치좌표 관련 프로퍼티]
+        //  1) 스크롤 위치 기준 
+        //   - window.pageXOffset : 현재 페이지 내 스크롤 위치 전역변수 x축 좌표 위치 정보
+        //   - window.pageYOffset  : 현재 페이지 내 스크롤 위치 전역변수 y축 좌표 위치 정보
+
+        //  2) 브라우저 창의 사용자 화면상에서의 위치
+        //   - window.screenLeft : 현재 브라우저 창의 사용자 시스템 화면상에서의 위치를 전역변수 x축 좌표 위치 정보
+        //   - window.screenTop  : 현재 브라우저 창의 사용자 시스템 화면상에서의 위치를 전역변수 y축 좌표 위치 정보
+
+
+        // [window객체 팝업창 관련]
+        // window.open("열려는 url명", "창이름", "창정보(ex width, height, scrollbars ..", "히스토리 영역생성 여부 boolean(생략가능)")
+        //  : 팝업창으로 새로 열려는 url을 입력된 해상도 정보를 통해 창 객체를 생성하여, 별개의 팝업창으로 열어주는 브라우저 최상위객체 window 내의 함수
+
+        // [팝업창 생성 함수 window.open() 의 후속함수] : 해당 함수를 통해 open()함수를 통해 반환된 창 객체를 통제 가능
+        //  1. resizeTo(너비, 높이) : 해당 팝업창의 화면 크기를 변경하는 함수 (= 해당 창객체의 화면크기 프로퍼티를 변경)
+        //  2. moveTo(너비, 높이) : 해당 팝업창의 화면 위치좌표를 변경하는 함수 (= 해당 창객체의 화면좌표 프로퍼티를 변경)
+        //  3. moveBy(너비, 높이) : 현재 좌표를 기준으로, 해당 팝업창의 화면 위치좌표를 변경하는 함수 (= 해당 창객체의 화면좌표 프로퍼티를 변경)
+
+        // To(너비, 높이) VS By(너비, 높이) : 절대 위치로 이동 VS (현재위치 기준) 상대 위치로 이동
+        //  -> To(너비, 높이) : 좌표정보 (너비, 높이)으로 창 자체의 절대 위치를 이동
+        //  -> By(너비, 높이) : 현재 좌표를 기준으로, 좌표정보 (너비, 높이) 만큼 창 자체의 상대 위치를 이동
+
+        // move VS scroll  
+        //  1. 브라우저 창의 좌표를 이동 VS 페이지 내의 스크롤의 좌표를 이동
+        //  2. move()   -> window.move() 팝업창객체의 후속함수
+        //     scroll() -> 브라우저 객체 최상위객체 window의 직속 함수(= open과 같은 반열)
+
+        $(document).ready(function(){
+
+            var newWindow = null;
+
+            $("#create").click(function(){
+                newWindow = window.open("", "newWindow", "width = 200, height = 200");
+            });
+
+            $("#moveTo").click(function(){
+                if(newWindow){
+
+                    // 팝업창객체.moveTo(너비, 높이)
+                    //  : window 객체의 open()을 통해서 만들어진 창 객체의 화면(윈도우)의 위치좌표를 변경하는 함수(= 해당 창객체의 화면좌표 프로퍼티를 변경)
+                    //      -> 단! open()메서드를 꼭 통과해야하며, window자체로는 변경 불가 
+                    //         (이 녀석의 open() 함수를 통해 만들어진 창객체를 제어하는 후속함수 개념이니, 이를 거치지 않은 window객체 자체를 제어는 불가능)
+                    //          ex) window.moveTo(500, 500);   <- 잘못된 사용
+
+                    // 브라우저 화면(윈도우)를 절대좌표 위치로 이동
+                    newWindow.moveTo(500, 500);
+
+                }
+            });
+
+            $("#moveBy").click(function(){
+                if(newWindow){
+
+                    // 팝업창객체.moveBy(너비, 높이)
+                    //  : 현재 좌표를 기준으로, window 객체의 open()을 통해서 만들어진 창 객체의 화면(윈도우)의 위치좌표를 변경하는 함수(= 해당 창객체의 화면좌표 프로퍼티를 변경)
+                    //      -> 단! open()메서드를 꼭 통과해야하며, window자체로는 변경 불가 
+                    //         (이 녀석의 open() 함수를 통해 만들어진 창객체를 제어하는 후속함수 개념이니, 이를 거치지 않은 window객체 자체를 제어는 불가능)
+                    //          ex) window.moveBy(500, 500);   <- 잘못된 사용
+
+                    // 현재 브라우저의 위치를 기준으로 브라우저 화면(윈도우)을 좌표만큼 더 이동
+                    newWindow.moveBy(500, 500);
+                }
+            });
+            
+        });    
+    </script>
+</head>
+<body>
+    <button id="create">생성</button>
+    <button id="moveTo">절대 위치 이동</button>
+    <button id="moveBy">(현재 위치 기준) 상대 이동</button>
+
+    <div id="info">
+        이동 정보 출력
+    </div>
+</body>
+</html>

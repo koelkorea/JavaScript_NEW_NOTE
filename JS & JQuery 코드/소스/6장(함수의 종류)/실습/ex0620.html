@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>클로저 함수-3(ex16을 변환)</title>
+    <style>
+        .tab-menu{
+            /* 블릿 없애기 */
+            list-style: none;
+            height: 80px;
+        }
+
+        .tab-menu li{
+            width: 100px;
+            height: 40px;
+            background-position-y: 0;
+            overflow: hidden;   /* overflow: 부모 속성의 영역을 자식 속성이 넘어설 경우 어떻게 처리할지 정함. visible | hidden | scroll | auto; */
+            display: block;
+            float: left;     /* float: 특정 그림이나 공간이 차지할 공간의 정렬을 어디로 놓을지 정하는거.. none이면 오피스 기준 그림 옆에 아무것도 못옴 */
+        }
+
+        .tab-menu li:hover{ /* li:hover: li 속성이 마우스가 올라올 때 의미*/
+            background-position-y: -40px; 
+            /*background-position-y: 배경으로 지정한 그림의 y좌표를 조정
+                                     ex) +40 로 하면 원래 0이었던 부분에 보일게 40부분의 내용이 전시 됨*/
+        }
+
+        /* li중에 선택된 녀석 있을 떄 */
+        .tab-menu li.select{ /* li:select: li 속성이 마우스로 선택지정이 될 때 의미*/
+            background-position-y: -80px;
+            height: 80px;
+        }
+
+        .tab-menu li.menuitem1{
+            background-image: url(../images/newbtn.bar.1.png);
+        }
+        .tab-menu li.menuitem2{
+            background-image: url(../images/newbtn.bar.2.png);
+        }
+        .tab-menu li.menuitem3{
+            background-image: url(../images/newbtn.bar.3.png);
+        }
+        .tab-menu li.menuitem4{
+            background-image: url(../images/newbtn.bar.4.png);
+        }
+        .tab-menu li.menuitem5{
+            background-image: url(../images/newbtn.bar.5.png);
+        }
+        .tab-menu li.menuitem6{
+            background-image: url(../images/newbtn.bar.6.png);
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 탭메뉴 코드 실행될 수 있도록 함수 호출
+            tabMenu("#tabmenu1 li");
+        });
+
+        function tabMenu(selector){
+
+            // $selectedMenuItem는 지역변수(클로저 함수)
+            //  -> 해당 부분이 select여부를 계속 저장하고 있음
+            var $selectedMenuItem = null;
+            
+            $(selector).click(function(){
+
+                // $selectedMenuItem을 계속 사용 중이라, 메모리에서 제거 X (= 클로저 현상)
+                if($selectedMenuItem != null){
+                    $selectedMenuItem.removeClass("select");
+                }
+
+                $selectedMenuItem = $(this);
+                $selectedMenuItem.addClass("select");
+
+                $("#info").html($selectedMenuItem.index());
+            });
+
+        }
+    </script>
+</head>
+<body>
+    <ul class="tab-menu" id="tabmenu1">
+        <li class="menuitem1"></li>
+        <li class="menuitem2"></li>
+        <li class="menuitem3"></li>
+        <li class="menuitem4"></li>
+        <li class="menuitem5"></li>
+        <li class="menuitem6"></li>
+    </ul>
+    <div>
+        선택한 인덱스 값 : <span id="info"></span>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자바스크립트 vs jQuery 스타일 다루기(확인) - 1</title>
+    <style>
+        div {
+            margin: 20px;
+            padding: 10px;
+            font-size: 26px;
+            border: 2px solid red;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // a. JS로 스타일 접근하는 법
+        window.onload = function(){
+            var content = document.getElementById("test");
+
+            // [JS 스타일 접근/수정시 특이사항]
+            //  1. 외부속성의 경우에는 DOM으로도 접근을 못한다.
+            //  2. font-size와 같이 두단어가 필요한 녀석은 DOM에서 카멜케이스를 통해 값 지정
+            //      EX) font-size -> fontSize  >> content.style.fontSize
+            //  3. 반드시 단위를 붙여야 한다.
+
+            // (인라인 속성) : js로 바로 dom접근(위치갑 지정)을 통해 값을 얻을 수 있음 
+            console.log("color = ", content.style.color);         // 인식 가능(color는 인라인 속성) : color = blue 
+            
+            // (외부 속성) : js로 바로 dom접근(위치갑 지정)을 통해 값을 얻을 수 없음 
+            //  -> window.getComputedStyle(위치값).스타일속성명 을 통해 내,외부 스타일 속성에 모두 접근하여 값을 얻기 가능(BUT 너무 불편함)
+            
+            // 외부속성 인식불가 예시
+            console.log("font-size = ", content.style.fontSize);  // 인식 불가(fontSize 외부속성) : fontSize = 
+            console.log("border = ", content.style.border);       // 인식 불가(border는 외부속성) : border는 = 
+            console.log("margin = ", content.style.margin);       // 인식 불가(margin은 외부속성) : margin은 =
+
+            // window.getComputedStyle(위치값).스타일속성명 사용 예시
+            console.log("border = ", window.getComputedStyle(content).border);  // 인식 가능 : border =  2px solid rgb(255, 0, 0)
+            console.log("font-size = ", window.getComputedStyle(content).fontSize);  // 인식 가능 : font-size =  26px
+        }
+
+
+        // b. jQuery로 스타일 접근하는 법(css() 사용)
+        $(document).ready(function (){
+
+            // [jQuery로 스타일 접근/수정시 특이사항]
+            //  1. 위치값.css("스타일속성명", "속성값") : 해당 위치값의 "스타일속성명"의 값을 원하는 "속성값"으로 수정하는 코드 
+            //      >> 위치값.css({스타일속성명1 : "속성값1".... , 스타일속성값N, "속성값N" }) : 여러 스타일 속성값 한번에 수정 가능한 코드 ({}안에 프로퍼티 입력하듯 입력함)
+            //  2. 내부속성 뿐 아니라 외부속성의 경우도 값을 얻기 쉽다(JS보다 나은이유 1)
+            //  3. font-size같은거 카멜스타일로 쓰던, 원래이름으로 쓰던지 다 잘 작동됨(JS보다 나은이유 2)
+            //      EX) $content.css("font-size") = $content.css("fontSize")
+            //  4. 단위 안 붙여도 작동이 된다
+
+            var $content = $("#test");
+
+            console.log("color = ", $content.css("color"));
+            console.log("border = ", $content.css("border"));
+            console.log("font-size = ", $content.css("font-size"));
+            console.log("font-size = ", $content.css("fontSize"));
+            console.log("margin = ", $content.css("margin"));
+        });
+    </script>
+</head>
+<body>
+    <div id="test" class="content" style="color: blue;">
+        스타일 다루기
+    </div>
+</body>
+</html>

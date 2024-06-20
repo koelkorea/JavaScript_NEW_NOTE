@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array클래스(정렬 - 숫자)</title>
+    <script>
+        // sort() 함수는 문자열 기반으로 만들어짐
+        // (= 기본정렬 기준은 배열값을 '문자'를 기반으로 한 유니코드로 치환하여 정렬하는 것)
+        var numbers = [6, 7, 2, 1, 9,77];
+        document.write("실행 전 : " + numbers.join() + "<br/>");
+        numbers.sort();
+        document.write("실행 전 : " + numbers.join() + "<br/>");   // 실행 전 : 1,2,6,7,77,9
+
+        // sort() 함수가 정렬의 기준을 배열값이 '숫자'일 때로 적용하게 만들기 위해선, 매개변수로 숫자값을 넣어야 함
+        var numbers1 = [6, 7, 2, 1, 9,77];
+        document.write("실행 전 : " + numbers1.join() + "<br/>");
+        numbers1.sort(function(a, b){
+            if(a > b) return 1;      // sort(양수) : 올림차수 * (= 오름차순 순서가 표준사양)
+            if(a < b) return -1;     // sort(음수) : 내림차수 
+        });
+        document.write("오름차순 실행 후 : " + numbers1.join() + "<br/>");  // 오름차순 실행 후 : 1,2,6,7,9,77
+
+        // sort() 함수가 정렬의 기준을 배열값이 '숫자'일 때로 적용하게 만들기 위해선, 매개변수로 숫자값을 넣어야 함
+        var numbers2 = [6, 7, 2, 1, 9,77];
+        document.write("실행 전 : " + numbers2.join() + "<br/>");
+        numbers2.sort(function(a, b){
+            if(a > b) return -1;    // sort(음수) : 내림차수 *
+            if(a < b) return 1;     // sort(양수) : 올림차수
+        });
+        document.write("내림차순 실행 후 : " + numbers2.join() + "<br/>");  // 내림차순 실행 후 : 77,9,7,6,2,1       
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

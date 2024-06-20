@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery를 활용한 글자의 랜덤 크기 및 랜덤 색상 출력하기</title>
+    <style>
+        #panel{
+            width : 600px;
+            overflow : visible;
+            border : 2px solid red;
+            font-size: 20px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        var cnt = 0;
+        var $panel = null;
+
+        $(document).ready(function(){
+            // 초기화
+            init();
+
+            // 타이머 시작
+            start();
+        });
+
+        function init(){
+            $panel = $("#panel");
+        }
+
+        function start(){
+            // 1초마다 addTag함수 실행
+            setInterval(addTag, 1000);
+        }
+
+        function addTag(){
+            // span태그 동적으로 생성해서 넣기
+            var $span = $("<span></span>");
+
+            // 색상 스타일 값 16진수로 랜덤 생성하기 : 랜덤값 * 16진수 -> 숫자화 -> 문자화
+            // 숫자.toString(16) : 10진수 -> 16진수로 바꿔주고 -> 문자화 
+            var color = "#" + parseInt(Math.random() * 0xffffff).toString(16);
+            
+            // 10 ~ 50px사이의 글자크기를 구하는 코드
+            var fontSize = (10 + parseInt(Math.random() * 40)) + "px";
+
+            // 위에서 구한 스타일 설정
+            $span.css({
+                color : color,
+                fontSize : fontSize,
+                display : "inline-block"
+            });
+
+            cnt++;
+            // span태그 안에 cnt값을 추가하는 코드
+            $span.html(cnt);
+            // panel 태그 위치값에 span객체를 자식으로서 계속 추가
+            $panel.append($span);
+        }
+
+    </script>
+</head>
+<body>
+    <div id="panel">
+    </div>
+</body>
+</html>

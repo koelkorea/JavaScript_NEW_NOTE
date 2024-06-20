@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자바스크립트 vs jQuery-4(크로스 브라우징 처리)</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // 1. 자바스크립트로 버튼을 클릭하면 ie7인지를 판별해 메시지를 출력하는 코드를 작성해보기
+        // window.onload = function(){
+        //     var btn1 = document.getElementById("btn1");
+
+        //     // IE7버전 이하를 크로스 브라우징 처리(attachEvent 함수는 ie7만 있으므로, 있으면 true라고 판정)
+        //     if(btn1.attachEvent){   // ie7이 맞으면
+        //         btn1.attachEvent("onclick", function(){
+        //             alert("반갑습니다");
+        //         });
+        //     }else{  // ie7이 아니면...
+        //         btn1.addEventListener("click", function(){
+        //             alert("반갑습니다");
+        //         });
+        //     }
+        // }
+
+        // 2. jQuery로 버튼을 클릭하면 ie7인지를 판별해 메시지를 출력하는 코드를 작성해보기
+        $(document).ready(function(){
+            $("#btn1").on("click", function(){
+                alert("반갑습니다");
+            }) 
+        });
+
+        // 결론 : jQuery는 기본적으로 크로스 브라우징을 지원한다(일반 js는 그런경우에 따라 함수가 다를걸 상정하고 접근해야 함)
+    </script>
+</head>
+<body>
+    <button id="btn1">버튼</button>
+    <br/>
+</body>
+</html>

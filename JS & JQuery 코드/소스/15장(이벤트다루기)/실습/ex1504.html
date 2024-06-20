@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트를 단 한번만 실행(one())</title>
+    <style>
+        body{
+            font-size : 30px;
+        }
+
+        #btn{
+            font-size : 25px;
+            margin : 20px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // $위치값.one("이벤트명", "이벤트리스너") : 해당 위치의 jQuery 객체에 딱! 한 번만 실행되는 이벤트를 등록
+            //  -> 정확히는 이후 실행되지 않게 이를 제거하는 걸로 추론 = on("이벤트명", "이벤트리스너")을 실행 후 off("이벤트명")가 실행되도록 하는 구조
+            $("#btn").one("click", function(e){
+                alert("안녕하세요");
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <button id="btn">실행</button>
+</body>
+</html>

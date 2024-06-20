@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자 입력</title>
+</head>
+<body>
+    <script>
+        // prompt를 통해 입력받은 데이터(숫자라도..)는 string 타입이다.
+        var input = prompt("숫자를 입력해라", "Number");
+        alert(typeof(input));
+
+        // Number함수를 통해 string -> Number로 전환 가능 
+        // (단! 완전 문자가 입력되면, NAN이 출력)
+        // NaN(Not a Number) : 숫자가 될수 없는 변수
+        var numType = Number(input);
+        alert(typeof(numType));
+
+        alert(numType); // numType 변수가 담은게 완전문자면, 타입은 숫자지만 실제로는 문자인 혼종이라 NaN이 출력
+    </script>
+</body>
+</html>

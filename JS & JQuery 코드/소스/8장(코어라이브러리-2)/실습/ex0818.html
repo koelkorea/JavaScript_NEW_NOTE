@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array클래스(ㄱ,ㄴ ~~ 정렬)</title>
+    <script>
+
+        // [일반 sort]
+        var descNames = ["이승호", "이준호", "이종범", "신혜순", "기억 안 남"];
+        document.write("실행 전 : " + descNames.join() + "<br/>");  // 실행 전 : 이승호,이준호,이종범,신혜순,기억 안 남
+
+        // sort() : 문자열 기반으로 배열의 값 오름차순 정렬해주는 함수
+        descNames.sort();
+        document.write("오름차순 정렬 후 : " + descNames.join() + "<br/>");  // 정렬 후 : 기억 안 남,신혜순,이승호,이종범,이준호
+
+
+        // [sort값을 통한 정렬]
+        var ascNames = ["이승호", "이준호", "이종범", "신혜순", "기억 안 남"];
+        document.write("실행 전 : " + ascNames.join() + "<br/>");  // 실행 전 : 이승호,이준호,이종범,신혜순,기억 안 남
+
+        // 문자열 기반으로 내림차순 정렬을 하고자 하면, 아래와 같이 정렬기준을 익명함수의 리턴값으로 제공
+        ascNames.sort(function(a, b){
+            if(a > b) {
+                return -1;  // -수 (b-a 가 음수 = 뒷수가 더 작게 나오도록 정렬) : 내림차순
+            }else{
+                return 1;   // +수 (b-a 가 양수 = 뒷수가 더 크게 나오도록 정렬) : 올림차순 
+            }
+        });
+        document.write("내림차순 정렬 후 : " + ascNames.join() + "<br/>");  // 내림차순 정렬 후 : 이준호,이종범,이승호,신혜순,기억 안 남
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

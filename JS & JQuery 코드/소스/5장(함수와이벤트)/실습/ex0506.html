@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>함수-3</title>
+</head>
+<body>
+    <script>
+        // 구구단을 출력해주는 함수를 만듦
+        function gugudan_print(){
+            for(var i = 2; i <= 9; i++){
+                document.write(i + "단 출력 </br>");
+
+                for(var j = 1; j <= 9; j++){
+                    document.write(i + " * " + j + " = " + (i*j) + "</br>");
+                }
+                document.write("</br>");
+            }
+        }
+        // 함수 사용의 이유? 함수는 코드를 재활용하고 있다
+        // 1. 지속적으로 필요하면, 코드 다 쓰지 말고 호출하면 그만
+        // 2. 그저 한번만 잘 만들면 만사 ㅇㅋ
+        gugudan_print();
+        gugudan_print();   
+    </script>
+</body>
+</html>

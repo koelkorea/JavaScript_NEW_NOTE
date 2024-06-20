@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math클래스-2</title>
+    <script>
+        // Math.max() VS Math.min()
+        var num1 = window.prompt("숫자를 입력하세요", 0);
+        var num2 = window.prompt("숫자를 입력하세요", 0);
+
+        alert("입력한 수 중 작은 값은 " + Math.min(num1, num2) + "이다.");
+        alert("입력한 수 중 큰 값은 " + Math.max(num1, num2) + "이다.");
+
+        // Math.ceil() VS Math.floor() VS round()
+        var num = 112;
+
+        var page1 = Math.ceil(num/10);   // ceil()  : 무조건 소수점 올림 값
+        var page2 = Math.floor(num/10);  // floor() : 무조건 소수점 내림 값
+        var page3 = Math.round(num/10);  // round() : 반올림 소수점 값
+
+        alert("전체 페이지 수 : " + page1);
+        alert("전체 페이지 수 : " + page2);
+        alert("전체 페이지 수 : " + page3);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

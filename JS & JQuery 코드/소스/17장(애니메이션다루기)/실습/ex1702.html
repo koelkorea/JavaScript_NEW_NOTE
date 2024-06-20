@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파라미터로 이징(easing)이 들어간 애니메이션 함수</title>
+    <style>
+        * {
+            font-size: 25px;
+        }
+        
+        #target {
+            border: 1px solid black;
+            width: 600px;
+            height: 500px;
+            text-align: center;
+        }
+
+        #kor {
+            width: 600px;
+            height: 500px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <!-- 이징 함수 사용 위한 라이브러리 가져옴 -->
+    <script src="../libs/jquery.easing.1.3.js"></script>   
+    <script>
+
+        // [기본 제공되는 애니메이션 함수 리스트]
+        //  -> 기본적인 구조나 의미는 참고내용은 앞의 내용을 참고하길..
+
+        //  (1) 요소 크기(높이, 너비) 변경하며 등장/퇴장 
+        //     (= style속성 변화 : width ㅇ, height ㅇ, opacity ㅇ)
+
+        //   - $위치값.show(지속시간(필수), easing명, 콜백함수) or (option)
+        //      : 해당 jQuery 객체 요소가 크기가 커지며 나타나게(등장) 하는 애니메이션 함수
+        //   - $위치값.hide(지속시간(필수), easing명, 콜백함수) or (option)
+        //      : 해당 jQuery 객체 요소가 크기가 작아지며 사라지게(퇴장) 하는 애니메이션 함수
+
+
+        // [jQuery에서 기본 제공하는 애니메이션 라이브러리 기본 함수의 의미 및 구조]
+
+        //  1. 파라미터 방식으로 넣는 [함수] 방식 
+        //   : $위치값.기본애니메이션함수(duration(필수), easing, complete)
+        //       -> 해당 위치의 jQuery 객체 요소가 지속시간동안 원하는 easing 방식으로 움직인 후, 콜백함수의 내용이 작동되게 함
+        //          - duration(필수)     : 지속시간(0.001초 단위) 
+        //          - easing(생략가능)   : 원하는 애니메이션 움직임을 정의(생략시 기본 easing인 slide 적용)
+        //          - complete(생략가능) : 콜백함수
+
+        //  2. 프로퍼티 방식으로 넣는 [옵션] 방식 : option = duration + easing + complete 의미.. 입력은 프로퍼티 방식 {속성:속성값,...,}으로 투입
+        //   : $위치값.기본애니메이션함수({
+        //          duration(필수): 숫자,
+        //          easing: "easing명",
+        //          complete: function(){ 내용 } or 함수명
+        //      });
+
+        // (기본 애니메이션 함수 관련 참고 내용) 
+        //  1. 파라미터로 들어간 easing 요소, 콜백함수는 생략 가능함 (생략시 기본 easing이 적용)
+        //  2. 콜백함수는 애니메이션이 전부 수행되고 난 뒤 동작함
+
+        //  easing 요소 : 애니메이션 함수의 파라미터로 애니메이션 방식 및 모션에 대한 고유값을 의미
+        //               (= PPT의 휘리릭 브레이크 이런거랑 비슷)
+        //                 -> easing 요소를 쓰고 싶으면, jquery 라이브러리처럼 다운받아 적용해야 함.
+
+
+        // (easing함수 ㅇ, 콜백 X) show 버튼, hide버튼을 통한 메서드 예시
+        $(document).ready(function(){
+            // 움직일 대상 id속성자가 target인 요소 위치값 jquery 객체변수로 저장
+            var $img1 = $("#target");
+
+            // show_easeInElastic버튼 클릭시 -> 지정했던 $위치값인 img1 요소(id속성자가 target)가 easeInElastic효과로 나타나는 효과
+            $("#show_easeInElastic").on("click", function(){
+
+                // $위치값.show(지속시간, easing함수) : 너비, 높이와 투명도가 올라가며 등장 (= 콜백 생략)
+                $img1.show(3000, "easeInElastic");
+
+            });
+
+            // show_easeInCubic버튼 클릭시 -> 지정했던 $위치값인 img1 요소(id속성자가 target)가 easeInCubic효과로 나타나는 효과
+            $("#show_easeInCubic").on("click", function(){
+
+                // $위치값.show(지속시간, easing함수) : 너비, 높이와 투명도가 올라가며 등장 (= 콜백 생략)
+                $img1.show(3000, "easeInCubic");
+
+            });
+
+            // hide_easeOutElastic버튼 클릭시 -> 지정했던 $위치값인 img1 요소(id속성자가 target)가 easeOutElastic효과로 없어지는 효과
+            $("#hide_easeOutElastic").on("click", function(){
+
+                // $위치값.show(지속시간, easing함수) : 너비, 높이와 투명도가 내려가며 퇴장 (= 콜백 생략)
+                $img1.hide(3000, "easeOutElastic");
+            });
+
+            // hide_easeOutCubic버튼 클릭시 -> 지정했던 $위치값인 img1 요소(id속성자가 target)가 easeOutCubic효과로 없어지는 효과
+            $("#hide_easeOutCubic").on("click", function(){
+
+                // $위치값.show(지속시간, easing함수) : 너비, 높이와 투명도가 내려가며 퇴장 (= 콜백 생략)
+                $img1.hide(3000, "easeOutCubic");
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+    <div id="target">
+        <img id="kor" src="../images/korea.png">
+    </div>
+    <div>
+        <button id="show_easeInElastic">show_easeInElastic</button>
+        <button id="show_easeInCubic">show_easeInCubic</button>
+        <button id="hide_easeOutElastic">hide_easeOutElastic</button>
+        <button id="hide_easeOutCubic">show_easeOutCubic</button>
+    </div>
+</body>
+</html>

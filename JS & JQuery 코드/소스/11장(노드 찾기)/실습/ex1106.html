@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 다루기-each(), eq(), this</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("ul.menu li").each(function(index){
+                // this : 현재의 jQuery의 요소(EX HTMLLiElement)를 의미
+                // $(this) : 현재 jQuery 객체의 위치 및 프로퍼티를 보여줌
+                document.write(this + "<br>");
+                // console.log에서 this : js에서의 현재 코드를 보여줌  ex) <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                console.log(this);
+                // console.log($(this)) : 배열값인 jQuery 객체의 프로퍼티를 보여줌
+                console.log($(this));
+            });
+
+            // li 객체들을 찾아서 -> 배열로 리턴받기 위한 위치값
+            var $liList = $("ul.menu li");
+
+            // $liList에 있는 li객체들의 border속성을 루프를 돌면서 2배씩 두껍게 만들기
+            $liList.each(function(index){
+                // li에서 순서가 뒷쪽일수록 더 테두리가 굵어지는 코드를 짜는 초석
+                var borderPixel = (index + 1) * 2;
+                // $liList.eq(index).css("border", borderPixel + "px solid #f00");
+
+                // $(this)를 통해, 루프를 돌면서 li객체를 하나씩 가져옴
+                $(this).css("border", borderPixel + "px solid #f00");
+
+                // 결론 : 위치값.each -> eq(index) = $(this) 같은 효과를 냄 
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="samplePage" class="page">
+        샘플페이지(div, id = samplePage, class = page)
+        <div id="header">
+            헤더 영역(div, id = header)
+        </div>
+        <div id="content" class="sample-content">
+            노드 찾기(div, id = content, class = sample-content)
+            <ul class="menu">
+                일반 노드 찾기(ul, class = menu)
+                <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                <li class="select">tag로 찾기(li, class = select)</li>
+                <li data-value="2">class로 찾기(li, data-value = 2)</li>
+                <li class="test1">속성으로 찾기(li, class = test1)</li>
+            </ul>
+            <div class="content-data">
+                자식 노드 찾기(div, class = content-data)
+                <p class="test1">1. 모든 자식 노드 찾기(p, class = test1)</p>
+                <p>2. 특정 자식 노드 찾기(p)</p>
+                <p class="test2">3. 마지막 자식 노드 찾기(p, class = test2)</p>
+            </div>
+        </div>
+        <div id="footer">
+            푸터 영역(div, id = footer)
+        </div>
+    </div>
+</body>
+</html>

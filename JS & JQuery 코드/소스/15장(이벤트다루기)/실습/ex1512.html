@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 정의 이벤트 만들기-1</title>
+    <style>
+        body{
+            font-size: 20px;
+            font-family: "맑은 고딕";
+        }
+
+        ul, li{
+            border: 1px solid gray;
+            margin: 15px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select {
+            background-color: #ccc;
+        }
+
+        #output {
+            border: 2px solid black;
+            min-height: 100px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var $output = $("#output");
+            var $menu = $(".menu");
+            var cnt = 5;
+
+            $("#add").click(function(e){
+                cnt++;
+
+                // 신규 메뉴 항목 생성
+                var $newItem = $("<li>메뉴" + cnt + "</li>");
+                $menu.append($newItem);     // $newItem의 코드내용이 메뉴의 마지막 자식으로 추가 됨
+
+                // jQuery.Event("이벤트명") : "이벤트명"이라는 사용자 정의 이벤트 객체 생성하는 jQuery 클래스의 함수
+                var event = jQuery.Event("addItem");    // addItem이 "이벤트명"
+
+                // [방법1] : 이벤트의 파라미터 값을 event위치값 지정해 미리 입력하여, 사용자 정의 이벤트의 파라미터로 event를 넘길때 같이 넘기도록 조치
+                // 이벤트의 프로퍼티들을 각각 입력해서 포장
+                event.item = $newItem;              // 사용자 정의 이벤트의 프로퍼티 item에 $newItem에 담긴 신규 아이템 코드를 저장
+                event.itemName = $newItem.text();   // 사용자 정의 이벤트의 프로퍼티 itemName에 $newItem에 담긴 신규 아이템 코드의 text노드 내용을 저장한다(ex 메뉴6.. 추가되는 메뉴항목 이름)
+                event.itemLength = $menu.children.length; // 이벤트의 길이 = menu라는 클래스명을 가진 태그의 자식들의 길이
+
+                // addItem라는 사용자 정의 이벤트를 강제로 발생시키기
+                $menu.trigger(event);   // $위치값의 ()안의 이벤트에 해당하는 녀석을 실행
+            });
+
+            // 클래스명 = menu인 태그에 사용자 정의 이벤트 'addItem'이 발생할 시 실행할 이벤트리스너(p태그를 해당 태그의 첫째로 계속 등록) 등록
+            $menu.on("addItem", function(e){
+                $output.prepend("<p>추가 아이템 : " + e.itemName
+                                + ", 아이템 개수 : " + e.itemLength + "</p>");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <button id="add">추가</button>
+    </div>
+    <ul class="menu">
+        <li>메뉴1</li>
+        <li>메뉴2</li>
+        <li>메뉴3</li>
+        <li>메뉴4</li>
+        <li>메뉴5</li>
+    </ul>
+    <p>추가 및 삭제 정보 출력</p>
+    <div id="output">
+
+    </div>
+</body>
+</html>

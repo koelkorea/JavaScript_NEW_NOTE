@@ -1,0 +1,28 @@
+#panel{
+    width: 600px;
+    height: 300px;
+    border: 1px solid #999;
+    position: relative; /* 위치 relative : 페이지의 구성에 따른 상대적 위치 기준으로 위치를 정함(해상도 환경이 변해도 어느정도는 맞춰줌) */
+}
+#bar{
+    position: absolute; /* 위치 absolute : 전체화면의 좌표를 기준으로 위치를 정함(해상도 환경이 변함에 맞춰 작업을 계속해야) */
+    left: 50px;
+    top: 190px;
+    width: 500px;
+    height: 15px;
+    background-color: #F33;
+}
+#gigu{
+    width: 80px;
+    position: absolute; 
+    left: 50px;
+    top: 110px;
+}
+#btn{
+    text-align: center;
+    width: 600px;
+}
+#btnStart{
+    font-size: 12px;
+    font-weight: bold;
+}

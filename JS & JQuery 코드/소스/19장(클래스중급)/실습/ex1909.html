@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>클래스 프로퍼티와 메서드(static 함수)</title>
+    <style>
+        .tab-menu {
+            list-style: none;
+            height: 80px;
+        }
+
+        .tab-menu li {
+            width: 100px;
+            height: 40px;
+            background-position-y: 0;   
+            text-indent: -1000px;   /* + : 들여쓰기 - : 내어쓰기 */
+            overflow: hidden;
+            display: inline;
+            float: left;
+        }
+
+        .tab-menu li:hover {
+            background-position-y: -40px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+        }
+
+        .tab-menu li.select {
+            background-position-y: -80px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+            height: 80px
+        }
+
+        .tab-menu li.menuitem1 {
+            background-image: url(../images/newbtn.bar.1.png);
+        }
+        
+        .tab-menu li.menuitem2 {
+            background-image: url(../images/newbtn.bar.2.png);
+        }
+        
+        .tab-menu li.menuitem3 {
+            background-image: url(../images/newbtn.bar.3.png);
+        }
+        
+        .tab-menu li.menuitem4 {
+            background-image: url(../images/newbtn.bar.4.png);
+        }
+        
+        .tab-menu li.menuitem5 {
+            background-image: url(../images/newbtn.bar.5.png);
+        }
+        
+        .tab-menu li.menuitem6 {
+            background-image: url(../images/newbtn.bar.6.png);
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // 클래스 프로퍼티와 메서드 : 클래스 객체 생성 없이 바로 소환 가능한 클래스 자체의 프로퍼티 및 함수
+        //  vs  -> 좀 더 쉽게는 자바나 c언어로 따지면 static이냐 아니냐 이야기로 보면 됨
+        // 인스턴스 프로퍼티와 메서드 : 클래스 객체 생성 후, 사용 및 소환이 가능한 클래스의 프로퍼티 및 함수 
+
+
+        // 클래스 요소 vs 인스턴스 요소들 what is dif?
+        // 1. this의 사용여부 : 클래스 요소 X, 인스턴스 요소 ㅇ (애초에 클래스에서 this의 사용 자체가 객체생성 연산자 new와 직접적 연관이 있고, 그게 아니면 window 전역객체에 속하게 됨)
+        // 2. 객체 소환 필요 : 클래스 요소 X, 인스턴스 요소 ㅇ
+        // 3. 사용 목적
+        //      -> 클래스 요소   : 프로퍼티는 객체와 상관없이 갖는 고유값 필요시, 함수는 개발자로 하여금 편의성 제공하는 메서드 사용 가능하게 함 (EX Math 클래스)
+        //      -> 인스턴스 요소 : 프로퍼티는 객체가 가지는 값을 의미, 함수는 그 객체에 관한 값들을 가공하기 위해 필요 (쉽게 말해 용도를 생성된 객체의 정보가공에 제한함)
+
+
+        // ex1907의 맨 끝에 클래스 프로퍼티 and 함수 정의 + 사용 추가
+        $(document).ready(function(){
+            
+            // 설계된(정의된) TabMenu 클래스 인스턴스(객체) 생성하기
+            //  -> ex1808 대비 파라미터 selector를 넣어서, init(selector)이 인스턴스 생성 후 바로 실행되어 초기화되게 유도
+            var tab1 = new TabMenu("#tabMenu1");
+
+            // 1번째 줄의 li요소 중 2번째 녀석이 select 된 상태로 등장
+            tab1.setSelectItemAt(1);
+
+            // tab1.init("#tabMenu1");
+            // tab1.initEvent();
+
+
+            // 새로운 인스턴스를 만들어서, 다중 탭메뉴를 구성(= 코드의 재사용성)
+            //  -> ex1808 대비 파라미터 selector를 넣어서, init(selector)이 인스턴스 생성 후 바로 실행되어 초기화되게 유도
+            var tab2 = new TabMenu("#tabMenu2");
+
+            // 2번째 줄의 li요소 중 3번째 녀석이 select 된 상태로 등장
+            tab2.setSelectItemAt(2);
+
+            // tab2.init("#tabMenu2");
+            // tab2.initEvent();
+
+        });
+
+        // TabMenu 클래스 설계하기
+        //  -> ex1808 대비 파라미터 selector를 넣어서, init(selector)이 인스턴스 생성 후 바로 실행되어 초기화되게 유도
+        function TabMenu(selector){
+
+            // 프로퍼티의 초기화
+            this.$tabMenu = null;
+            this.$menuItems = null;
+            this.$selectedMenuItem = null;
+
+            // 요소 초기화 및 이벤트 등록 호출하기
+            this.init(selector);
+            this.initEvent();
+        }
+
+
+        // (변경점) 초기화 멤버메서드 init(selector) 만들기 -> selector 매개변수를 주어서, 원하는 id속성자의 값이 있는 $객체 위치값을 지정 가능(= 여러개의 탭메뉴를 만들고 동적으로 적용 가능)
+        TabMenu.prototype.init = function(selector){
+            this.$tabMenu = $(selector);
+            this.$menuItems = this.$tabMenu.find("li");
+        }
+
+        // 이벤트 등록 멤버메서드 initEvent() 만들기
+        TabMenu.prototype.initEvent = function(){
+            var objThis = this;
+            this.$menuItems.on("click", function(){
+                objThis.setSelectItem($(this));
+            });
+        }
+
+        // $menuItems에서 사용자가 클릭한 메뉴아이템을 선택하는 코드처리
+        TabMenu.prototype.setSelectItem = function($menuItem){
+
+            // 기존에 선택되어져 있는 메뉴가 있다면..(선택했다면, 그 값은 $selectedMenuItem에 저장됨) -> 그 메뉴의 select 클래스를 제거해라
+            if(this.$selectedMenuItem) {
+                this.$selectedMenuItem.removeClass("select");
+            }
+
+            // 새로운 선택된 메뉴아이템을 select 클래스를 추가 처리하는 코드(선택한 요소의 $객체 위치값을 $selectedMenuItem에 저장됨)
+            this.$selectedMenuItem = $menuItem;
+            this.$selectedMenuItem.addClass("select");
+        }
+
+        // index에 해당하는 메뉴 아이템 선택하는 메서드
+        TabMenu.prototype.setSelectItemAt = function(index) {
+            
+            var $menuItem = this.$menuItems.eq(index);
+            this.setSelectItem($menuItem);
+        }
+
+        // 탭메뉴 정보 추가 (클래스 프로퍼티와 메서드)
+        TabMenu.version = "1.0";
+        TabMenu.getInfo = function(){
+            var info = {
+                developer : "이승호",
+                email : "lshlsh@naver.com",
+                desc : "탭 메뉴를 구현한 클래스입니다."
+            }
+
+            return info;
+        }
+
+        console.log(TabMenu.version);               // 1.0
+        console.log(TabMenu.getInfo);               // getInfo의  함수 내용이 택스트로 출력
+        console.log(TabMenu.getInfo());             // object 타입으로 그 내부 내용이 보인다
+        console.log(TabMenu.getInfo().developer);   // info 변수의 내부 프로퍼티 developer의 내용이 보인다.
+
+        alert(Math.max(10,20));
+    </script>
+</head>
+<body>
+    <p>첫 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu1">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+    <p>두 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu2">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>객체지향 프로그래밍의 예시</title>
+    <style>
+        .tab-menu {
+            list-style: none;
+            height: 80px;
+        }
+
+        .tab-menu li {
+            width: 100px;
+            height: 40px;
+            background-position-y: 0;   
+            text-indent: -1000px;   /* + : 들여쓰기 - : 내어쓰기 */
+            overflow: hidden;
+            display: inline;
+            float: left;
+        }
+
+        .tab-menu li:hover {
+            background-position-y: -40px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+        }
+
+        .tab-menu li.select {
+            background-position-y: -80px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+            height: 80px
+        }
+
+        .tab-menu li.menuitem1 {
+            background-image: url(../images/newbtn.bar.1.png);
+        }
+        
+        .tab-menu li.menuitem2 {
+            background-image: url(../images/newbtn.bar.2.png);
+        }
+        
+        .tab-menu li.menuitem3 {
+            background-image: url(../images/newbtn.bar.3.png);
+        }
+        
+        .tab-menu li.menuitem4 {
+            background-image: url(../images/newbtn.bar.4.png);
+        }
+        
+        .tab-menu li.menuitem5 {
+            background-image: url(../images/newbtn.bar.5.png);
+        }
+        
+        .tab-menu li.menuitem6 {
+            background-image: url(../images/newbtn.bar.6.png);
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // [객체지향적 프로그래밍]
+
+        //  - 요약 : 절차지향적 프로그래밍의 근본적 문제를 해결하기 위해서
+        //            -> 문제를 여러개의 객체로 나눠 작업하고자 4가지 원칙(특성)을 따르는 프로그래밍 방법
+
+        //  - 주요특징
+        //     1. 클래스를 통해 서로 연관있는 변수와 함수들을 모아 소속을 만들어, 이전 방식의 문제를 해결함 
+        //          -> 클래스 단위를 기준으로 변수들이나 함수들의 세부적인 위치구분의 기반이 만들어짐 
+        //             (= 거주지 주소를 도(패키지) - 시(라이브러리) - 구(클래스) - 동(변수, 함수) 의 단위를 통해 거주지를 세밀하게 구별가능한 것과 같다) 
+        //             (= 병사의 소속을 사단(패키지), 연대(라이브러리), 대대(클래스) 의 단위를 통해 부대 소속을 세밀하게 정의하는 것과 같다) 
+
+        //     2. 클래스의 틀을 기반으로 하는 '객체(인스턴스)'를 생성하여, 데이터의 값과 함수처리는 상호 독립성이 보장되도록 할 수있다.
+        //          -> 객체 생성? 
+        //              : 이데아의 형상(클래스)을 기반으로 한 사물(객체)을 창조하는 것과 같음.. 
+        //                  -> 더 쉽게 말하면, 빅보스의 유전정보를 입력 -> 그 정보를 가진 클론인 스네이크 만들기와 비슷(그림자 분신술을 생각하자...)
+        //                      -> 그냥 답이 없으면, 붕어빵 틀(클래스)을 통해 개별적인 붕어빵들(객체)을 찍어내는 걸 생각하자
+
+        //     3. 상속기능을 통해, 동일한 계보를 가진 클래스들의 변수 및 메서드의 구분과 유지보수를 쉽게 가능하게 함.
+        //          -> 후손 클래스는 조상의 변수와 메서드를 다 동일하게 이어받으니, 자신만의 고유 변수와 메서드만 신경쓰면 된다.
+        //              -> 추상 메서드를 가진 추상클래스 조상을 통해 후손들 각각은 해당 메서드를 자신만의 방식으로 내용을 채울수도 있다(= 오버라이드)
+        //                 (추상 메서드는 '인터페이스', '추상 클래스'를 통해 가짐)
+
+
+        //  - 객체지향적 프로그래밍의 필수 요소 (= 이 4가지가 다 충족되지 않으면 객체지향 X)
+        //      1. 추상화(Abstraction)   : 해당 클래스나 혹은 그 클래스에서 상속되는 클래스 계열의 객체들이 공통적으로 가지고 있어야 하는 속성과 메서드를 개념적으로 선언
+        //                                (= 이게 중요한 이유는 이러한 공통 개념을 시작으로 인터페이스나, 추상클래스를 완성시, 추후 상속을 통해 이를 쉽게 관리하고 완성이 가능하기 때문) 
+        //                                  -> 클래스, 추상클래스, 인터페이스들이 추상화와 연관 (단, js에서는 추상클래스, 인터페이스가 정식으로는 지원되지 않음)
+        //      2. 캡슐화(Encapsulation) : 클래스의 변수와 함수의 접근을 '객체 외부(인스턴스를 통한 접근 포함)', '객체 내부', '자식 객체(클래스)' 중 어디까지 가능하게 할 건지 통제기능
+        //                                  -> 이를 접근지정자(타OOP언어 기준 private(본 클래스 자체만 접근가능), protected(상속된 클래스 자체까지 접근가능), public) 라고 함
+        //                                      -> 그 중 private, protected로 구분된 멤버들은 인스턴스를 통해서 직접 접근이 불가능!!
+        //                                          ex) Human 클래스의 private gender 라는 멤버변수가 있다면? -> human.gender = 'men' 이런 식으로 자신의 객체를 통해서도 접근이나 변조를 시도시 에러 발생        
+        //      3. 상속(Inheritance)     : 특정 클래스(부모클래스, 조상클래스)의 변수와 메서드를 하위(자식,자손)클래스가 물려받는 것
+        //                                  -> 후손 클래스는 조상의 변수와 메서드를 다 동일하게 이어받으니, 자신만의 고유 변수와 메서드만 신경쓰면 됨
+        //      4. 다형성(Polymorphism)  : 인스턴스 생성시, 부모 클래스로 생성된 객체를 자식 클래스의 생성자를 써도 채울수 있는 특성
+        //                                (= 타이어 교체시, 타이어의 규격이나 크기에서 전혀 문제가 없다면!
+        //                                    -> 험지주행용, 경량형 등의 세부 특성이 있다쳐도 차가 주행하는데는 전혀 문제없는 것과 이치가 같다)
+
+
+        //  - 객체지향 프로그래밍(1 ~ 4까지 갖춤) > 클래스 기반 프로그래밍(1, 2만 갖춤)
+        //      : 결론부터 말하면, 클래스 기반 프로그래밍은 상속을 통한 클래스 계보 관리가 빠져있기에, 자연스레 다형성도 충족하지 못함
+
+
+        //  - 객체지향적 프로그래밍 장점
+        //  1. 코드의 재사용성이 매우 높다 (인스턴스 생성, 상속 등을 통한 코드입력 효율 높음)
+        //  2. 외부에서 접근시, 인스턴스 변수를 가지고 얼마든지 접근 가능 (캡슐화 특성으로 이를 통한 통제도 반대로 가능함)
+        //  3. 프로젝트를 독립적인 객체 단위로 분리해서 작업할 수 있음
+        //       -> 여러 개발자와 협업해 규모가 큰 프로젝트를 진행 가능
+
+
+        //  - what is better than 절차지향적 프로그래밍?
+        //      1. (집단 구분의 최소기준 클래스를 통해) 
+        //          (1)'패키지 - 라이브러리 - 클래스' 구조의 세부 주소를 줄 수 있다.
+        //          (2) 세부 주소를 줄 수 있기에, 동일한 이름의 변수들을 구분이 가능하다.
+        //           -> (세밀한 소속 구분이 가능해지니) 
+        //                a. 중복변수로 인해 변수명을 정하기 힘든 문제점이 완화 
+        //                   (= 다수가 참여하는 프로젝트에서 변수 충돌문제에 대한 염려도 X) 
+        //                b. 클래스명을 통해 소속 변수와 함수들을 용도별로 맞게 위치가능 
+        //                   (= 사용자 입장에서 코딩시 구분도 쉽다)
+        //                C. 변수나 함수별로 접근시 클래스를 언급해야 하니, 원지 않은 호출을 막기 수월
+        //                    (= 데이터 보호장치로서 작동 가능)
+        //      2. (클래스 내용을 기반으로 상호독립적 객체 생성이 가능하기에)
+        //          (1) 코딩 시 원하는 형태가 지정되어 있기에 객체 생성이 쉽다.
+        //          (2) 각각의 기능에서 생성된 객체가 상호독립적이므로, 간섭현상으로 꼬일 걱정없이 각자의 객체만 걱정하면 됨
+        //              (= 다수가 참여하는 프로젝트에서 각자 맡은 부분을 더 명확하게 정의하게 만들어 줌)
+
+        
+        // [JS는 OOP인가?] : 결론부터 놓고보면 상속기능 완전 구현X한 유사 OOP언어.. 
+        //                  -> 상속을 기반으로 한 다른 객체지향 특성인, 추상화(있는 척), 캡슐화(표기만 있는 척), 다형성 또한 구현X
+
+
+        // (객체지향적 프로그램 예시) : 물론 js라 완벽한 객체지향적이진 않음 (이건 클래스 방식만 적용해서, 추상화와 캡슐화만 들어감) 
+        $(document).ready(function(){
+
+            // 탭메뉴 생성
+            var tabMenu1 = new TabMenu("#tabMenu1");
+            var tabMenu2 = new TabMenu("#tabMenu2");
+
+            // 이벤트 리스너 등록
+            $("#btnReset").click(function(){
+                tabMenu1.resetTabMenu();
+                tabMenu2.resetTabMenu();
+            });
+        });
+
+        // 탭메뉴 클래스 정의(설계)
+        function TabMenu(selector){
+
+            this.init(selector);
+            this.initEvent();
+
+        }
+
+        // 요소(프로퍼티) 초기화
+        TabMenu.prototype.init = function(selector){
+
+            // 인스턴스가 생성되면, 탭메뉴가 생성이 되고 li객체를 찾아와라
+            // this.tabMenu = $(selector);
+            // this.$menuItems = this.tabMenu.find("li");
+            this.$menuItems = $(selector).find("li");
+        }
+
+        // 이벤트 초기화
+        TabMenu.prototype.initEvent = function(){
+
+            var localThis = this;
+
+            this.$menuItems.on("click", function(){
+                // 선택된 요소의 인덱스를 얻은후 이를 파라미터 삼아 메서드를 호출
+                localThis.setSelectMenuItemAt($(this).index());
+            });
+
+        }
+
+        // n번째 탭메뉴 선택
+        TabMenu.prototype.setSelectMenuItemAt = function(index){
+
+            this.$menuItems.removeClass("select");
+            this.$menuItems.eq(index).addClass("select");
+
+        }
+
+        // 탭메뉴 선택 초기화
+        TabMenu.prototype.resetTabMenu = function(){
+
+            this.$menuItems.removeClass("select");
+
+        }
+
+    </script>
+</head>
+<body>
+    <button id="btnReset">초기화</button>
+    <p>첫 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu1">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+    <p>두 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu2">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+</body>
+</html>

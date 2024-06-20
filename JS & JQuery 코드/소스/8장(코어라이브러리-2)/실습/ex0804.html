@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String클래스-4(slice(), substr())</title>
+    <script>
+        var str1 = "KOREA";
+
+        // 문자열.slice(시작, 끝) : 시작 인덱스 ~ 끝 인덱스(미포함)-1 까지의 문자열을 잘라내줌 
+        var str2 = str1.slice(2,4);
+
+        // 문자열.substr(시작, 끝) : 시작 인덱스 ~ 끝 인덱스(포함) 까지의 문자열을 잘라내줌 
+        var str3 = str1.substr(2,4);
+
+
+        // slice() VS substr() 차이? : 끝 인덱스를 어떻게 간주하냐의 차이 -> substr()쪽이 더 직관적
+        //                             (단, 문자열 길이 이상의 인덱스는 둘다 문자열 최대의 인덱스로 인식해줌)
+        console.log(str1);  // KOREA
+        console.log(str2);  // RE
+        console.log(str3);  // REA
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

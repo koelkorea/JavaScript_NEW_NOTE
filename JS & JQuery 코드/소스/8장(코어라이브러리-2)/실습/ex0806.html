@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String클래스-6(원하는 문자를 제거)</title>
+    <script>
+        var str = "반갑다! 안두인이여.... 난, 굴단이다~!"
+
+        // str.slice(시작 인덱스, 끝 인덱스) : 시작 ~ 끝-1 까지의 문자만 떼서 해당 문자열을 편집해줌 
+        var resultStr = str.slice(0, 5) + str.slice(8, str.length);
+        document.write(str + "</br>");
+        document.write(resultStr + "</br>");
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

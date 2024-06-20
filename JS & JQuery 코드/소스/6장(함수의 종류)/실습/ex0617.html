@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콜백함수-5(콜백함수 풀이)</title>
+    <style>
+        .tab-menu{
+            /* 블릿 없애기 */
+            list-style: none;
+            height: 80px;
+        }
+
+        .tab-menu li{
+            width: 100px;
+            height: 40px;
+            background-position-y: 0;
+            overflow: hidden;   /* overflow: 부모 속성의 영역을 자식 속성이 넘어설 경우 어떻게 처리할지 정함. visible | hidden | scroll | auto; */
+            display: block;
+            float: left;     /* float: 특정 그림이나 공간이 차지할 공간의 정렬을 어디로 놓을지 정하는거.. none이면 오피스 기준 그림 옆에 아무것도 못옴 */
+        }
+
+        .tab-menu li:hover{ /* li:hover: li 속성이 마우스가 올라올 때 의미*/
+            background-position-y: -40px; 
+            /*background-position-y: 배경으로 지정한 그림의 y좌표를 조정
+                                     ex) +40 로 하면 원래 0이었던 부분에 보일게 40부분의 내용이 전시 됨*/
+        }
+
+        /* li중에 선택된 녀석 있을 떄 */
+        .tab-menu li.select{ /* li:select: li 속성이 마우스로 선택지정이 될 때 의미*/
+            background-position-y: -80px;
+            height: 80px;
+        }
+
+        .tab-menu li.menuitem1{
+            background-image: url(../images/newbtn.bar.1.png);
+        }
+        .tab-menu li.menuitem2{
+            background-image: url(../images/newbtn.bar.2.png);
+        }
+        .tab-menu li.menuitem3{
+            background-image: url(../images/newbtn.bar.3.png);
+        }
+        .tab-menu li.menuitem4{
+            background-image: url(../images/newbtn.bar.4.png);
+        }
+        .tab-menu li.menuitem5{
+            background-image: url(../images/newbtn.bar.5.png);
+        }
+        .tab-menu li.menuitem6{
+            background-image: url(../images/newbtn.bar.6.png);
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 탭메뉴 코드 실행될 수 있도록 함수 호출
+            tabMenu("#tabmenu1", onSelectItem);
+        });
+
+        function tabMenu(selector, callback){
+            var $tabMenu = null;
+            var $menuItems = null;
+            // 선택한 탭메뉴를 저장할 변수
+            var $selectedMenuItem = null;
+            
+            // 요소를 초기화
+            function init(selector){
+                $tabMenu = $(selector);
+                // 6개의 웹요소인 li태그를 배열로 받음
+                $menuItems = $tabMenu.find("li");
+            }
+
+            // 이벤트 초기화 및 등록
+            function initEvent(){
+                $menuItems.click(function(){
+                    // 현재 선택된 li라는 웹요소를 매개변수로 지정함
+                    setSelectItem($(this));
+                });
+            }
+
+            // 선택된 메뉴 아이템 만들어 주는 함수
+            function setSelectItem($item){
+
+                // 선택된 메뉴가 있다면..
+                if($selectedMenuItem != null){
+                    // 그 메뉴의 select를 제거하라
+                    $selectedMenuItem.removeClass("select");
+                }
+                // 매개변수로 넘어온 선택된 아이템을 대입을 함
+                $selectedMenuItem = $item;
+                // 그 메뉴에 li에 select속성을 추가해라
+                $selectedMenuItem.addClass("select");
+
+                // 선택 콜백함수를 실행하도록 조치
+                //  -> 매개변수 callback이 null이 아니면, 함수(setSelectItem()함수의 매개변수로 들어온 인덱스를 매개변수)를 실행하라
+                if(callback != null){
+                    callback($selectedMenuItem.index());
+                }
+
+            }
+
+            init(selector);
+            initEvent();
+
+        }
+        // 로직 처리(선택 처리)
+        function onSelectItem(index){
+            $("#info").html(index);
+        }
+    </script>
+</head>
+<body>
+    <ul class="tab-menu" id="tabmenu1">
+        <li class="menuitem1"></li>
+        <li class="menuitem2"></li>
+        <li class="menuitem3"></li>
+        <li class="menuitem4"></li>
+        <li class="menuitem5"></li>
+        <li class="menuitem6"></li>
+    </ul>
+    <div>
+        선택한 인덱스 값 : <span id="info"></span>
+    </div>
+</body>
+</html>

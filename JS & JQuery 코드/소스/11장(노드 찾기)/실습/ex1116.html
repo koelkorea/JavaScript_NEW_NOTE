@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 다루기-부모 노드 찾는 방법(parent(), parents(), parent("선택자"))</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var $menu = $("ul.menu");
+
+            // parent() vs parents() <- parents("선택자")를 통해 특정 조상을 찾는거도 가능
+            //  - 공통점 : 상위 노드에 해당되는 녀석을 찾아준다.
+            //  - 차이점 : parent()은 직계 부모노드만! parents()는 모든 조상노드를 찾아줌(복수 출력)
+
+            // 1. 위치값.parents() : 해당 jQuery 객체 클래스 위치의 조상노드 전체를 찾아 복수 지정(jQuery 객체는 복수의 개체의 경우 배열처럼 출력이 됨)
+            $menu.parents().css("border", "3px solid green");
+
+            // 2. 위치값.parents("선택자") : 선택자를 통해, 특정 노드의 조상노드(모든 상위노드) 전체를 대상으로 해당 선택자가 지정한 노드를 찾음
+            $menu.parents(".page").css("border", "3px solid blue");
+            
+            // 3. 위치값.parent() :  jQuery 객체 클래스 내부의 부모노드 찾는 코드
+            $menu.parent().css("border", "3px solid purple");
+            $menu.parent().parent().css("border", "3px solid red"); // 부모의 부모를 구하는거도 됨
+            
+        });
+    </script>
+</head>
+<body>
+    <div id="samplePage" class="page">
+        샘플페이지(div, id = samplePage, class = page)
+        <div id="header" class="test1">
+            헤더 영역(div, id = header)
+        </div>
+        <div id="content" class="sample-content">
+            노드 찾기(div, id = content, class = sample-content)
+            <ul class="menu">
+                일반 노드 찾기(ul, class = menu)
+                <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                <li class="select">tag로 찾기(li, class = select)</li>
+                <li data-value="2">class로 찾기(li, data-value = 2)</li>
+                <li class="test1">속성으로 찾기(li, class = test1)</li>
+            </ul>
+            <div class="content-data">
+                자식 노드 찾기(div, class = content-data)
+                <p class="test1">1. 모든 자식 노드 찾기(p, class = test1)</p>
+                <p>2. 특정 자식 노드 찾기(p)</p>
+                <p class="test2">3. 마지막 자식 노드 찾기(p, class = test2)</p>
+            </div>
+        </div>
+        <div id="footer">
+            푸터 영역(div, id = footer)
+        </div>
+    </div>
+</body>
+</html>

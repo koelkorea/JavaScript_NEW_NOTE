@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기본행동 취소(preventDefault())</title>
+    <style>
+        body{
+            font-size : 30px;
+        }
+
+        a{
+            font-size : 30px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            var $test = $("#test");
+
+            // 기본행동 : 어떠한 특정 태그가 가지고 있는 기본적인 기능 (이벤트와 관계없이 해당 태그 그 자체가 태생부터 가지고 있은 기능) 
+            // (ex. a태그의 경우 이벤트 관계없이 링크 페이지로 이동하는 자기만의 기본기능이 있음)
+            $("#test").on("click", function(e){
+
+                // alert("반갑습니다");
+
+                // 이벤트변수e.cancelable : 이벤트변수 e가 위치한 태그에 기본행동이 존재하는지 체크하는 boolean(값 (= preventDefault() 쓸 수 있는지 여부)
+                //  -> cancelable는 함수X -> 이벤트변수 e의 프로퍼티
+                console.log("cancelable값 : " + e.cancelable);
+
+                // 이벤트변수e.preventDefault() : 이벤트변수 e가 위치한 태그에  기본행동이 작동하지 않도록 취소
+                e.preventDefault();
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <a href="http://www.naver.com" id="test">네이버로 이동</a>
+</body>
+</html>

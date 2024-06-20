@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 생성-생성된 노드 확인 및 자바스크립트 코드로 추가하기(createElement("태그명"), createTextNode("내용"), appendChild("내용" or 변수)) </title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "맑은 고딕";
+        }
+
+        ul, li{
+            border: 3px solid gray;
+            margin: 10px;
+        }
+
+        ul{
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: aquamarine;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var cnt = 6;
+            $("#btnAdd").click(function(){
+
+                cnt++;
+
+                // document.createElement("태그명") : 해당 태그(element노드)를 생성(그냥 만들어만 둔 상태고 배치X)
+                var li =  document.createElement("li");     // 신규 li노드를 만들고, 변수 li에 저장
+
+                // document.createTextNode("내용") : 해당 내용을 가진 Text노드를 생성(그냥 만들어만 둔 상태고 배치X)
+                var liText = document.createTextNode("메뉴" + cnt)  // 신규 text노드를 만들고, 변수 liText에 저장
+
+                // 그러나 jQuery를 쓰면, createElement()와 createTextNode()를 동시에 생성가능
+                //  -> var $변수명 = $("태그코드");
+                //      ex) var $li = $("<li>메뉴" + cnt + "</li>");
+
+                var menu = document.getElementById("menu");
+
+                // 위치값.appendChild("내용" or 변수) : 해당 위치값에 "내용" 및 변수내용을 막내에 해당되는 노드를 받아준다
+                li.appendChild(liText);     // Text노드의 내용을 li라는 변수값에 저장한 li노드에 추가해 택스트 기입
+                menu.appendChild(li);       // menu선택자에 택스트를 기입한 li노드를 추가
+
+                // li객체를 출력
+                console.log(li);
+
+                // HTMLLiElement를 출력하고 있다.
+                //document.write($li.get(0));
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="btnAdd">추가하기</button>
+    <ul id="menu">
+        <li>메뉴1</li>
+        <li>메뉴2</li>
+        <li>메뉴3</li>
+        <li>메뉴4</li>
+        <li class="select">메뉴5</li>
+        <li>메뉴6</li>
+    </ul>
+</body>
+</html>

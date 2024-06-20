@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>절차지향 프로그래밍의 예시</title>
+    <style>
+        .tab-menu {
+            list-style: none;
+            height: 80px;
+        }
+
+        .tab-menu li {
+            width: 100px;
+            height: 40px;
+            background-position-y: 0;   
+            text-indent: -1000px;   /* + : 들여쓰기 - : 내어쓰기 */
+            overflow: hidden;
+            display: inline;
+            float: left;
+        }
+
+        .tab-menu li:hover {
+            background-position-y: -40px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+        }
+
+        .tab-menu li.select {
+            background-position-y: -80px;   /* (0,0)을 기준으로 배경이미지의 좌표위치를 어떻게 조정할지에 대한거*/
+            height: 80px
+        }
+
+        .tab-menu li.menuitem1 {
+            background-image: url(../images/newbtn.bar.1.png);
+        }
+        
+        .tab-menu li.menuitem2 {
+            background-image: url(../images/newbtn.bar.2.png);
+        }
+        
+        .tab-menu li.menuitem3 {
+            background-image: url(../images/newbtn.bar.3.png);
+        }
+        
+        .tab-menu li.menuitem4 {
+            background-image: url(../images/newbtn.bar.4.png);
+        }
+        
+        .tab-menu li.menuitem5 {
+            background-image: url(../images/newbtn.bar.5.png);
+        }
+        
+        .tab-menu li.menuitem6 {
+            background-image: url(../images/newbtn.bar.6.png);
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // [절차지향적 프로그래밍]
+        //  - 요약 : 전역변수들과 함수들의 연속으로 구성된 프로그래밍
+        //  - 특징 및 개념 : 결론부터 말하자면, 구조부터가 복잡하고 다양하고 거대한 기능을 포함하는 제품이 아니라, 딱 목적이 간단명료하게 정해진 작은 사이즈의 제품을 만드는걸 상정하는 체계와 구조이다.
+        //      1. 변수들은 모두 전역 변수!
+        //          -> 쉽게 설명하자면, 변수의 소속이나 집단이 오로지 하나로 통일되어 있다.
+        //             (= 군대로 따지면, 병사의 소속이 사단(패키지), 연대(라이브러리), 대대(클래스) 같은거 없이.. 오직 육군(전역변수) 소속.. 이래버리는거와 같다)
+        //              -> 이를 통한 단점 : 
+        //                  a. 동명이인 존재시 구분할 방법 없음 (= 중복문제로 변수 이름 짓는데 제한이 크다)
+        //                  b. 상관 입장에서 누가누군지 구별이 힘들고, 역할을 알기 힘들다 (= 개발자 입장에서 설계나 코딩할때 변수를 써서 데이터가 손상될 수 있다) 
+        //      2. 함수들 또한 이들 전역변수들을 대상으로 한다.
+        //          -> 이를 통한 단점 
+        //              a. 그 덕분에 용도별로 그 함수들을 구분할 방법이 전혀없음 
+        //              b. 모든 변수가 전역변수여서 필요한 변수 구분이 어렵다는 점이 더해져 환장을 콜라보를 보여줌
+        //      3. line by line 으로 함수 실행 
+
+        // (결론) 
+        //  절차지향적 프로그래밍? 
+        //   -> 변수나 함수나 용도 구분도 힘들고, 좀만 복잡해도 써먹기 힘들다...
+        //      -> 여기에 변수들의 중복문제도 해결하기 힘들어서.. 
+        //          -> 혼자라도 해결하기 힘든데, 다수가 참여해서 각자 파트맡아 개발하는 프로젝트는 이 문제가 아주 크다.
+        //              -> 좀만 복잡하고 큰 프로젝트를 수행하기 애로사항이..
+        //                  ->  이 문제를 해결하고자? -> 객체지향적 프로그래밍 개념으로 발전하게 됨! 
+
+        // (참고) 
+        //  '절차지향적 프로그래밍', '구조적 프로그래밍', '함수기반 프로그래밍'의 공통점
+        //    : 모든 변수는 전역변수 + 이를 함수의 매개변수으로 직접 넘기는 방식을 채택  
+
+        // (절차지향적 프로그램 예시)
+
+        // 전역변수(데이터)의 초기화
+        var $tap1MenuItems = null;
+        var $tap2MenuItems = null;
+
+        // line by line 순차적인 함수 실행
+        $(document).ready(function(){
+
+            $tap1MenuItems = $("#tabMenu1 li");
+            $tap2MenuItems = $("#tabMenu2 li");
+
+            // 함수의 매개변수로 전역변수 데이터를 넘겨준다.
+            tabMenu($tap1MenuItems);
+            tabMenu($tap2MenuItems);
+
+            // 탭메뉴 초기화 이벤트 리스너 등록
+            $("#btnReset").click(function(){
+                resetTabmenu($tap1MenuItems);
+                resetTabmenu($tap2MenuItems);
+            });
+
+        });
+        
+        // 탭메뉴 생성
+        function tabMenu($menuItems){
+            // 이벤트리스너 등록
+            $menuItems.click(function(){
+                selectMenuItemAt($menuItems, $(this).index());
+            });
+
+        }
+
+        // n번째 탭메뉴 선택
+        function selectMenuItemAt($menuItems, index){
+
+            $menuItems.removeClass("select");
+            $menuItems.eq(index).addClass("select");
+
+        }
+
+        // 탭메뉴 선택 초기화(선택버튼이 없도록)
+        function resetTabmenu($menuItems){
+            $menuItems.removeClass("select");
+        }
+
+    </script>
+</head>
+<body>
+    <button id="btnReset">초기화</button>
+    <p>첫 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu1">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+    <p>두 번째 탭 메뉴</p>
+    <ul class="tab-menu" id="tabMenu2">
+        <li class="menuitem1">google</li>
+        <li class="menuitem2">facebook</li>
+        <li class="menuitem3">pinterest</li>
+        <li class="menuitem4">twitter</li>
+        <li class="menuitem5">airbnb</li>
+        <li class="menuitem6">path</li>
+    </ul>
+</body>
+</html>

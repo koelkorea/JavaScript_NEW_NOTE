@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자바스크립트 vs jQuery-5(애니메이션 처리하기)</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+        #panel{
+            width: 600px;
+            height: 300px;
+            border: 2px solid black;
+            position: relative;
+        }
+
+        #gigu{
+            position: absolute;
+            left: 50px;
+            top: 140px;
+            width: 50px
+        }
+
+        #bar{
+            position: absolute;
+            left: 50px;
+            top: 190px;
+            width: 500px;
+            height: 15px;
+            background-color: #f30;
+        }
+
+        #nav{
+            text-align: center;
+            width: 600px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // 1. 자바스크립트로 버튼을 클릭하면 지구가 움직이는 효과 만들기 
+        // (JS는 CSS를 통해 애니메이션 시늉을 냄)
+        window.onload = function(){
+            var gigu = document.getElementById("gigu");
+            var btnStart = document.getElementById("btnStart");
+
+            var left = 50;
+            var timerID = 0;
+
+            // 버튼에 이벤트 등록
+            btnStart.addEventListener("click", function(){
+                // 지구이미지를 반복적으로 움직이기
+                timerID = setInterval(function(){
+                    left++;
+                    gigu.style.left = left + "px";
+
+                    // 480px에 도달하면 타이머 종료시키기
+                    if(left >= 480){
+                        clearInterval(timerID);
+                        timerID = 0;
+                    }
+                }, 10);
+            });
+        }
+
+        // 2. jQuery로 버튼을 클릭하면 지구가 움직이는 효과 만들기(animate함수 사용)
+        $(document).ready(function(){
+
+            var $gigu = $("#gigu");
+
+            $("#btnStart").on("click", function(){
+                // 위치값.animate {위치프로퍼티(left, right...): 숫자, 지속시간} : 이를 통해 움직이는 시간과 방향을 설정해서 직접적인 함수로 움직이기 가능
+                // 지구이미지 움직이기
+                $gigu.animate({
+                    left : 480
+                }, 5000);
+            });
+        });
+
+        // 결론 : jQuery는 동적인 애니메이션 기능을 훨씬 쉽게 지원한다(js는 좌표값을 일일히 함수로 만들어 지원해야 함)
+    </script>
+</head>
+<body>
+    <div>
+        <div id="panel">
+            <div id="bar"></div>
+            <img src="../images/gigu.png" id="gigu">
+        </div>
+        <div id="nav">
+            <button id="btnStart">버튼</button>
+        </div>
+    </div>
+</body>
+</html>

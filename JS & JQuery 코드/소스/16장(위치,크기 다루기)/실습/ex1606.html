@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전역위치 설정하기(offset() 함수 활용)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 20px;
+        }
+
+        #parent1 {
+            position: absolute; /* 부모 노드가 되기 위한 조건 */
+            border: 1px solid black;
+            width: 500px;
+            height: 400px;
+            left: 100px;
+            top: 100px;
+        }
+
+        #fish {
+            position: absolute;
+            left: 50px;
+            top: 100px;
+        }
+
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // [이벤트 관련 종류별, 개별좌표 관련 전역변수 프로퍼티로들]
+        //  -> 이벤트객체는 만들어질때 이 녀석들을 프로퍼티로 두고 있음!!
+
+        // 1) 웹브라우저 내부영역(작업표시줄, 툴바, 스크롤바 전부 X) 기준으로 구한 전역변수 좌표 프로퍼티
+        //  - 이벤트변수.clientX : 이벤트가 발생시, 이벤트 객체 내에 기록된 내부영역(작업표시줄, 툴바, 스크롤바 전부 X)의 좌표 X축의 프로퍼티 값
+        //  - 이벤트변수.clientY : 이벤트가 발생시, 이벤트 객체 내에 기록된 내부영역(작업표시줄, 툴바, 스크롤바 전부 X)의 좌표 Y축의 프로퍼티 값
+
+        // 2) 해당 document 페이지를 기준으로 구한 전역변수 좌표 프로퍼티
+        //  - 이벤트변수.pageX : 이벤트가 발생시, 이벤트 객체 내에 기록된 document를 기준으로 한 좌표 X축의 프로퍼티 값를 숫자로 리턴
+        //  - 이벤트변수.pageY : 이벤트가 발생시, 이벤트 객체 내에 기록된 document를 기준으로 한 좌표 Y축의 프로퍼티 값를 숫자로 리턴
+
+        // [지역변수와 전역변수]
+        // - 지역변수 : 부모노드(position속성을 가진 선조중 가장 가까운 노드)가 위치한 좌표를 (0,0)으로 둔 상태로 구하는 노드의 좌표 위치값
+        //     vs
+        // - 전역변수 : 페이지 전체의 객관적인 (0,0)을 기준으로 구하는 노드의 좌표 위치값
+
+        // $위치값.position() : 해당 $객체의 지역변수를 구하고 해당 값들을 프로퍼티로 세팅해주는 함수
+        // $위치값.offset()   : 해당 $객체의 전역변수를 구하고 해당 값들을 프로퍼티로 세팅해주는 함수
+
+        // (주의) : 이들 함수를 통해 구한 리턴값들은 전부 숫자이다.
+        
+
+        $(document).ready(function(){
+            
+            var $fish = $("#fish");
+
+            // id 속성값이 parent1인 노드에 클릭이벤트 등록
+            $("#parent1").click(function(e){
+                
+                // 이벤트변수.pageX : 전역변수 값 X좌표를 숫자로 리턴
+                // 이벤트변수.pageY : 전역변수 값 Y좌표를 숫자로 리턴
+                
+                // 클릭한 지점의 전역좌표를 구하기 위한 변수
+                var left = e.pageX;
+                var top = e.pageY;
+
+                // $위치값.offset({프로퍼티1: 값1,...., 프로퍼티n: 값n}) : 해당 jQuery객체의 전역변수 내용을 구성하는 각 프로퍼티를 설정한다
+                $fish.offset({
+                    left: left,
+                    top : top
+                })
+                
+            });
+            
+        });
+    </script>
+</head>
+<body>
+    <div id="parent1">
+        <img src="../images/fish.png" id="fish">
+    </div>
+</body>
+</html>

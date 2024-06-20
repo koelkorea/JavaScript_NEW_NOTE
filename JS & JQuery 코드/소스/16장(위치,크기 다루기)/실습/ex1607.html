@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크기 다루기-margin, border, padding 관련(width(), height(), innerWidth(), innerHeight(), outerWidth, outerHeight())</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 15px;
+        }
+
+        #info {
+            border: 1px solid black;
+            width: 500px;
+            height: 300px;
+            margin: 50px 0 0 100px;
+        }
+
+        #parent1 {
+            position: absolute; /* 부모 노드가 되기 위한 조건 */
+            border: 1px solid black;
+            width: 500px;
+            height: 400px;
+            left: 100px;
+            top: 380px;
+        }
+
+        #fish {
+            position: absolute;
+            padding: 30px;
+            margin: 50px;
+            left: 50px;
+            top: 100px;
+            border: 20px solid red;
+        }
+
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // <요소 크기를 구성하는 style 속성들>
+        //  : 대강 요소 본체를 기준, 테두리인 border가 있고 그 안 밖에 공간이 따로 있음
+        //      -> border밖의 여백으로 '타요소의 경계 ~ 현요소의 border'까지의 공간을 margin 
+        //      -> border안의 여백으로 '현요소의 border ~ 현요소의 본체'까지의 공간을 padding으로 생각하자 
+
+        // 1. margin (내부공백)  : border밖의 여백을 의미하는 style 속성
+        //                        ('타요소의 경계 ~ 현요소의 border'까지의 공간)
+        // 2. border (테두리)    : 테두리를 의미하는 style 속성
+        //                        (margin과 padding을 구분하는 기준)
+        // 3. padding (외부공백) : border안의 여백을 의미하는 style 속성
+        //                        ('현요소의 border ~ 현요소의 본체'까지의 공간)
+
+        // <요소 너비, 높이 구하는 종류별 함수들>
+        // 1. $위치값.width(), height()
+        //      : 딱! 요소 영역의 너비, 높이만 구하기 (= margin X, border X, padding X)
+        // 2. $위치값.innerWidth(), innerHeight()
+        //      : padding(내부공백)영역까지만 포함해서 너비, 높이만 구하기 (= margin X, border X, padding ㅇ)
+        // 3. $위치값.outerWidth(), outerHeight() 
+        //      -> 3.1 파라미터 = false or 공백
+        //          : border(테두리)영역까지만 포함해서 너비, 높이만 구하기 (= margin X, border ㅇ, padding ㅇ)
+        //      -> 3.2 파라미터 = true 
+        //          : margin(외부공백)영역까지 전부 포함해서 너비, 높이만 구하기] (= margin ㅇ, border ㅇ, padding ㅇ)
+
+        window.onload = function(){
+
+            var $info = $("#info");
+            var $fish = $("#fish");
+
+            // 4가지 종류에 대한 화면 및 요소 크기 구하는 코드
+
+            // 1. [width(), height() : 딱 요소영역의 너비, 높이만 구하기]
+            // $위치값.width() : margin X, border X, padding X인 element의 너비를 리턴하는 함수
+            // $위치값.height() : margin X, border X, padding X인 element의 높이를 리턴하는 함수
+            var str = "[기본크기] </br> width : " + $fish.width()
+                    + ", height : " + $fish.height() + "</br>";
+            
+            // 2. [innerWidth(), innerHeight() : padding(내부공백)영역까지만 포함해서 너비, 높이만 구하기]
+            // $위치값.innerWidth() : margin X, border X, padding ㅇ인 요소의 너비를 리턴하는 함수
+            // $위치값.innerHeight() : margin X, border X, padding ㅇ인 요소의 높이를 리턴하는 함수
+            str += "[기본크기 + padding] </br> width :  " + $fish.innerWidth()
+                +  ", height : " + $fish.innerHeight() + "</br>";
+
+            // 3.1 [outerWidth(), outerHeight() : border(테두리)영역까지만 포함해서 너비, 높이만 구하기]
+            // $위치값.outerWidth()  : margin X, border ㅇ, padding ㅇ인 요소의 너비를 리턴하는 함수
+            // $위치값.outerHeight() : margin X, border ㅇ, padding ㅇ인 요소의 높이를 리턴하는 함수
+            //  -> 파라미터로 true가 들어가면, margin까지 포함한 값을 리턴함 
+            //     (파라미터의 의미 = margin까지 계산할거냐?)
+            str += "[기본크기 + padding + border] </br> width :  " + $fish.outerWidth()
+                +  ", height : " + $fish.outerHeight() + "</br>";  
+
+            // 3.2 [outerWidth(true), outerHeight(true) : margin(외부공백)영역까지 전부 포함해서 너비, 높이만 구하기]
+            // $위치값.outerHeight(true) : margin ㅇ, border ㅇ, padding ㅇ인 요소의 너비를 리턴하는 함수
+            // $위치값.outerHeight(true) : margin ㅇ, border ㅇ, padding ㅇ인 요소의 높이를 리턴하는 함수          
+            str += "[기본크기 + padding + border + margin] </br> width :  " + $fish.outerWidth(true)
+                +  ", height : " + $fish.outerHeight(true) + "</br></br>";
+
+            // 지역좌표 구하기
+            var localPos = $fish.position();
+
+            str += "[지역 좌표] <br> left : " + localPos.left 
+                +  ", top : " + localPos.top + "</br>";
+
+            // 전역좌표 구하기
+            var globalPos = $fish.offset();
+
+            str += "[전역 좌표] <br> left : " + globalPos.left 
+                +  ", top : " + globalPos.top + "</br>";
+
+            $info.html($info.html() + str);
+        
+        };
+    </script>
+</head>
+<body>
+    <div id="info">
+        (padding = 30px, border = 20px, margin = 50px)
+        </br></br>
+    </div>
+    <div id="parent1">
+        <img src="../images/fish.png" id="fish">
+    </div>
+</body>
+</html>

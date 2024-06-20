@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메서드 오버라이드-2(오버라이드에서의 부모메서드 호출(call함수)와 자식클래스의 메서드 기능 확장)</title>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        
+        // [메서드 오버라이드 코드(= modify, change)
+        //  - 개념
+        //      (선언부) 부모클래스의 선언부 = 자식클래스의 선언부
+        //      (구현부) 양자가 다르게!
+        //
+        //  - (오버라이드 코드 안에서) 부모클래스.prototype.멤버메서드명.call(this, 파라미터)
+        //       : 자식클래스의 오버라이드 된 함수의 일부로서 부모 클래스의 멤버메서드를 호명한 파라미터를 넣고 실행함
+        //           -> 그냥 자식 메서드에서 부모메서드를 호출 및 실행하는거
+        //               -> 이를 호출한 다음 줄부터 기능을 또 구현하면 해당 메서드의 오버라이드를 통한 확장의 개념이 완성됨
+        //                  -> ex) 자식클래스.prototype.멤버매서드명 = function(){ 부모클래스~call(this, 파라미터)  이후 쓴 코드 = 메서드 확장 }
+        
+        // 자식클래스명.prototype = new 부모클래스명() : js에서의 상속문법(매우 중요!)
+        //  -> 상속문법의 코딩위치 : 자식클래스의 멤버 메서드의 위, 부모클래스 멤버메서드가 끝난 뒤 바로 다음줄 
+        
+        
+        // (23장 예습) 
+        // 자식클래스명.prototype.constructor : 클래스의 생성자를 설정하는 메서드이자 프로퍼티
+        //  -> 자식클래스명.prototype.constructor = 자식클래스명
+        //     (= 그냥 클래스 정의할떄 쓴 프로퍼티 정보 그냥 가져다 초기화에 두겠다는 말이다)
+        //  -> (메서드로서의 구조) 
+        //      var 자식클래스명{ constructor(){this.프로퍼티 = 프로퍼티....식의 클래스 프로퍼티 나열} }
+
+        // [constructor속성]
+        //  : 본래는 메서드로 prototype속성의 프로퍼티이기도함, 해당 클래스의 초기화 정보 설정하는 내용
+        //    또한 해당 인스턴스가 어떤 클래스의 인스턴스인지의 정보를 알 수 있다
+        //    (= java의 '인스턴스명 instanceOf 클래스명' 메서드 -> 해당 인스턴스가 클래스에 속하는지 여부를 boolean 판별)
+        //
+        //  1. 생성과 호출시점
+        //     : 일반적으로 클래스를 만든다면..
+        //       -> 1단계) 자동으로 prototype의 constructor라는 프로퍼티가 묵시적으로 만들어짐
+        //       -> 2단계) new 연산자로 인스턴스화 되는 시점에 호출됨
+        //  2. 기본값 : 
+        //      a. 상속 관계 X -> 해당 클래스의 생성자 정보 
+        //      b. 상속 관계 O -> 자식클래스의 constructor 멤버변수에 부모클래스의 생성자가 담김)
+
+
+
+        // 부모클래스 정의
+        function Calculator() {
+            console.log("Calculator클래스의 생성자 호출");
+        }
+
+        // 메서드 정의
+        Calculator.prototype.areaCircle = function(radius){
+            console.log("Calculator의 areaCircle() 호출됨");
+            console.log("Calculator의 areaCircle의 값 : " + (3.14159 * (radius * radius)));
+        }
+
+        // 자식클래스 정의
+        function Computer(){
+            console.log("Computer클래스의 생성자 호출");
+        }
+
+        // Computer-Calculator 부모-자식 상속 코드 작성
+        Computer.prototype = new Calculator();
+
+        // 생성자 설정 (생성자 속성에 기존 클래스의 프로퍼티 내용 그냥 가져다 덮어쓴다)
+        Computer.prototype.constructor = Computer;
+
+        // areaCircle() 메서드 오버라이드 코드 (기능 확장하는 코드 포함)
+        Computer.prototype.areaCircle = function(radius){
+
+            // (오버라이드 코드 안에서 ) 부모클래스.prototype.멤버메서드명.call(this, 파라미터)
+            // : 자식클래스의 오버라이드 된 함수의 일부로서 부모 클래스의 멤버메서드를 호명한 파라미터를 넣고 실행함
+
+            // 부모클래스의 areaCircle()을 매개변수를 100 넣고 그 값을 호출
+            Calculator.prototype.areaCircle.call(this, 100);
+
+            // 자식클래스에서의 확장코드
+            console.log("Computer의 areaCircle() 호출됨");
+            console.log("Computer의 areaCircle의 값 : " + (Math.PI * (radius * radius)) + "입니다");
+        }
+
+        // (로그1) 자식클래스의 인스턴스 생성
+        var computer = new Computer();
+
+        // (로그2) 오버라이드 된 computer의 areaCircle 메서드 호출
+        computer.areaCircle(10);
+
+        // (로그1)Calculator클래스의 생성자 호출
+        // (로그1)Computer클래스의 생성자 호출
+        // (로그2)Calculator의 areaCircle() 호출됨
+        // (로그1)Calculator의 areaCircle의 값 : 31415.899999999998
+        // (로그2)Computer의 areaCircle() 호출됨
+        // (로그2)Computer의 areaCircle의 값 : 314.1592653589793입니다
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$()의 실체</title>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // $()의 리턴값 : DOM객체 중 하나인 div객체(인스턴스) HTMLDivElement 요소가 리턴됨
+            //                  ->  div객체(인스턴스) 리턴을 통해, css()를 사용가능
+            $("div").css("border", "3px solid #0f0");
+        });
+    </script>
+</head>
+<body>
+    <div>메뉴1</div>
+    <div>메뉴2</div>
+    <div>메뉴3</div>
+    <div>메뉴4</div>
+    <p>문장1</p>
+    <p>문장2</p>
+    <p>문장3</p>
+    <p>문장4</p>
+</body>
+</html>

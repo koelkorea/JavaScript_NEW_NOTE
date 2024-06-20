@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리터럴 클래스를 매개변수의 값으로 사용하기-1</title>
+    <style>
+        
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        //  [오브젝트 리터털 방식]
+        // : 클래스를 프로퍼티를 가진 객체의 값을 넣듯 {}안에 '요소: 요소값', '요소:멤버함수(메서드)'를 채워넣어 객체를 생성하는 방법
+
+        // (특징)
+        //  오브젝트 리터럴 방식은 오로지 하나의 인스턴스(객체)만 가짐
+        //  (= 정확히는 {} 안에 프로퍼티(멤버변수), 메서드(객체 안 멤버함수)가 존재하고, 이들을 정의하고 값을 주는 동시에 그 인스턴스는 생성됨)
+        //       -> (장점) 1. new 연산자 사용하지 않아도 인스턴스가 만들어짐
+        //                 2. 가독성 + 프로그램 효율성 증가
+        //          (단점) 리터럴 방식으로는 여러개의 객체를 찍어내지 못하고, 1개만 만들수 있다.
+
+        // (용도)
+        //  1. 여러개의 데이터를 일시적으로 포장할 용도의 그릇으로 쓰거나
+        //  2. 함수에 줄 매개변수를 입력할 경우...
+
+        // new 연산자 ? 해당 클래스 생성자를 기반, 사용자 정의 객체 타입 또는 내장 객체 타입의 인스턴스를 생성하라는 연산자(멤버들의 크기만큼 메모리에 할당)
+        //              ex) var 변수 = new 클래스(); 의 의미 : 변수안에 해당 클래스를 기반으로 객체타입을 만들고 생성자에 따른 값을 넣거나 초기화하라
+
+
+        // (참고) js에서의 메서드 오버로딩 적용 여부? 
+        //       : (순차적으로 코드를 읽는 JS 특성상) 해당 경우는 무조건 가장 밑에 적혀있는 함수 구문만 해당 함수명에 할당된 유일한 함수구문으로 인정
+        //         -> 오버로딩 : 동일한 함수명이라도 BUT 매개변수가 다르다면, 다른 종류의 함수처럼 기억하고 적용 가능한 기능
+
+        // 리터럴 방식으로 같은 원리의 2개의 객체를 생성한 페이지 생성
+        //  -> 같은 리터럴 클래스를 복붙하여 생성(중복 및 낭비로 추천 X) 
+        $(document).ready(function(){
+
+            // 매개변수가 5개 있는 함수를 정의 + 구현한 코드
+            function showInfo_1(userName, id, nickName, age, address){
+                document.write("일반적 함수 호출 </br> userName : " + userName + ", id : " + id + ", nickName : " + nickName
+                                + ", age : " + age + ", address : " + address + "</br></br>");
+            }
+
+            // 오브젝트 리터럴 클래스 그 자체를 매개변수로 받아서 프로퍼티를 출력하는 코드
+            function showInfo_2(userInfo){
+                document.write("리터럴 방식 </br> userName : " + userInfo.userName + ", id : " + userInfo.id + ", nickName : " + userInfo.nickName
+                                + ", age : " + userInfo.age + ", address : " + userInfo.address + "</br>");
+            }
+
+            // 오브젝트 리터럴 방식으로 매개변수(프로퍼티) 주는 코드
+            var userInfo = {
+                userName : "이승호2",
+                id : "lee_sh2", 
+                nickName : "무술소년2", 
+                age : 15, 
+                address : "경기도"
+            }
+
+            // 함수 호츌 - 오브젝트 리터럴 방식 사용 X, 일반적인 방식
+            showInfo_1("이승호1", "lee_sh1", "무술소년1", 15, "서울특별시");
+
+            // 함수 호츌 - 오브젝트 리터럴 방식 사용 ㅇ
+            showInfo_2(userInfo);
+
+            // (참고) js에서의 메서드 오버로딩 적용 여부? 
+            //       : (순차적으로 코드를 읽는 JS 특성상) 해당 경우는 무조건 가장 밑에 적혀있는 함수 구문만 해당 함수명에 할당된 유일한 함수구문으로 인정
+            //         -> 오버로딩 : 동일한 함수명이라도 BUT 매개변수가 다르다면, 다른 종류의 함수처럼 기억하고 적용 가능한 기능
+
+
+        });
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

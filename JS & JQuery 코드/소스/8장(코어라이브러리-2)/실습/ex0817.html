@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array클래스( 배열요소 첫번쨰, 마지막, n번째 삭제하기 )</title>
+    <script>
+        var menus = ["menu1", "menu2", "menu3", "menu4"];
+        var menus1 = ["menu1", "menu2", "menu3", "menu4"];
+
+        document.write("실행 전 : " + menus.join(", ") + "<br/>");
+
+        // shift() : 배열에서 첫 번째 요소를 삭제하는 함수
+        menus.shift();
+        document.write("첫 번째 배열요소 삭제 : " + menus.join(", ") + "<br/>");    // 첫 번째 배열요소 삭제 : menu2, menu3, menu4
+
+        // pop() : 배열에서 마지막 요소를 삭제하는 함수
+        menus.pop();
+        document.write("마지막 배열요소 삭제 : " + menus.join(", ") + "<br/>");     // 마지막 배열요소 삭제 : menu2, menu3
+
+        // splice("위치값", "숫자값", ( 생략가능) "내용")
+        //  : 배열에서 n번째 요소를 삭제하고, 해당 자리를 기점으로 "숫자값"만큼 배열요소를 삭제시킴(0이 들어가면 삭제 x) + 원하는 "내용"을 추가)
+        menus1.splice(2, 2);
+        document.write("n번째 배열요소 (x개) 삭제 : " + menus1.join(", ") + "<br/>");   // n번째 배열요소 (x개) 삭제 : menu1, menu2
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

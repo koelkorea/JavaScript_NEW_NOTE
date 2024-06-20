@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>constructor(생성자) 예제</title>
+    <script>
+
+        // 생성자(constructor)란?
+        // : new 연산자를 통해 특정 클래스를 기반으로 인스턴스를 생성시, 해당 인스턴스의 프로퍼티(멤버변수)에 설정될 초기값에 대한 정보를 지정해주는 내용을 가진 메서드 비스무리 한 녀석
+        //   (= 어찌보면 일종의 함수고, 함수 기능으로 유사 클래스를 흉내내는 js에서는 진짜로 함수의 일종으로 봐도 됨.. )
+
+        // [JS에서의 생성자(constructor)]
+
+        // 1. constructor 속성
+        // JS에서 쓰이는 개별 클래스의 멤버변수(프로퍼티) constructor 속성이란?
+        // : 개별 클래스의 멤버변수인 prototype 프로퍼티 안에 존재하는 프로퍼티 안의 프로퍼티, 해당 클래스의 생성자에 해당하는 값(= 해당 인스턴스가 어떤 클래스에 속해있나)을 저장함
+        //      -> 클래스명.prototype.constructor로 확인 가능!
+
+        // 2. JS에서의 constructor 프로퍼티 값이 생성 및 호출되는 과정     
+        //  -> 1단계) 클래스를 생성시, 자동으로 prototype 프로퍼티 안의 constructor 프로퍼티의 존재가 일시적으로 만들어짐 (값은 지정 X)
+        //  -> 2단계) new 연산자로 인스턴스화 되는 시점에 호출 -> 기반 클래스가 담고 있는 생성자 정보가 constructor의 기본값으로 담기게 됨
+        //      => [결론] 기반클래스의 constructor 프로퍼티와 this가 활성화 되는 시점
+        //          : new 연산자를 통해 인스턴스의 메모리 공간이 할당되고, 인스턴스의 기반이 될 클래스의 생성자를 호출할 시점
+        
+        // 3. 기반클래스의 constructor 프로퍼티의 기본값(상속여부에 따라 달라짐)
+        //  a. 상속 관계 X -> (인스턴스의) 기반클래스의 생성자 정보 
+        //  b. 상속 관계 O -> (인스턴스의) 부모클래스의 생성자가 담김
+        //      => (중요이유?) 
+        //          자식클래스의 경우에는 생성자값을 기본값으로 두면, new 연산자로 인스턴스 생성시 부모클래스 생성자를 따라 프로퍼티의 초기값을 인스턴스에 입력하기 때문
+        //          (= 자식클래스의 인스턴스 멤버변수에 의도하지 않은 데이터 입력/누락 발생 가능성이 존재함)
+
+        // 4. 생성자(constructor) 관련 코드
+
+        //  a. 클래스명.prototype.constructor (해당 클래스의 생성자를 확인하는 코드)
+        //  : 현재 클래스의 생성자 정보인 constructor 속성을 출력 (변경하지 않는 이상 기본값이 들어감)
+        //      -> 특성1. 이를 통해 어떤 클래스의 인스턴스인가의 정보를 알아낼 수 있음 (= java의 '인스턴스명 instanceOf 클래스명' 메서드가 유사한 역할 수행)
+        //      -> 특성2. 자식클래스의 constructor는 기본적으로 부모클래스의 생성자가 담김
+        //      -> 특성3. 각 클래스의 생성자 정보 constructor값은 변경이 가능함
+        //               (= 특성2의 자식클래스 인스턴스의 초기값 할당 문제를 이를 통해 해결가능)
+
+        // b. 자식클래스명.prototype.constructor = 자식클래스명 (해당 클래스의 생성자를 설정하는 코드)
+        //  : 자식 클래스의 constructor 프로퍼티에 부모클래스의 생성자 정보 -> 자식클래스의 생성자 정보로 변경하는 코드
+        //      -> 이를 통해 자식 클래스의 인스턴스를 생성 시, 부모가 아니라 자식클래스 생성자를 따라 프로퍼티의 초기값을 인스턴스에 입력한다
+
+
+        // 부모클래스 정의
+        function MyParent() {
+
+            // 프로퍼티 생성
+            this.property = "이승호";
+        }
+
+        // 부모 메서드 정의
+        MyParent.prototype.method = function() {
+            console.log("property : " + this.property);
+        }
+
+        // 자식클래스 정의
+        function MyChild() {
+
+        }
+
+        // 부모-자식 상속코드 (이게 있고, 없고가 child.constructor의 기본값을 결정)
+        MyChild.prototype = new MyParent();
+
+        // 기반클래스의 멤버변수 constructor 프로퍼티의 기본값(상속여부에 따라 달라짐)
+        //  -> if 기반클래스 자신의 부모클래스 존재o : 부모클래스의 생성자
+        //     if 기반클래스 자신의 부모클래스 존재x : 기반클래스 자신의 생성자
+        //  => (중요이유?) 
+        //      자식클래스의 경우에는 생성자값을 기본값으로 두면, 인스턴스 생성시 프로퍼티 초기화값이 부모클래스의 생성자를 따라 흘러감
+        //      (= 의도하지 않은 데이터 입력/누락 발생 가능성이 존재)
+
+        // 기반클래스의 constructor 프로퍼티와 this가 활성화 되는 시점
+        //  : new 연산자를 통해 인스턴스의 메모리 공간이 할당되고, 인스턴스의 기반이 될 클래스의 생성자를 호출할 시점 
+        
+        // 자식클래스명.prototype.constructor = 자식클래스명
+        //  : 자식 클래스의 constructor 프로퍼티에 부모클래스의 생성자 정보 -> 자식클래스의 생성자 정보로 변경하는 코드
+        //      -> 이를 통해 자식 클래스의 인스턴스를 생성하는 순간, 부모가 아닌 자식클래스의 생성자를 통한 프로퍼티의 초기화값을 인스턴스에 입력함
+
+        // 자식인 MyChild의 constructor 프로퍼티에 MyChild의 생성자(클래스명)을 지정함으로서, 
+        //  -> 기본값인 부모클래스의 생성자 MyParent를 자식클래스의 생성자 MyChild로 변경 
+        MyChild.prototype.constructor = MyChild;
+
+
+        // 부모, 자식클래스 각각의 인스턴스 생성
+        var parent = new MyParent();
+        var child = new MyChild();
+
+        // 부모클래스의 인스턴스인지 확인하는 코드
+        if(parent.constructor == MyParent) {
+            console.log("parent는 MyParent클래스의 인스턴스 입니다.");
+        }
+
+        // 자식클래스의 인스턴스인지 확인하는 코드 (상속코드 존재유무, constructor 프로퍼티에 따라 참/거짓이 천차만별!)
+        if(child.constructor == MyChild) {
+            console.log("child는 MyChild클래스의 인스턴스 입니다.");
+        }
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

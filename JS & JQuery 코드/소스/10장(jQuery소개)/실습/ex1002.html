@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자바스크립트 vs jQuery-2</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // 1. 자바스크립트로 태그 이름이 p인 노드를 찾아서 border 스타일을 변경하는 경우
+        // window.onload = function(){
+        //     var pArr = document.getElementsByTagName("p");  // 이렇게 찾으면 복수개의 p의 위치를 배열로 준다.
+        //     for(var i = 0; i < pArr.length; i++){           //  -> 그래서 배열 요소 하나하나 스타일을 적용해야 함 
+        //         pArr[i].style.border = "5px solid #f00";
+        //     }
+        // }
+
+        // 2. jQuery로 태그 이름이 p인 노드를 찾아서 border 스타일을 변경하는 경우
+        $(document).ready(function(){
+            $("p").css("border", "5px solid #f00"); 
+            // CSS의 경우는 단순 태그를 위치값으로 넣으면, 그냥 해당 태그에 지정된 스타일을 전부 적용함
+        });
+
+        // 결론 : jQuery가 더 간단한 점이 있다.
+    </script>
+</head>
+<body>
+    <div id="samplePage" class="page">
+        샘플페이지(div, id = samplePage, class = page)
+        <div id="header">
+            헤더 영역(div, id = header)
+        </div>
+        <div id="content" class="sample-content">
+            노드 찾기(div, id = content, class = sample-content)
+            <ul class="menu">
+                일반 노드 찾기(ul, class = menu)
+                <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                <li class="select">tag로 찾기(li, class = select)</li>
+                <li data-value="2">class로 찾기(li, data-value = 2)</li>
+                <li class="test1">속성으로 찾기(li, class = test1)</li>
+            </ul>
+            <div class="content-data">
+                자식 노드 찾기(div, class = content-data)
+                <p class="test1">1. 모든 자식 노드 찾기(p, class = test1)</p>
+                <p>2. 특정 자식 노드 찾기(p)</p>
+                <p class="test2">3. 마지막 자식 노드 찾기(p, class = test2)</p>
+            </div>
+        </div>
+        <div id="footer">
+            푸터 영역(div, id = footer)
+        </div>
+    </div>
+</body>
+</html>

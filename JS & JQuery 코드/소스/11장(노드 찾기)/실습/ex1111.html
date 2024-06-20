@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 다루기-자식 노드 찾기(children() vs contents())</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // children() vs contents()
+            //  - 공통점 : 해당 노드의 자식(직계)노드를 찾아줌
+            //  - 차이점 : children()은 태그노드만! contents() 텍스트 노드까지 포함해서 찾아줌 (contents()의 범위가 더 크다)
+
+            // 위치값.children() : 특정 노드의 모든 자식(직계)노드 중 태그(element 요소노드)노드만 찾고 싶을때 사용
+            $("#samplePage").children().css("border", "2px solid blue");
+
+            // 위치값.contents() : 특정 노드의 모든 자식(직계)노드를 찾고 싶을 때 사용(텍스트 노드까지 찾아줌)
+            $("#samplePage").contents().css("border", "2px solid red");
+
+            // 특정 노드의 자식노드(태그) 개수를 구하고 있다
+            console.log($("#samplePage").children().length);    // 3
+
+            // 특정 노드의 자식노드 + 텍스트 노드 개수를 구하고 있다
+            console.log($("#samplePage").contents().length);    // 7 (텍스트 노드까지 포함해서 숫자를 센다)
+
+        });
+    </script>
+</head>
+<body>
+    <div id="samplePage" class="page">
+        샘플페이지(div, id = samplePage, class = page)
+        <div id="header">
+            헤더 영역(div, id = header)
+        </div>
+        <div id="content" class="sample-content">
+            노드 찾기(div, id = content, class = sample-content)
+            <ul class="menu">
+                일반 노드 찾기(ul, class = menu)
+                <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                <li class="select">tag로 찾기(li, class = select)</li>
+                <li data-value="2">class로 찾기(li, data-value = 2)</li>
+                <li class="test1">속성으로 찾기(li, class = test1)</li>
+            </ul>
+            <div class="content-data">
+                자식 노드 찾기(div, class = content-data)
+                <p class="test1">1. 모든 자식 노드 찾기(p, class = test1)</p>
+                <p>2. 특정 자식 노드 찾기(p)</p>
+                <p class="test2">3. 마지막 자식 노드 찾기(p, class = test2)</p>
+            </div>
+        </div>
+        <div id="footer">
+            푸터 영역(div, id = footer)
+        </div>
+    </div>
+</body>
+</html>

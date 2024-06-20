@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트-5(jQuery이용)</title>
+    <script src="../libs/jquery-1.10.2.min.js"></script>
+    <script>
+        // ready() vs load() 차이점 : 이벤트의 실행가능하게 하는 시점이 언제냐의 차이(html객체 그 자체만 vs 외부요소까지 로딩이 되어야)
+        
+        // ready() : (클라이언트 방문시) 요청한 HTML문서 객체의 로딩이 끝나면.. -> {}안 이벤트 실행가능
+        // load() : (클라이언트 방문시) 외부 연동소스(iframe, img, video 등)의 로딩이 끝 -> {}안 이벤트 실행가능
+    
+        $(function(){
+
+            // ready 함수로 실행시, 외부소스를 이벤트 실행시점에서 반영x
+            $(document).ready(function(){
+                var h1 = $(".img").height();
+
+                // 외부소스를 부르지 않으니, 외부소스의 높이인 500이 아니라 0이 출력(없는것과 같다)
+                console.log("ready() : ", h1);
+            });
+            
+            // load 함수로 실행시, 외부소스를 이벤트 실행시점에 반영
+            $(window).load(function(){
+                var h2 = $(".img").height();
+
+                // 외부소스의 높이인 500이 나옴
+                console.log("load() : ", h2);
+            });
+            
+        });
+    </script>
+</head>
+<body>
+    <p>
+        <!--외부에 있는 연동소스-->
+        <img src="https://place-hold.it/500X500" class="img">
+    </p>
+</body>
+</html>

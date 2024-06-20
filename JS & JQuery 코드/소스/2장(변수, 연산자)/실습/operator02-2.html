@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연산자</title>
+</head>
+<body>
+    <script>
+        window.onload = function(){
+            var list = ""; // list 변수는 문자열 타입
+            var num = 10;  // Number 타입
+
+            // 복합대입 연산자를 통해, list변수에 문자열 누적
+            list += "<ui>";
+            list += "   <li>안냐세요?</li>";
+            list += "   <li>js입니다</li>";
+            list += "</ui>";
+
+            // 정수형도 아래와같이 복합대입연산을 통해 값을 누적
+            num *= 10;
+            num *= 10;
+            num *= 10;
+            num *= 10;
+            num *= 10;
+
+            // 객체위치값.innerHTML = "코드 문자열" or 변수 : 해당 위치값의 객체의 자식노드로서 주어진 코드를 갱신(= 덮어씌움.. 그 이전 내용은 없어짐)
+
+            // DOM의 body 요소(ELEMENT)의 위치의 자식노드로서 주어진 코드를 갱신(= 덮어씌운다) 
+            document.body.innerHTML = list;
+
+            // 객체위치값.write(값 or 변수) : 해당 위치값의 객체의 자식노드로서 '값' or '변수가 저장하는 내용'을 텍스트 노드에 갱신한다(= 덮어씌움.. 그 이전 내용은 없어짐)
+            document.write(num);
+        }
+    </script>
+</body>
+</html>

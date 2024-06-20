@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메서드 오버로딩(같은 메서드명, but 파라미터들 다름) - 1</title>
+    <script>
+
+        // 오버라이드(modify, change) : 부모클래스 함수와 이름 same, 선언부 same하지만, 구현부 different한 '자식클래스에서 재정의된 함수'
+        //   VS
+        // 오버로딩(new) : 이름 same, 선언부의 params 다른 '동명이함수들'
+
+        // 메서드 오버로딩(new의 개념)
+        // : 이름은 같지만 선언부의 매개변수(param, arguments)의 종류나 수가 다른, 모든 종류의 동명이함수의 개념...  
+        //      -> JS에서의 공식지원은 X... 
+        //          -> BUT 함수 구현부에 매개변수에 해당하는 객체인 arguments 객체의 멤버변수를 활용,비슷한 효과를 흉내내서 구현가능
+        //             (= 사실상 조건문과 반복문을 사용하여, 함수에 입력되는 param의 갯수와 종류에 따라 함수 내용의 흐름을 다르게 적용하는 꼼수) 
+
+        // arguments 객체
+        //  : 함수(메서드)를 호출 당시를 기준으로! 입력한 매개변수(paramater, arguments)의 갯수와 값을 인식하여,
+        //    이를 배열(Array) 형태와 유사하게 즉석에서 자동 생성하여 저장한 해당 함수의 내부의 멤버변수인 객체
+        //    (해당 arguments 객체는 length 프로퍼티와, index(0부터 시작)만 사용 가능함)
+        //    -> (주의) Array 객체와 유사할 뿐 arguments 객체는 엄연히 별개의 객체임을 명심하자...
+        //             (=  arguments 객체가 Array 객체의 내장함수 사용 불가능한 이유..)
+
+        // 더하기 함수의 오버로딩 구현
+        function sum() {
+
+            var result = 0;     // 지역변수는 반드시 초기화가 필요
+
+            // arguments 객체
+            //  : 함수(메서드)를 호출 당시를 기준으로 입력한 매개변수(paramater, arguments)의 갯수와 값을 인식하여,
+            //    이를 배열(Array) 형태와 유사하게 즉석에서 자동 생성하여 저장한 해당 함수의 내부의 멤버변수인 객체
+            //    (해당 arguments 객체는 length 프로퍼티와, index(0부터 시작)만 사용 가능함)
+            //    -> (주의) Array 객체와 유사할 뿐 arguments 객체는 엄연히 별개의 객체임을 명심하자...
+            //             (=  arguments 객체가 Array 객체의 내장함수 사용 불가능한 이유..)
+            for(var i=0; i < arguments.length; i++){
+
+                result += arguments[i];
+            }
+
+            return result;
+        }
+
+        // 함수를 매개변수를 변경해서 호출해보기 (오버로딩 확인)
+        console.log("sum(10) : " + sum(10));
+        console.log("sum(10, 20) : " + sum(10, 20));
+        console.log("sum(10, 20, 30) : " + sum(10, 20, 30));
+        console.log("sum(10, 20, 30, 40) : " + sum(10, 20, 30, 40));
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

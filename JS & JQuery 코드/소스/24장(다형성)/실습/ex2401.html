@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>다형성 예제-1</title>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // js에서는 추상화 문법(추상클래스, 인터페이스)와 다형성 문법을 지원 X
+        //  -> 아래의 코드는 인터페이스를 흉내낸다고 가정
+
+        // 인터페이스(라고 가정)
+        function Runnable() {
+
+            // 추상메서드와 같이 흉내내고 있는 메서드
+            this.run = function() {
+
+                // throw 예약어 : 강제로 에러를 발생시키는 코드
+                //  -> 인터페이스를 구현한 클래스는 반드시 추상메서드를 구현해야 에러가 안남(설령 그게 다시 추상메서드로 구현했다쳐도..)
+                //     (js는 인터페이스가 없으니, 이렇게 인위적인 에러를 통해 인터페이스 기능을 흉내 구현) 
+                throw new Error("run() 메서드 미구현 에러");
+            }
+        }
+
+        // 인터페이스를 구현하는 클래스
+        function RunnableImplementsClass() { 
+
+            // 추상메서드 오버라이딩 코드
+            this.run = function() {
+
+                console.log("가즈아~!");
+            }
+        }
+
+        // 인터페이스도 일종의 부모라고 볼수 있음
+        //  -> 인터페이스의 구현클래스들이 존재함 = 같은 인터페이스를 베이스로 삼은 구현클래스들 간 간접적인 관계 형성
+
+        // 부모-자식 상속코드
+        RunnableImplementsClass.prototype = new Runnable();
+
+        // 자식클래스의 인스턴스 생성
+        var human = new RunnableImplementsClass();
+
+        // 부모클래스의 메서드를 오버라이드한 메서드가 호출
+        // (= 부모클래스(여기서는 인터페이스)를 상속받은 구현클래스의 재정의된 메서드가 호출)
+        human.run();
+
+        // 다형성 체크부분
+        // 참조변수(인스턴스변수) instanceOf 클래스타입
+        //  : (자바가 원조) boolean값 리턴 메서드로 true가 나오면, 
+        //    좌측의 인스턴스변수는 검사대상인 우측 클래스타입(자체부터 걔 부모클래스까지)으로 형변환이 가능하다는 것을 의미!
+
+        // (ex) object(모든 클래스의 조상) <- Runnable <- RunnableImplementsClass 계보를 통해, 다형성을 통한 형변환 가능여부 확인해보자
+
+        // instanceof로 인스턴스의 기반 클래스 검사
+        // -> true 형변환 가능 (= human인스턴스 변수(참조 변수)는 RunnableImplementsClass를 기반으로 하여 생성)
+        if(human instanceof RunnableImplementsClass) {
+
+            // true값이 나온 결과
+            console.log("human 인스턴스 변수는 RunnableImplementsClass타입이다");
+        }
+
+        // instanceof로 인스턴스가 기반클래스의 부모로 형변환 가능한지 검사
+        //  -> true 형변환 가능 (= RunnableImplementsClass의 부모는 Runnable 인터페이스를 흉내내었기에, Runnable계열에 속함)
+        if(human instanceof Runnable) {
+
+            // true값이 나온 결과
+            console.log("human 인스턴스 변수는 Runnable인터페이스(흉내)타입이다");
+        }
+
+        // instanceof로 인스턴스가 object로 형변환 가능한지 검사
+        //  -> true 형변환 가능 (= Object클래스는 모든 클래스의 최고 부모 클래스이다)
+        if(human instanceof Object) {
+
+            // true값이 나온 결과
+            console.log("human 인스턴스 변수의 클래스타입은 Object클래스를 최고조상으로 둔다.");
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

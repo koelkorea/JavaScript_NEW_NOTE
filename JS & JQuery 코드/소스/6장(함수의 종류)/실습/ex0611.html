@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콜백함수-1(일반함수로 풀이)</title>
+    <script>
+
+        // 일반함수 사용 시 단점 : 로직구현, 처리까지 있으므로..
+        // 1. 코드 중복
+        // 2. 유지보수도 불편
+        function calculator1(op, num1, num2){
+
+            // 로직 구현부
+            var result = "";
+
+            switch(op){
+                case "+" :
+                    result = num1 + num2;
+                    break;
+                case "-" :
+                    result = num1 - num2;
+                    break;
+                case "*" :
+                    result = num1 * num2;
+                    break;  
+                case "/" :
+                    result = num1 / num2;
+                    break;
+                default :
+                    result = "지원하지 않은 연산자임!";
+            }
+            // 로직 처리부분
+            document.write("주어진 2개의 수의 연산결과 : " + result + "</br>");
+        }
+
+        // 일반 함수
+        function calculator2(op, num1, num2){
+            var result = "";
+
+            switch(op){
+                case "+" :
+                    result = num1 + num2;
+                    break;
+                case "-" :
+                    result = num1 - num2;
+                    break;
+                case "*" :
+                    result = num1 * num2;
+                    break;  
+                case "/" :
+                    result = num1 / num2;
+                    break;
+                default :
+                    result = "지원하지 않은 연산자임!";
+            }
+            document.write("정답 : " + result + "</br>");
+        }
+        calculator1("-", 500, 300);
+        calculator2("*", 500, 300);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

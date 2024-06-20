@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스크롤 값 설정(scrollLeft(숫자), scrollTop(숫자)))</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 15px;
+        }
+
+        .nav {
+            margin: 30px 0 0 50px;
+        }
+
+        #btn {
+            width: 50px;
+            height: 30px;
+        }
+
+        #container {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            left: 50px;
+            top: 100px;
+            border: 2px solid black;
+            overflow: scroll;   /* 자식값이 주어진 범위를 초과할 경우 : 스크롤 처리를 한다*/
+        }
+
+        img { 
+            width: 1000px;
+        }
+
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // <요소 내의 스크롤 가로좌표 위치, 세로좌표 위치 관련 함수>
+        // 1. scrollLeft() 관련
+        //      -> $위치값.scrollLeft()     : 해당 위치의 jQuery 객체의 가로 스크롤의 좌표 위치를 리턴
+        //      -> $위치값.scrollLeft(숫자) : 해당 위치의 jQuery 객체의 가로 스크롤의 좌표 위치를 '숫자'의 값으로 설정
+        // 2. scrollTop() 관련
+        //      -> $위치값.scrollTop()     : 해당 위치의 jQuery 객체의 세로 스크롤의 좌표 위치를 리턴
+        //      -> $위치값.scrollTop(숫자)  : 해당 위치의 jQuery 객체의 세로 스크롤의 좌표 위치를 '숫자'의 값으로 설정
+
+        // [참고]
+        // 1. 스크롤이 추가될 시, 기존 요소의 너비, 높이 또한 스크롤의 너비, 높이만큼 줄어든다
+        // 2. 웹페이지 확대 설정에 따라 요소의 크기가 변하는데, 이 경우 변화한 요소의 크기도 반영되니 주의
+        
+        // 버튼을 누르면 -> 스크롤이 가로로 0.1초에 5px씩 이동.. 화면끝에 도달하면 멈추도록 하는 코드 
+        $(document).ready(function(){
+
+            var $info = $("#info");
+            var $container = $("#container");
+
+            // 스크롤의 가로좌표 화면의 끝 값을 저장하는 변수 
+            var scrollEnd = $container.find("img").width() - $container.width();
+
+            // #btn에 클릭 이벤트를 등록
+            $("#btn").click(function(e){
+
+                // 현재 스크롤의 좌표위치값 구하기
+                // $위치값.scrollLeft() : 해당 위치의 jQuery 객체의 가로 스크롤의 좌표 위치를 리턴
+                var left = $container.scrollLeft();
+
+                // cnt 변수 초기화
+                var cnt = 0;
+
+                // 타이머 실행(0.1초 간격으로 함수내용 실행)
+                var timerID = setInterval(function(){
+
+                    // 0.1초 마다 5px만큼 왼쪽으로 스크롤하도록 늘어나는 값 저장하는 변수
+                    left += 5;
+
+                    // 이동하는 스크롤 값을 설정
+                    // $위치값.scrollLeft(숫자) : 해당 위치의 jQuery 객체의 가로 스크롤의 좌표 위치를 '숫자'의 값으로 설정
+                    $container.scrollLeft(left);
+
+                    // 스크롤 정보를 출력
+                    cnt++;
+                    $("#info").html("실행횟수 : " + cnt + ", left : " + left + ", scrollEnd : " + scrollEnd);
+
+                    // 이동한 가로 좌표가 오른쪽 끝까지 이동하면, 타이머를 종료하는 코드
+                    if(left >= scrollEnd){
+                        clearInterval(timerID);
+                    }
+
+                }, 100);
+
+                // 스크롤이 추가될 시, 기존 요소의 너비, 높이 또한 스크롤의 너비, 높이만큼 줄어든다
+                //  -> id=container 인 요소의 너비, 높이는 300으로 설정되었지만, 스크롤의 너비,높이인 17이 반영
+                //      -> (결과) id=container 인 요소의 너비, 높이 (300 - 17) = 283 
+                console.log($container.find("img").width(), $container.width());
+            });
+
+        });        
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <button id="btn">확인</button>
+        <div id="info">
+            스크롤 위치 정보 출력
+        </div>
+    </div>
+
+    <div id="container">
+        <img src="../images/sunrise.jpg">
+    </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문서(document)의 크기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #main {
+            border: 1px dotted red;
+            width: 500px;
+            margin: 50px;
+        }
+
+        #info {
+            border: 10px solid red;
+            position: fixed;    /* fixed인 경우 포지션은 스크롤을 따라감*/
+            left: 120px;
+            top: 100px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+
+        // document : 현재의 보고 있는 문서 웹페이지를 의미하는 객체(jQuery를 통해서도 접근가능)
+
+        // [jQuery의 document 객체 내의 함수를 통해 구하는 문서 웹페이지 크기]
+        //  $(document).width() : 현재 웹페이지의 너비를 구함
+        //  $(document).height() : 현재 웹페이지의 높이를 구함
+
+        //  -> ( $(document) 통한 함수 특이사항) 브라우저 너비를 변경시 변함... 
+        //      -> min값 : style상 가장 긴 요소의 width + 내부공백 margin 만큼의 너비는 안 변함
+        //         max값 : 현재 화면의 해상도상 최대값 못 넘음 (= 전체 화면의 너비가 아니라, 보이는 물리적 화면이 기준)
+
+        $(document).ready(function(){
+
+            // $(window) : 브라우저 내부의 객체이자 모든 브라우저의 상위객체인 window jQuery를 통해 위치값으로 지정
+
+            // 윈도우 크기가 변경되는 경우 document가 출력
+            $(window).on("resize", function(){
+                showInfo();
+            });
+            showInfo();
+
+        });    
+
+        // 현재 document의 크기 정보 출력
+        function showInfo(){
+
+            var str = "";
+
+            // $(document).width() : 현재 웹페이지의 너비를 구함
+            //  -> 특이사항) 브라우저 너비를 변경시 변함... 
+            //      -> min값 : style상 가장 긴 요소의 width + 내부공백 margin 만큼의 너비는 안 변함
+            //         max값 : 현재 화면의 해상도상 최대값 못 넘음 (= 전체 화면의 너비가 아니라, 보이는 물리적 화면이 기준)
+            str += '$("document").width() : ' + $(document).width() + "<br/>";
+
+            // $(document).height() : 현재 웹페이지의 높이를 구함
+            //  -> 특이사항) 브라우저 높이를 변경시 변함... 
+            //      -> min값 : style상 가장 긴 요소의 height + 내부공백 margin 만큼의 높이는 안 변함
+            //         max값 : 현재 화면의 해상도상 최대값 못 넘음 (= 전체 화면의 너비가 아니라, 보이는 물리적 화면이 기준)
+            str += '$("document").height() : ' + $(document).height() + "<br/>";
+
+            $("#info").html(str);
+            
+        }
+
+    </script>
+</head>
+<body>
+    <div id="main">
+        <p>안녕1</p><p>안녕2</p><p>안녕3</p><p>안녕4</p><p>안녕5</p>
+        <p>안녕6</p><p>안녕7</p><p>안녕8</p><p>안녕9</p><p>안녕10</p>
+        <p>안녕11</p><p>안녕12</p><p>안녕13</p><p>안녕14</p><p>안녕15</p>
+    </div>
+    <div id="info">
+        문서의 크기를 출력
+    </div>
+</body>
+</html>

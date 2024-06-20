@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트-3(jQuery이용)</title>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 버튼에 그룹(다중 조건 이벤트) 이벤트 등록(on(이벤트명, 함수 or 함수명) 메서드 이용)
+            
+            // [1번째 방법] : on 메서드의 1번째 매개변수에 '이벤트1 이벤트2' 방식으로 적은다.
+            $("#btn").on("mouseover focus", function(){
+                //alert("안녕하세요");
+                console.log("이벤트 발생");
+            });
+            
+            // [2번째 방법] : on 메서드의 매개변수들을 js의 객체 프로퍼티 적듯이 적음 
+            //                  -> "이벤트1 이벤트2" : "함수 or 함수명" 
+            // $("#btn").on({
+            //    "mouseover focus" : function(){
+            //        console.log("이벤트 발생");
+            //    }
+            // });
+
+            // [3번째 방법] : 2번째 방법에서 "개별 이벤트" : "함수 or 함수명" , .... 이렇게 이벤트 개별을 프로퍼티 적듯 적음
+            // $("#btn").on({
+            //    "mouseover" : function(){
+            //        console.log("이벤트 발생");
+            //    },
+            //    "focus" : function(){
+            //        console.log("이벤트 발생");
+            //    }
+            // });
+        });
+    </script>
+</head>
+<body>
+    <button id="btn">버튼</button>
+</body>
+</html>

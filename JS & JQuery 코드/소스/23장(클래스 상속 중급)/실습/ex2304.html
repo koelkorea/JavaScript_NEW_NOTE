@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메서드 오버라이드(같은 메서드명 파라미터, but 다른 내용) - 2</title>
+    <script>
+
+        // 오버라이드(modify, change) : 부모클래스 함수와 이름 same, 선언부 same하지만, 구현부 different한 '자식클래스에서 재정의된 함수'
+        //   VS
+        // 오버로딩(new) : 이름 same, 선언부의 params 다른 '동명이함수들'
+        
+        // 메서드 오버라이드(modify, change의 개념)
+        // : 오버라이드 된 메서드의 선언부 = 부모클래스의 선언부, 단지 구현부의 내용만 다르게.. 
+        //      -> js에서의 사용은 그저 상속관계 정의 후, 자식클래스의 prototype에 동일 메서드와 파라미터 입력해주면 ready ok!
+
+        // (예습) 클래스명.prototype.constructor : 생성자를 설정하는 코드
+        //  -> 클래스의 생성자 정보가 기본값인 constructor 속성 (= java의 instanceOf)
+        //      : 클래스를 생성시 자동으로 prototype 프로퍼티 안의 constructor 프로퍼티가 일시적으로 만들어짐
+        //        그리고 new 연산자로 인스턴스화 되는 시점에 호출이 되고, 해당 클래스의 생성자 정보가 기본값으로 담기게 됨
+        //        -> 특성1. 이를 통해 어떤 클래스의 인스턴스인가의 정보를 알아낼 수 있음
+        //        -> 특성2. 자식클래스의 constructor는 기본적으로 부모클래스의 생성자가 담김
+
+        // 부모클래스 정의 
+        function Calculator() {
+            console.log("Calculator 클래스의 생성자 호출됨");
+        }
+
+        // 부모 메서드 정의
+        Calculator.prototype.areaCircle = function(radius) {
+            console.log("Calculator의 areaCircle() 호출됨");
+            console.log("Calculator의 areaCircle의 값 : " + (3.14159 * (radius * radius)));
+        }
+
+        // 자식클래스 정의
+        function Computer() {
+            console.log("(자식) Computer 클래스의 생성자 호출됨");
+        }
+
+        // 상속 코드 작성
+        Computer.prototype = new Calculator();
+
+        // 생성자 설정
+        Computer.prototype.constructor = Computer;
+
+        // 자식클래스 오버라이드 (확장코드 포함)
+        Computer.prototype.areaCircle = function(radius) {
+
+            // 클래스명1.prototype.메서드명.call(클래스명2, parameter1,..., n)
+            //  : 클래스명2 내부에 클래스명1의 메서드명의 코드 내용 자체를 해당 파라미터 값들을 넣은 상태로 불러와서 내용 연결이나 연장 가능하게 함 
+
+            // 부모클래스의 areaCircle() 호출하는
+            Calculator.prototype.areaCircle.call(this, 100);
+
+            // 자식클래스의 확장코드
+            console.log("(자식) Computer의 areaCircle() 호출됨");
+            console.log("(자식) Computer의 areaCircle의 값 : " + (Math.PI * (radius * radius)) + "입니다.");
+        }
+
+        // 자식 클래스의 인스턴스 생성
+        var computer = new Computer();
+
+        // 오버라이드 된 메서드 호출
+        computer.areaCircle(10);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드 다루기-특정 노드 찾기(children("선택자") vs find("선택자"))</title>
+    <style>
+        body{
+            font-size: 15px;
+            font-family: "굴림";
+        }
+
+        div, p, ul, li{
+            border: 1px solid gray;
+            margin: 10px;
+        }
+
+        ul {
+            padding: 10px;
+        }
+
+        li.select{
+            background-color: #ccc;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // children("선택자") vs find("선택자")
+            //  - 공통점 : 하위 노드 중 특정 노드를 검색해서 찾아준다.
+            //  - 차이점 : children("선택자")은 직계 자식노드만! find("선택자") 모든 자손(하위요소 전체)노드를 대상으로 찾아줌 (find("선택자")의 범위가 더 크다)
+
+            // 위치값.children("선택자") : 특정 노드의 모든 자식(직계)노드 중 특정 노드를 찾고 싶을 때 사용  ex) #아이디명 .클래스명
+            $("#samplePage").children(".test1").css("border", "2px solid blue");
+
+            // 특정 노드의 자식노드(태그) 개수를 구하고 있다
+            console.log($("#samplePage").children(".test1").length);    // 3
+
+            // 위치값.find("선택자") : 특정 노드의 모든 자손(하위요소 전체)노드 중 특정 노드를 찾고 싶을 때 사용  ex) #아이디명 .클래스명
+            $("#samplePage").find(".test1").css("border", "2px solid red");
+
+            // 특정 노드의 자손노드(하위요소 전체) 개수를 구하고 있다
+            console.log($("#samplePage").find(".test1").length);    // 3
+
+        });
+    </script>
+</head>
+<body>
+    <div id="samplePage" class="page">
+        샘플페이지(div, id = samplePage, class = page)
+        <div id="header" class="test1">
+            헤더 영역(div, id = header)
+        </div>
+        <div id="content" class="sample-content">
+            노드 찾기(div, id = content, class = sample-content)
+            <ul class="menu">
+                일반 노드 찾기(ul, class = menu)
+                <li data-value="1">id로 찾기(li, data-value = 1)</li>
+                <li class="select">tag로 찾기(li, class = select)</li>
+                <li data-value="2">class로 찾기(li, data-value = 2)</li>
+                <li class="test1">속성으로 찾기(li, class = test1)</li>
+            </ul>
+            <div class="content-data">
+                자식 노드 찾기(div, class = content-data)
+                <p class="test1">1. 모든 자식 노드 찾기(p, class = test1)</p>
+                <p>2. 특정 자식 노드 찾기(p)</p>
+                <p class="test2">3. 마지막 자식 노드 찾기(p, class = test2)</p>
+            </div>
+        </div>
+        <div id="footer">
+            푸터 영역(div, id = footer)
+        </div>
+    </div>
+</body>
+</html>

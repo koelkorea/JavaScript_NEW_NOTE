@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <script>
+        // 비효율적 코드
+        // document.write("1. 이승호 </br>");
+        // document.write("1. 이승호 </br>");
+        // document.write("1. 이승호 </br>");
+        // document.write("1. 이승호 </br>");
+        // document.write("1. 이승호 </br>");
+
+        // 반복문 활용
+        // for(var i = 1; i <= 5; i++ ){
+        //     document.write(i + ". 이승호 </br>");
+        // }
+
+        // 함수사용(코드의 재사용성 용이)
+        function callName(name, count){
+            for(var i = 1; i <= count; i++ ){
+                document.write(i + ". " + name + " </br>");
+            }
+        }
+
+        // 매개변수를 달리주면 결과가 달라짐
+        callName("이승호", 10);
+        callName("라이덴", 3);
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>버블링 활용-2(라이브 이벤트 - 버블링 단계 활용방법)</title>
+    <style>
+        body{
+            font-size : 30px;
+        }
+
+        #add{
+            font-size : 30px;
+        }
+
+        ul{
+            border: 1px solid black;
+        }
+
+        ul li{
+            border: 1px solid red;
+            margin: 20px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // 3. [동적으로 추가된 메뉴에 이벤트를 부여하는 '버블링 단계' 활용하는 방법]
+            //      : 알고리즘) 버튼 클릭시 -> 태그 생성 -> 그 태그 정보로 이벤트 등록 -> 태그 코드 동적추가 라는 방법을 클릭 이벤트에 한꺼번에 넣는것 
+            var $menu = $(".menu");
+            var cnt = 5;    // 카운트 변수 추가
+
+            $("#add").click(function(e){
+
+                cnt++;  // 카운트 증가
+
+                // 1단계) 동적으로 신규 태그 항목 생성 후 -> jQUERY 변수에 이를 저장
+                var $newItem = $("<li>메뉴" + cnt + "</li>");
+
+                // 2단계) 동적으로 추가한 신규 태그를 html("코드" or 변수명)을 통해 추가함 (menu 클래스의 자식노드로 li태그 추가)
+                $menu.append($newItem);
+            });
+
+            // 3단계) ul태그에만 이벤트리스너를 등록 = 새로운 on()을 활용하여, 동적으로 추가되는 태그항목에 대한 버블링 단계에서 이벤트리스너가 실행되게 만듦
+            //          -> 동적 태그에 생성과 동시에 이벤트 등록이라는 복잡한 과정 생략 + 자원 효율성 늘리기도 가능
+            //             -> (WHY POSSIBLE?) 이벤트 실행 기준이 li태그에 부여X (= li에서 돌아가는 버블링 단계에서 ul태그에서 실행하기에 li가 언제있었냐는 중요하지 않음)
+            $(".menu").on("click", "li" , function(e){
+                alert($(this).html());
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <button id="add">추가</button>
+    </div>
+    <ul class="menu">
+        <li>메뉴1</li>
+        <li>메뉴2</li>
+        <li>메뉴3</li>
+        <li>메뉴4</li>
+        <li>메뉴5</li>
+    </ul>
+</body>
+</html>

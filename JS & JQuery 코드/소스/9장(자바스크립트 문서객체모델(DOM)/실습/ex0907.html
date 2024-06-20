@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM-7(요소 추가하기)</title>
+    <link rel="stylesheet" href="nameList.css">
+</head>
+<body>
+    <div id="container">
+        <h1>참가 신청</h1>
+        <form action="">
+            <!-- required : 꼭 입력이 되어야 하는 경우의 input 태그의 속성-->
+            <input type="text" id="userName" placeholder="이름을 입력해라." required>
+            <button onclick="newRegister(); return false;">신청</button>
+        </form>
+        <hr>
+        <div id="nameList"></div>
+    </div>
+    <script src="nameList.js"></script>
+</body>
+</html>

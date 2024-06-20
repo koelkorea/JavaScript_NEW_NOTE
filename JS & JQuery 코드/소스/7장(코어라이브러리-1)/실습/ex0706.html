@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국기 롤링 베너</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .banner {
+            width: 400px;
+            height: 250px;
+            position: absolute;
+            border: 2px solid gray;
+        }
+
+        #banner1 {
+            top: 150px;
+            left: 150px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 배열로 국기를 저장
+            var imgList = [ "canada.png",
+                            "england.png",
+                            "germany.png",
+                            "italia.png",
+                            "korea.png",
+                            "spain.png",
+                            "usa.png"];
+            
+            // 배열의 인덱스 변수를 선언과 동시에 초기화
+            var index = 0;
+
+            // 이미지 표식하기 위해 요소 찾기
+            var $banner = $(".banner");
+
+            // 1초마다 한번씩 국기가 롤링
+            setInterval(function(){
+
+                // 다음 이미지가 나오게 하기 위해서 인덱스를 증가
+                index++;
+                
+                // index가 imgLish 배열의 길이보다 크면 index를 다시 0으로 변경
+                if(index >= imgList.length){
+                    index = 0;  // 0으로 저장해야 이미지 순환됨
+                }
+
+                // 다음 이미지의 이미지를 배열 위치값을 통해 추출
+                var imgName = imgList[index];
+
+                // banner의 속성값의 src가 배열의 변경을 통해 얻은 이미지값으로 순차 변경되도록 함
+                $banner.attr("src", "../images/" + imgName);
+
+                // document.write(index + "</br>");
+                // document.write(imgName + "</br>");
+
+            }, 1000);
+
+
+        });
+    </script>
+</head>
+<body>
+    <img src="../images/korea.png" class="banner" id="banner1">
+</body>
+</html>

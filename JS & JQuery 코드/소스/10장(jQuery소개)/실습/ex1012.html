@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$()의 실체-3</title>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        // [비효율적 jQuery 인스턴스 사용]
+        $(document).ready(function(){
+            // 매번 jQuery 속성위치를 불러오는 함수를 실행함 = 5개의 인스턴스를 생성하는 것
+            //  -> 최적화를 이루지 못하고, 메모리가 낭비됨
+            $("#menu").append("<li>menu2</li>");
+            $("#menu").append("<li>menu3</li>");
+            $("#menu").append("<li>menu4</li>");
+            $("#menu").append("<li>menu5</li>");
+            $("#menu").css("border", "2px solid red");
+        });
+
+        // [효율적 jQuery 인스턴스 사용]
+        $(document).ready(function(){
+
+            // 한번만 jQuery 속성위치를 불러오는 함수를 실행, 그 리턴값 변수에 대입해 저장 = 1개의 인스턴스를 생성
+            //  -> 효율적인 방식을 통해 같은 내용이지만, 메모리도 아끼고 속도도 향상 됨
+
+            var $menu = $("#menu");
+
+            $menu.append("<li>menu2</li>");
+            $menu.append("<li>menu3</li>");
+            $menu.append("<li>menu4</li>");
+            $menu.append("<li>menu5</li>");
+            $menu.css("border", "2px solid red");
+
+        });
+    </script>
+</head>
+<body>
+    <button id="addMenu">추가</button>
+    <ul id="menu">
+        <li>menu</li>
+    </ul>
+</body>
+</html>

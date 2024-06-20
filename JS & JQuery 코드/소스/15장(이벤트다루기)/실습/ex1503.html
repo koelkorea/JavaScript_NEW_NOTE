@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 등록(일반(on()), 단축(click(), mouseenter(), mouseleave()), 제거(off())</title>
+    <style>
+        body{
+            font-size : 30px;
+        }
+
+        #btn, #remove{
+            font-size : 25px;
+            margin : 20px;
+        }
+    </style>
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            // [일반 이벤트 등록] : 말 그대로 이벤트를 등록하는 정석적 함수.. 이벤트 등록 풀네임 정도로 기억을..
+
+            // 1. 단일 이벤트 등록)
+            // $위치값.on("이벤트명", "이벤트리스너") : 해당 위치의 jQuery 객체에 일반 이벤트 등록
+            $("#btn").on("click", function(e){
+                alert("반갑습니다");
+            });
+
+            // 2. 같은 내용 복수 이벤트 등록)
+            // $위치값.on("이벤트명1 이벤트명2", "이벤트리스너") : 해당 위치의 jQuery 객체에 일반 이벤트들 등록
+            $("p").on("mouseenter mouseleave", function(e){
+                console.log("마우스가 p태그에 들어고거나 나갔습니다");
+                //$("div").append("마우스가 p태그에 들어고거나 나갔습니다 </br>");
+            });
+            
+            // 3. 다른 내용 복수 이벤트 등록)
+            // $위치값.on({이벤트1 : 이벤트리스너1}, ... , {이벤트n : 이벤트리스너n} }) : 해당 위치의 jQuery 객체에 각각 다른 이벤트들을 등록
+            $("p").on({
+
+                click : function(){
+                    console.log("p태그가 클릭되었습니다.")
+                },
+
+                mouseenter : function(){
+                    console.log("p태그에 마우스가 들어왔습니다.")
+                },
+
+                mouseleave : function(){
+                    console.log("p태그에 마우스가 나왔습니다.")
+                }
+
+            });
+
+
+            // [단축 이벤트 등록] : 일반 이벤트 함수를 쓰지 않고, 이벤트 종류별로 함수명에 대입하고 절차를 단순화시킨 함수(ex. click(), mouseover()..)
+            //  -> 내부적으로는 일반이벤트 함수인 on()을 사용하여 실행이 됨
+
+            // $위치값.click("이벤트리스너") : 해당 위치의 jQuery 객체에 '클릭'하여 발생하는 단축 이벤트 등록
+            $("#btn").click(function(e){
+                alert("반갑습니다");
+            });
+
+            $("p").click(function(e){
+                console.log("p태그가 클릭되었습니다.");
+            });
+
+            // $위치값.mouseenter("이벤트리스너") : 해당 위치의 jQuery 객체에 '마우스를 가져다 대서'하여 발생하는 단축 이벤트 등록
+            $("p").mouseenter(function(e){
+                console.log("p태그에 마우스가 들어왔습니다.");
+            });
+
+            // $위치값.mouseleave("이벤트리스너") : 해당 위치의 jQuery 객체에 마우스를 '나가게'하여 발생하는 단축 이벤트 등록
+            $("p").mouseleave(function(e){
+                console.log("p태그에 마우스가 나왔습니다.");
+            });
+
+
+            // [이벤트 제거 방법] : off()
+            $("#remove").click(function(e){
+
+                // $위치값.off() : 해당 위치의 jQuery 객체에 등록된 모든 이벤트를 제거
+                $("p").off();   // 이걸 누르는 순간 더 이상 p태그의 이벤트는 작동하지 않는다.
+
+                // $위치값.off("이벤트명") : 해당 위치의 jQuery 객체에 등록된 "이벤트명"에 해당하는 이벤트를 제거
+                $("p").off("click");     // 이걸 누르는 순간 더 이상 p태그의 click 이벤트는 작동하지 않는다.
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="btn">실행</button>
+    <button id="remove">제거</button>
+    <p>안녕하세요</p>
+    <div></div>
+</body>
+</html>
