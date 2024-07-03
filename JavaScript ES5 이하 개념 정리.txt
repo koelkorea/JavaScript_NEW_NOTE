@@ -33,70 +33,169 @@
  
  
  - DOM (Document Object Model)
-    : 브라우저에서 표준적으로 기본 제공하는 WEB API 중 하나로, HTML 문서의 구성 요소들을 읽고 파싱(parsing)하여서 JS로 조작이 가능한 {Node객체} 모델로 표현해주는 기능
+    : 브라우저에서 표준적으로 기본 제공하는 WEB API 중 하나로, HTML 문서(document)의 구성 요소들을 읽고 파싱(parsing)하여서, JS로 조작이 가능한 {Node객체} 모델로 표현해주는 기능
       (= Node객체는 곧 {JS객체}로서의 특징을 모두 가지고 있다고 생각하면 됨)
-          -> HTML 요소(element)를 노드(node)로 표현하고, 각 노드는 다른 노드와의 관계를 갖고 있는 tree로 표현되어 HTML 문서의 구조를 표현
-              -> 브라우저는 DOM tree를 참고하여 HTML구조를 잡고, CSSOM tree를 참고하여 styling을 하여 웹페이지의 랜더링(rendering)을 수행함
-                 (= 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것)
+          -> HTML 요소(element)를 노드(node)로 표현하고, 각 노드는 다른 노드와의 관계를 갖고 있는 tree로 표현되어 HTML 문서의 구조를 표현함
+             (= 당장 HTML의 영역이라 볼 수 있는 document 또한 DOM조작을 통해 접근이 가능함)
     
     # WEB API
        : 웹표준에서 모든 웹 브라우저에서 제공하기로 표준화 되어 있는 기능을 의미
          (= WEB API에 명시된 기능을 API로 제공할 수 없는 브라우저는 제대로 된 브라우저가 아니라는 말씀)
 
     # DOM(document object model) VS CSSOM(CSS object model)
-       : 어쨌든 DOM과 CSSOM은 상호작용하여 웹페이지의 랜더링과 동적인 조작이 가능하게 함
 
-         @ 차이점
-            : 각 모델이 제어하는 객체와 목적이 차이점
-               -> DOM(document object model) : HTML 요소들을 객체화시켜 트리 구조로 표현하여, 이를 JS로 조작하고 변경이 목적
-               -> CSSOM(CSS object model)    : style sheet의 각각의 규칙들중 '화면에 들어가야 할 녀석'들만 render 객체화하여 트리 구조로 표현, 이를 조작하고 변경이 목적
+      @ 공통점
+         : 브라우저는 DOM tree를 참고하여 HTML구조를 잡고, CSSOM tree를 참고하여 styling을 하여 웹페이지의 랜더링(rendering)을 수행함
+             -> 어쨌든 DOM과 CSSOM은 상호작용하여 웹페이지의 랜더링과 동적인 조작이 가능하게 함
+
+      @ 차이점 (DOM트리와 CSSOM트리는 다를 수 있음을 암시)
+         : 각 모델이 제어하는 객체와 목적이 차이점
+            -> DOM(document object model) : HTML 요소들을 객체화시켜 트리 구조로 표현하여, 이를 JS로 조작하고 변경이 목적
+            -> CSSOM(CSS object model)    : style sheet의 각각의 규칙들중 '화면에 들어가야 할 녀석'들만 render 객체화하여 트리 구조로 표현, 이를 조작하고 변경이 목적
 
     # (참고) 브라우저의 랜더링 과정
        : 브라우저의 랜더링 엔진이 웹페이지의 구체적인 렌더링을 담당하게 되며 다음과 같은 과정을 거침
          (DOM트리, CSS트리 -> Render 트리 ->  Render & Graphic 레이어 -> Layout 설정 -> 레이어 paint -> composite 레이어 -> GPU텍스처 이미지화 -> 택스터 랜더링)
+           -> 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것이라고 볼 수 있음
 
-          1. 작성된 HTML문을 파싱, 각각의 Node로 구성되어 연결된 DOM트리를 구축하여 웹페이지 구조를 잡음
-          2. CSS도 마찬가지로 파싱, 적혀있는 스타일 규칙들이 연결된 CSSOM트리를 구축
-          3. CSSOM과 스타일규칙과 DOM의 Node들의 정보를 결합하여, Render Object(랜더 객체)로 구축된 Render Tree(랜더 트리)를 생성
-
-          4. Render Tree의 내용 중 화면에 없는 요소라 쳐낼거 쳐내고, 최적화할거 최적화해서 Render Layer(랜더 레이어)를 완성
-              -> display:none이 포함된 노드는 지우고, 상속적인 스타일은 부모노드에만 위치하게 설계하는 과정이 여기 들어감
-                  -> (중요) display:none인 Node가 지워지기에 렌더트리와 DOM트리는 1:1 대응이 아니다!
- 
-          5. 만약, Render Layer(랜더 레이어)가 완성될 때 'GPU에서 처리되는 부분'이 있다면, 이 부분들은 강제적으로 Graphic Layer(그래픽 레이어)로 분리
-              -> Grapic 레이어 부분은 GPU가 작업처리를 하기에, 결과적으로 멀티쓰레드적인 비동기처리를 하게 됨
-                 (= 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것)
-
-                  ex) CSS3D / video & canvas / filter / animation/ transform : translateZ(0) 등
-
-          6. (4, 5의 과정을 거쳐 만들어진) Render Layer(랜더레이어)을 기반으로 LayOut 설정
-               -> 좌표는 보통 부모를 기준으로 설정
-               -> 이 과정에서 CSS의 width, height, margin, padding 등의 HTML 요소의 공간과 연관된 속성을 처리함
-               -> Global Layout은 브라우저 화면 크기를 늘리거나 폰트 사이즈가 커지면 변경
-
-          7. Render Layer(랜더레이어)을 대상으로 paint(칠하기) = 레스터화
-              -> 이 과정에서 CSS의 color 관련 속성을 처리해줌
-
-          8. 만들어진 레이어(Render & Graphic Layer)들을 합쳐서, 복합 레이어(composite layer)로 만들고 표기하기
-              -> 이 과정에서 CSS의 transform, opacity 속성을 처리해줌
-
-          9. (8의 결과로) 각각의 레이어로부터 비트맵이 생성되고, GPU에 텍스처로 업로드..
-              -> GPU 텍스처들은 서로 합쳐져 하나의 이미지로 렌더링되어 화면으로 출력되어 마무리
+              1. 작성된 HTML문을 파싱, 각각의 Node로 구성되어 연결된 DOM트리를 구축하여 웹페이지 구조를 잡음
+              2. CSS도 마찬가지로 파싱, 적혀있는 스타일 규칙들이 연결된 CSSOM트리를 구축
+              3. CSSOM과 스타일규칙과 DOM의 Node들의 정보를 결합하여, Render Object(랜더 객체)로 구축된 Render Tree(랜더 트리)를 생성
+    
+              4. Render Tree의 내용 중 화면에 없는 요소라 쳐낼거 쳐내고, 최적화할거 최적화해서 Render Layer(랜더 레이어)를 완성
+                  -> display:none이 포함된 노드는 지우고, 상속적인 스타일은 부모노드에만 위치하게 설계하는 과정이 여기 들어감
+                      -> (중요) display:none인 Node가 지워지기에 렌더트리와 DOM트리는 1:1 대응이 아니다!
+     
+              5. 만약, Render Layer(랜더 레이어)가 완성될 때 'GPU에서 처리되는 부분'이 있다면, 이 부분들은 강제적으로 Graphic Layer(그래픽 레이어)로 분리
+                  -> Grapic 레이어 부분은 GPU가 작업처리를 하기에, 결과적으로 멀티쓰레드적인 비동기처리를 하게 됨
+                     (= 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것)
+    
+                      ex) CSS3D / video & canvas / filter / animation/ transform : translateZ(0) 등
+    
+              6. (4, 5의 과정을 거쳐 만들어진) Render Layer(랜더레이어)을 기반으로 LayOut 설정
+                   -> 좌표는 보통 부모를 기준으로 설정
+                   -> 이 과정에서 CSS의 width, height, margin, padding 등의 HTML 요소의 공간과 연관된 속성을 처리함
+                   -> Global Layout은 브라우저 화면 크기를 늘리거나 폰트 사이즈가 커지면 변경
+    
+              7. Render Layer(랜더레이어)을 대상으로 paint(칠하기) = 레스터화
+                  -> 이 과정에서 CSS의 color 관련 속성을 처리해줌
+    
+              8. 만들어진 레이어(Render & Graphic Layer)들을 합쳐서, 복합 레이어(composite layer)로 만들고 표기하기
+                  -> 이 과정에서 CSS의 transform, opacity 속성을 처리해줌
+    
+              9. (8의 결과로) 각각의 레이어로부터 비트맵이 생성되고, GPU에 텍스처로 업로드..
+                  -> GPU 텍스처들은 서로 합쳐져 하나의 이미지로 렌더링되어 화면으로 출력되어 마무리
 
     # DOM(document object model) 조작을 위한 JS문법
 
 
+ - WEB component
+    : 사용자가 스스로 정의해서 제작한 만들어진 '커스텀 HTML <태그>'라고 생각하면 됨
+      (= 역으로 말하자면, 기본 HTML태그는 기본 제공되는 WEB component라고 볼 수 있음)
+          -> (중요) React, Vue 등등 대부분의 프론트엔드 관련 라이브러리나 프레임워크에서 말하는 component도 해당 개념과 비슷
+
+     # WEB component 제작법
+
+        1. class 문법으로 HTMLElement라는 JS객체를 상속받는 class를 선언
+
+        2. 그 내부의 메서드로 connectedCallback()을 정의하고, {}안에 넣을 HTML 내용들에 해당하는 명령어를 입력해주면 됨
+
+          @ connectedCallback() 작성시 참고 사항
+
+             1) connectedCallback() 함수는 해당 WEB compoent가 HTML에 장착될 시점에서 실행됨
+                (= component 생성 시점을 잘못 계산하면, 없는 태그라니 하는 식으로 페이지 로드시 많은 것들이 꼬일 수 있음)
+
+             2) connectedCallback() 함수에 HTML 내용 입력 방식
+                 a. HTML 내용 입력시 this.innerHTML = 'compoent 내용'에 해당하는 부분을 문자열 형식으로 입력
+                 b. HTML 내용 입력시 태그를 생성하고 배치하는 JS 함수를 사용
+
+             3) this.getAttribute('속성명')을 사용하면, 추후 <component /> 선언 시 사용자가 넣는 '속성명'의 값을 가져올 수 있음
+                 -> 이를 지역변수에 할당해서, 구체적인 component 내용에 써먹음으로서, HTML을 동적으로 구성 가능 
+
+             4) style을 넣고 싶으면, 내용에 <style> 태그를 넣고 스타일을 부여하면 됨
+                 -> BUT! 해당 WEB component 이외의 다른 component들에도 style 선택자 조건만 맞으면 영향을 미칠 수 있음
+                    (= 의도하지 않은 오염이 발생할 수 있음)
+                        -> (중요) WEB component의 style이 지역변수처럼 작동하게 하고 싶다면, shadow DOM까지 열어서 거기 집어넣으면 해결됨
+      
+        3. 작성한 component에서 특정 '속성명'의 변경이 감지되면, 이를 바로 HTML내용에 반영되도록 반응형 component를 원한다면?
+            -> static get observedAttributes() 메서드와 attributeChangedCallback()를 작성함
+               (이 부분을 응용하면, React, Vue에서 제공하는 새로고침 없는 자동 html 재렌더링 기능도 특정 attribute 변화를 감지하면 변경해주는 식으로 구현 가능함!)
+
+               @ static get observedAttributes() 메서드
+                  : 해당 WEB component에서 변경여부를 감시할 속성들을 제시하도록 도와주는 메서드로 [변경여부를 감시할 속성들] 형식으로 반환
+     
+               @ attributeChangedCallback()
+                  : static get observedAttributes()에서 반환한 [변경여부를 감시할 속성들]이 변하는것이 감지되면, 해당 메서드의 내용을 수행하여 component의 변경을 수행하는 함수
+
+        3. 다 작성했으면 customElements.define("원하는 compoent명",작성한 component 클래스명); 를 class 외부에 작성함
+           (= 이를 통해, 사용자 정의 WEB component가 사용 가능)
+
+           ex) name 속성에 따라 동적으로 내용이 달라지고 실시간 변경되는 Web component 작성
+           
+               class 클래스 extends HTMLElement {
+    
+                  connectedCallback() {
+                     let name = this.getAttribute('name');
+                     this.innerHTML = '<label>${name}을 입력하쇼</label><input>
+                                       <style> label { color : red } </style>`
+                  }
+               
+                  static get observedAttributes() {
+                      return ['name']
+                  }
+                  attributeChangedCallback() {
+                      (attribute 변경시 실행할 코드)
+                  }
+               }
+ 
+                customElements.define("custom-input", 클래스);
+
+        4. HTML 영역에 원하는 부분에 <compoent명 속성명="값"></compoent명> 이런 식으로 작성하면 완료..
+
+           ex) HTML 영역에 해당 WEB component를 name속성과 함께 작성
+
+                <custom-input name="이메일"></custom-input>
+                <custom-input name="비번"></custom-input>
+ 
+      # WEB component의 세부적 개념 및 특성 정리
+
+         1. 해당 WEB component에만 귀속되고 적용되는 style을 적용하기 쉽지 않음
+             -> shadow DOM을 쓰거나, ``과 style속성을 써보면 해결은 될 수 있음
+
+         2. WEB component class를 export하고 어디서나 import하여 <component>를 재활용이 가능함
+             -> BUT! 누누히 말하지만, style과 같이 다른 component에도 적용이 되는 암묵적 결합 요소가 있을 수 있음
+                 -> 타 component를 오염시키지 않으면서, 내부에서 완전히 독립적으로 작동하고, 일부를 사용자에게 보여주지 않을 component를 제작하려면? 
+                     -> shadowDOM을 알아야 함
+
+         3. react나 vue의 component들도 기본적으로 WEB component가 제공하는 기술적 역할을 모두 수행가능하나... 
+             -> BUT, 해당 라이브러리나 프론트엔드에서 추구하는 VDOM을 통한 state기반 재랜더링과 같은 기능들이 추가된 것으로 이해하면 됨
+
  - Shadow DOM(document of model)
-    : 개별 WEB component(웹 컴포넌트)의 내부를 캡슐화하여 외부로부터 격리시켜서, 그 구조와 스타일이 외부로 노출되지 않도록 보호하면서 독립적인 모듈로서 사용이 가능하게 만드는 기술
-      (= 기본 HTML 태그들이 생각보다 내용이 복잡함에도 WEB component(웹 컴포넌트) 사용하듯 <태그명> 방식으로 쉽게 사용이 가능한 이유)
+    : 개별 WEB component(웹 컴포넌트)의 내부 구조가 DOM모델로 구성되어 있는 영역을 그림자와 같이 드러나지 않게 캡슐화하여, 사용자로부터 그 구조와 스타일이 변형되지 않도록 보호하고 독립적인 모듈로서 사용이 가능하게 만드는 기술
+      (쉽게 설명하자면, 메인보드의 설정 화면이 평소에는 초보사용자가 알 필요없는 부분은 보이지 않지만, 숙련자용 설정을 키면 세세한 세팅까지 다 할 수 있게 기술적으로 보여줄 수 있게 하는 원리와 유사함)
+        -> 기본 HTML 태그들이 생각보다 내용이 복잡함에도 <태그명> 방식으로 쉽게 사용이 가능한 이유에 지분을 많이 가지고 있음
+
+            ex) <input type="range">의 경우 실제로는 꽤 복잡한 component와 같이 내부가 설계되어 있음
+
+     # shadowDOM의 키워드
+        1. 내부 HTML요소들의 캡슐화
+        2. 캡슐화를 통한 편의성 증대
+        3. shadowDOM 내부 요소들의 지역변수화 (= 암묵적 결합 원천 봉쇄)
+        4. WEB component에 적용하여, HTML 모듈화 개발이 가능하게 하는 기술적 원천
+
+     # Shadow DOM을 보지 못하게 하는 이유 요약
+        : 보안과 연관된 설계의도로 인해, 개발된  web component(웹 컴포넌트)의 구조와 스타일이 기본적으로 외부로부터 보호되길 원했음
+          (= 브라우저가 Shadow DOM의 내부 구조를 외부로 노출하지 않는 것은 캡슐화가 설계 의도에 들어있기 때문임)
+              -> 캡슐화를 적용하여 논리적인 그룹을 형성하고, 재사용성을 높이고 유지 보수를 용이하게 함
 
      # Shadow DOM을 통한 캡슐화의 이점
+
         1. 개발자 편의성 제공 
 
-           ex) 웹 개발시 기본적인 HTML태그의 세부 설계구조를 몰라도, 개발자는 input 같은 복잡한 기본태그를  WEB component(웹 컴포넌트) 사용하듯 쉽게 쓸 수 있음 
-               (= Shadow DOM을 볼 수 있다는 의미는 HTML 개발시 코드가 너무 복잡해지지 않기 위해 숨겨놓은 HTML 요소들에 대한 구조를 까볼 수 있다는 이야기)
+           ex) 웹 개발시 기본적인 HTML태그의 세부 설계구조를 몰라도, 개발자는 input 같은 복잡한 기본태그를 WEB component(웹 컴포넌트) 사용하듯 쉽게 쓸 수 있음 
+               (= Shadow DOM을 볼 수 있다는 의미는 HTML 개발시 코드가 너무 복잡해지지 않기 위해 숨겨놓은 HTML 요소들에 대한 구조를 원한다면 까볼 수 있다는 이야기)
 
-        2. 진정한 의미의 html의 독립적인 모듈화 개발이 가능
+        2. 진정한 의미의 html 태그들의 독립적인 모듈화 개발이 가능
            (= 각 web component들이 다른 모듈로 취급되어, 서로 영향을 끼치는걸 막을 수 있음)
 
            ex) WEB component(웹 컴포넌트)의 style의 경우 shadow DOM 열어서 거기 집어넣으면, 다른 DOM이나 WEB component(웹 컴포넌트)에 영향을 끼치지 않음
@@ -130,57 +229,124 @@
                        <custom-input></custom-input>
                        <label>왜 나까지 빨개짐?</label>
 
-     # Shadow DOM을 보지 못하게 하는 이유 요약
-        : 보안과 연관된 설계의도로 인해, 개발된 웹 컴포넌트의 구조와 스타일이 외부로부터 보호되길 원했음
-          (= 브라우저가 Shadow DOM의 내부 구조를 외부로 노출하지 않는 것은 캡슐화가 설계 의도에 들어있기 때문임)
-              -> 캡슐화를 적용하여 논리적인 그룹을 형성하고, 재사용성을 높이고 유지 보수를 용이하게 함
-
      # 그래서 Shadow DOM을 알아야 하는 이유?
-        : CSS의 가상 요소(pseudo element)와 결합하여 셀렉터로 접근할 수 있다면, 내가 전에 커스터마이징 할 수 없었던 HTML요소(ex. input)도 커스터마이징이나 스타일링이 가능하기 때문!
-           -> CSS 개념 참고
+
+        1. Shadow DOM 개념을 안다면, 평소에는 수정하거나 변경 못하게 한 component들의 내부구조에 해당하는 영역도 CSS의 가상 요소(pseudo element)와 결합하여 셀렉터로 접근할 수 있음
+           (= 일반적으로는 막혀있어 커스터마이징 할 수 없었던 특정 태그나 component들의 내부 HTML요소(ex. input)도 커스터마이징이 가능!)
+           
+           ex) shadowDOM 요소에 style이나, 이벤트리스너 부착 가능!
+
+               <custom-input></custom-input>
+               
+                 <template id="template1">
+                   <label>이메일을 입력하쇼</label><input>
+                   <style>label { color : red }</style>
+                 </template>
+               
+                 <script>
+
+                   class 클래스 extends HTMLElement {
+
+                     connectedCallback() {
+
+                       this.attachShadow({mode : 'open'});
+                       this.shadowRoot.append(template1.content.cloneNode(true));
+
+                       let el = this.shadowRoot.querySelector('label');
+
+                       el.addEventListener('click', function(){
+                         console.log('클릭함')
+                       })
+
+                     }
+                   }
+
+                   customElements.define("custom-input", 클래스);
+                 </script>
+
+        2. 어떤 WEB component의 style 속성이 완전히 독립적으로 해당 component에서만 지역변수처럼 작동하게 하고 싶다면, shadow DOM에 style을 적용해야 하기 때문
+           (= react나 vue의 그 component들처럼 해당 component안에서만 style이 국한되게 할 수 있음)
+
+        3. Shadow DOM 개념이 있어야 완벽하게 사이드이팩트 없이 독립적으로 기능하는 WEB component를 제작하여, html 모듈화 개발을 할 수 있음
+           (= export한 WEB component class를 어디서나 import하여 <component>를 붙여넣어도 완벽히 독립적으로 작동할 수 있기에, html 모듈화가 가능하고 이를 웹 개발이 편의적으로 활용이 가능함)
+
+     # Shadow DOM VS WEB component
+        : WEB component와 Shadow DOM은 전혀 다른 개념이지만, 둘이 결합된 개념을 통해 사용자가 정의한 <태그>에 재사용성을 통한 편의와 더불어 높은 수준의 캡슐화를 더해서, 진정으로 독립적으로 기능하는 Web Component를 제작가능
+           -> (중요) 이렇게 만들어진 완벽하게 독립적으로 기능하는 WEB component를 통해서, html을 조립하듯 html 모듈화 개발을 할 수 있기에.. Shadow DOM과 WEB component는 세트메뉴로 묶일 수 밖에 없음
+
+              @ WEB component
+                : 사용자가 제작한 <태그>가 모듈로서 기능할 수 있도록, 재사용성이라는 키워드에 포커스를 맞추고 구현된 기능
+                   -> 그래서인지 캡슐화적 개념이 기능에서는 집중되지 않음
+       
+              @ Shadow DOM
+                : 이미 존재하는 <태그>의 내용을 기본적으로 비공개하고, 내부 요소들을 완벽하게 독립적인 지역변수화시켜 component 외부로 영향성을 주지도, 내부에서 받지도 않게 만들기를 원할 때 사용하는 것이 Shadow DOM
+                   -> (참고) 엄연히 실존하는 HTML문서에 해당하는 DOM요소이기에, DOM셀렉터로 지정할 수 있음
+                             (= Shadow DOM의 DOM요소들도 DOM 조작이 가능하며, style 지정이나 이벤트리스너의 부착도 가능함)
 
      # Shadow DOM을 개발자 도구에서 확인하는 방법
         : 개발자도구를 켠 상태에서 F12 (혹은 Settings 메뉴)를 누르면 나오는 곳에서, Show user agent shadow DOM을 체크하면 됨
 
-     # Shadow DOM을 활용하여 CSS 셀렉터를 통해 스타일링 하는 요령
-        1. #shadow-root 아래의 숨겨진 해당 HTML태그의 Shadow DOM 구조의 HTML요소에서 pesudo속성을 찾고 그 속성값을 복사하여 가상 요소(pesudo element)와 결합하여 셀렉터 생성
-           - 원하는 HTML태그를 디버그 모드에서 검사한 뒤, #shadow-root 아래의 숨겨진 해당 HTML태그의 Shadow DOM 구조를 확인하고,    
-           - 거기서 스타일링을 주고 싶은 요소의 pesudo속성을 찾고 그 속성값을 복사함
-           - 복사한 pesudo속성값을 가상 요소(pesudo element) 셀렉터에 이용하기 or 개발자 도구에서 셀렉터를 찾아서 그대로 CSS에 적용해도 됨 
-
-                ex) input::-webkit-input-placeholder {
-                      color : red; 
-                    }
-
-        2. pesudo속성값이 없어서, 1번과 같은 방법을 사용 못 하는 경우?
-            : 개발자 도구를 통해 CSS 셀렉터와 거기에 적용된 스타일을 찾을 수 있는데, 거기서 가상 요소가 적용된 셀렉터를 잘 찾아보면 해당 셀렉터가 등장하기도 함
-
-                ex) <inpur type="range">
-                     -> [shadow DOM구조]
-                        <div>
-                          <div pesudo="-webkit-slider">     <- 얘는 가상요소 셀렉터로 쉽게 가져올 수 있는데?
-                          <div id="thumb">                  <- 얘는 그렇게는 못 가져옴
-                        </div>
-                
-                     -> 개발자도구 style 영역 잘 뒤져보면 해당 html태그에 대한 셀렉터 있는데 그거 가져와서 셀렉터도 써도 됨 
-
-                        input[type="range" i]::-webkit-slider-thumb {
-                          appearance : none;  <- 기존 브라우저의 HTML 스타일을 아예 꺼버리는 기능 (shadow DOM 커스텀 스타일링 적용할거면 잘 참고하자) 
-                          display : block;
-                        }
-
-    # Shadow DOM(document object model) 생성을 위한 JS문법
-
-    1. 우선 attachShadow() 라는걸 써서 shadowRoot 라는 공간을 하나 만들어줍니다.
-
-2. shadowRoot 여기에 원하는 html 넣으면 숨겨집니다.
-
+     # Shadow DOM(document object model) 생성을 위한 JS문법
+        1. 어떤 HTML요소를 DOM셀렉터를 통해 지정
+        2. DOM셀렉터.attachShadow({mode : 'open'})을 통해, 해당 DOM요소의 ShadowDOM 영역에 진입할 수 있게 해주기
+        3. DOM셀렉터.shadowRoot 영역에 원하는 <태그> 내용을 기입할 수 있도록 코드를 입력하면 됨
+            -> a. HTML 내용 입력시 DOM셀렉터.shadowRoot.innerHTML = 'Shadow DOM compoent 내용'에 해당하는 부분을 문자열 형식으로 입력
  
+                  ex) mordor라는 class 속성값을 가진 <div> 속성의 shadowDOM 속성으로 <p>심연에서왔도다</p>라는 태그가 들어가서, 평소에는 가려져서 보이지 않게 함
+                  
+                      <div class="mordor"></div>
+                      <script>
+                        document.querySelector('mordor').attachShadow({mode : 'open'});
+                        document.querySelector('mordor').shadowRoot.innerHTML = '<p>심연에서왔도다</p>'
+                      </script>
+ 
+               b. HTML 내용 입력시 태그를 생성하고, DOM셀렉터.shadowRoot 영역에 배치하는 JS 함수를 사용
+               c. HTML 내용 입력시 DOM셀렉터.shadowRoot.append('shadowDOM component 내용' or 변수명 등)을 사용
+ 
+                  ex) 랜더링이 되지 않는 <template>태그에 shadowDOM에 담을 태그 내용을 기록한 뒤, 이를 this.shadowRoot.append(템플릿 내용 복사코드)로 태그내용 복붙하여 구현
+                  
+                      <template id="template1">
+                        <label>이메일을 입력하쇼</label><input>
+                        <style>label { color : red }</style>
+                      </template>
+                    
+                      <script>
+                        class 클래스 extends HTMLElement {
+                          connectedCallback() {
+                            this.attachShadow({mode : 'open'});
+                            this.shadowRoot.append(template1.content.cloneNode(true));
+                          }
+                        }
+                        customElements.define("custom-input", 클래스);
+                      </script>
+ 
+      # Shadow DOM을 활용하여 CSS 셀렉터를 통해 스타일링 하는 요령
+         1. #shadow-root 아래의 숨겨진 해당 HTML태그의 Shadow DOM 구조의 HTML요소에서 pesudo속성을 찾고 그 속성값을 복사하여 가상 요소(pesudo element)와 결합하여 셀렉터 생성
+            -> 원하는 HTML태그를 디버그 모드에서 검사한 뒤, #shadow-root 아래의 숨겨진 해당 HTML태그의 Shadow DOM 구조를 확인  
+            -> 거기서 스타일링을 주고 싶은 요소의 pesudo속성을 찾고 그 속성값을 복사함
+            -> 복사한 pesudo속성값을 가상 요소(pesudo element) 셀렉터에 이용하기 or 개발자 도구에서 셀렉터를 찾아서 그대로 CSS에 적용해도 됨 
+ 
+                 ex) input::-webkit-input-placeholder {
+                       color : red; 
+                     }
+ 
+         2. pesudo속성값이 없어서, 1번과 같은 방법을 사용 못 하는 경우?
+             : 개발자 도구를 통해 CSS 셀렉터와 거기에 적용된 스타일을 찾을 수 있는데, 거기서 가상 요소가 적용된 셀렉터를 잘 찾아보면 해당 셀렉터가 등장하기도 함
+ 
+                 ex) <inpur type="range">
+                      -> [shadow DOM구조]
+                         <div>
+                           <div pesudo="-webkit-slider">     <- 얘는 가상요소 셀렉터로 쉽게 가져올 수 있는데?
+                           <div id="thumb">                  <- 얘는 그렇게는 못 가져옴
+                         </div>
+                 
+                      -> 개발자도구 style 영역 잘 뒤져보면 해당 html태그에 대한 셀렉터 있는데 그거 가져와서 셀렉터도 써도 됨 
+ 
+                         input[type="range" i]::-webkit-slider-thumb {
+                           appearance : none;  <- 기존 브라우저의 HTML 스타일을 아예 꺼버리는 기능 (shadow DOM 커스텀 스타일링 적용할거면 잘 참고하자) 
+                           display : block;
+                         }
 
-거의 모든 <태그>는 shadowRoot를 오픈할 수 있고 
 
-shadowRoot안에 넣은걸 전부 shadow DOM 이라고 칭하는데
+          
 
-이걸 굳이 써야할 이유를 모르겠고 별 장점은 없어보이지만
-
-web component 문법과 합해야 진가를 발휘합니다.
