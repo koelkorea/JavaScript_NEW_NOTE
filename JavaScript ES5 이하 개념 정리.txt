@@ -161,190 +161,201 @@
            3. document 객체 자체는 해당 화면의 DOM tree의 root(= 뿌리)에 해당하는 부분으로 사실상 DOM객체로 변환된 화면 전체를 의미
                -> (중요) document객체의 root에 해당하는 부분은 <html> 태그
 
-    # DOM(Document Object Model) 객체의 개별 HTML 단위를 저장하는 {객체} 종류
+    # {Node 객체} -> {Element 객체} -> {HTMLElement 객체} -> {Specific HTML Elements 객체}
+       : DOM(Document Object Model)의 개별 HTML 단위를 구성하는 {객체} 단위들이며, {Node 객체}를 최고 선조로 한 상속 관계를 이룸
+         (= DOM tree에 존재하는 {객체}에 가장 기본적인 단위는 {Node 객체}이며, HTML 요소 또한 {Node 객체}를 기반으로 이뤄져 있음)
     
-      1. {Element 객체} VS {Node 객체}
-         : DOM 형식으로 구축된 HTML요소 정보를 저장하는 {객체}들이지만, 각자만의 방식이 다른 부분이 존재함
-     
-          1) (공통점)
-              : {Element 객체}, {Node 객체} 둘 다 DOM 형식으로 구축된 HTML요소 정보를 저장하는 {객체}
+          1. {Node 객체}
+               : DOM tree를 구성하는 가장 최소의 단위에 해당하는 {객체}로 이후 이를 상속받은 요소들의 interface로서 기능
+                 (= DOM tree의 모든 {객체}들은 Node 단위의 인터페이스에서 시작함)
 
-          2) (차이점)
+                  ex) <HTML 태그> 또한 Node단위로 구분 가능한 '요소(element)노드'와 text단위에 해당하는 'text 노드'까지 둘 다 포함
+                       -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
 
-              a. ES6를 기준으로 등장 및 사용 여부가 극명하게 갈림
+                @ {Node 객체}의 종류
+                   1) 문서(document)노드
+                       : DOM tree의 최상위 계층(root)이면서 전체 문서(Document)를 가리키는 {Document 객체}의 출발점에 해당하는 {Node 객체}
 
-                - {Element 객체}
-                   : ES6 이전부터 사용되는 DOM객체의 HTML요소 내용 저장해주는 {객체}
-                     (= 주로 ES6이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루게 됨)
+                   2) 요소(element)노드
+                       : DOM tree에 존재하는 HTML의 태그 요소(element)에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
 
-                - {Node 객체}
-                   : ES6 이후부터 사용되는 DOM객체의 Node들을 기준으로 내용 저장해주는 {객체}
-                     (= 주로 ES6이후에 사용되는 DOM 탐색 메서드인 querySelector('CSS셀렉터') 메서드 종류의 반환값인 컨테이너 역할의 {NodeList 객체}의 내부 요소를 이루게 됨)
+                   3) text 노드
+                       : DOM tree에 존재하는 HTML의 TEXT에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
+                           -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
 
-              b. 저장된 HTML요소들이 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체} 여부
+                   4) 주석 노드
+                       : DOM tree에 존재하는 HTML의 주석에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
 
-                - {Element 객체}
-                   : 무조건 {live DOM 객체} 형태로 저장되어 있음
-                      -> {Element 객체}에 저장된 모든 HTML태그 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
-                         (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
+                @ {Node 객체}의 특징
+                   1) ES6이후에 사용되는 DOM 탐색 메서드인 querySelector('CSS셀렉터') 메서드 종류의 반환값인 컨테이너 역할의 {NodeList 객체}의 내부 요소를 이루게 됨
+                      (= ES6 이후 DOM 탐색을 통해 요소를 찾는 기준이 되는 최소 단위 {객체} )
 
-                    @ (참고) {live DOM 객체} VS {non-live DOM 객체}
-                       : 어떤 {객체}가 저장하는 HTML요소의 정보의 상태 변화가 실시간으로 반영되는가?
-                           -> YES : {live DOM 객체} 
-                           -> NO  : {non-live DOM 객체} = 해당 HTML요소의 정보가 저장될 시점의 값이 정적(static)으로 남아있음
-
-                - {Node 객체}
-                   : 일반적으로 HTML 정보를 정적(static)으로 저장하여 상태 변화를 실시간으로 반영 X하는 {non-live DOM 객체} 형태로 저장되어 있음
-                      -> BUT! {Element 객체}처럼 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                         (ES6 이전부터 사용되어 왔던, {Element 객체}의 일부 DOM 탐색 메서드나 프로퍼티들을 사용하던 개발자들도 포용할 수 있도록 함)
+                   2) 일반적으로 HTML 정보를 정적(static)으로 저장하여 상태 변화를 실시간으로 반영 X하는 {non-live DOM 객체} 형태로 저장되어 있음
+                       -> BUT! {Element 객체}처럼 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                          (ES6 이전부터 사용되어 왔던, {Element 객체}의 일부 DOM 탐색 메서드나 프로퍼티들을 사용하던 개발자들도 포용할 수 있도록 함)
                             -> (중요) DOM탐색 메서드명도 같지만, 이들이 반환하는 HTML요소들을 품은 {객체}들 또한 실시간으로 변화를 반영하는 {live DOM 객체}에 해당하도록 예외성이 강한 대목
 
                                 ex) {NodeList 객체}.childNodes ( {Element 객체}.childNodes도 마찬가지 ), {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
 
-              c. 각 {객체}가 표현하는 HTML요소 단위의 기준이 다름
+                @ {Node 객체}의 프로퍼티
+                   : 전체 DOM객체로 구성된 HTML요소들을 {Node 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+  
+                     - parentNode  
+                        : 기준 노드의 {부모 Node 객체}를 저장
+                          (= Document 객체일 경우 root에 해당함 = 부모 노드가 없음으로 null을 반환)
+  
+                     - childNode(특수성 존재)  
+                        : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
+                           -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                                    (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
+  
+                     - firstChild 
+                        : 기준 노드의 {1번째 자식 Node 객체}를 저장
+                          (= 자식이 없는 노드일 경우 null을 반환)
+  
+                     - lastChild  
+                        : 기준 노드의 {마지막 자식 Node 객체}를 저장
+                          (= 자식이 없는 노드일 경우 null을 반환)
+  
+                     - nextSibling
+                        : 기준 노드의 '아우'에 해당하는 {형제 Node 객체}를 저장
+  
+                     - previousSibling
+                        : 기준 노드의 '형님'에 해당하는 {형제 Node 객체}를 저장
+  
+                     - nodeType
+                        : 해당 {Node 객체} 유형애 해당하는 뜻하는 숫자
+                          (요소 노드 = 1, 텍스트 노드 = 3, Document = 9)
+  
+                     - nodeValue
+                        : 해당 {Node 객체}가 text 노드일 경우 텍스트 콘텐츠(= 내용)를 저장
+                          (= 요소 노드는 null를 반환)
 
-                - {Element 객체}
-                   : 표현되는 HTML요소 단위 기준이 <HTML 태그> 단위를 기반으로 함
-                      -> text단위는 <HTML 태그>가 아니니 여기 포함되지 않음 = HTML태그요소의 계층이 직관적이므로 이터러블의 기준으로 이쪽으로 삼고 순회하는 식의 코드를 짜기는 수월함
-
-                    @ {Element 객체}의 프로퍼티
-                       : 전체 DOM객체로 구성된 HTML요소들을 {Element 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
-
-                         - childNodes(특수성 존재)
-                            : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
-                               -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                                        (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
-  
-                         - parentElement
-                            : 기준 HTML요소의 {부모 Element 객체}를 참조합니다.
-                               -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
-  
-                         - firstElementChild
-                            : 기준 노드의 {1번째 자식 Element 객체}를 저장
-                               -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
-  
-                         - lastElementChild
-                            : 기준 노드의 {마지막 자식 Element 객체}를 저장
-                               -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
-  
-                         - nextElementSibling
-                            : 기준 HTML요소와 '아우'에 해당하는 {형제 Element 객체}를 저장
-  
-                         - previousElementSibling
-                            : 기준 HTML요소와 '형님'에 해당하는 {형제 Element 객체}를 저장
-  
-                         - childElementCount
-                            : 기준 HTML요소의 {부모 Element 객체} 개수를 저장
-                              (= children.length와 같은 의미)
-        
-                - {Node 객체}
-                   : 표현되는 <HTML 태그> 보다 넓은 기준의 단위인 Node 단위를 기반으로 함
-                      -> Node단위는 <HTML 태그>에 해당하는 '요소(element)노드'와 text단위에 해당하는 'text 노드'까지 둘 다 포함
-                          -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
-  
-                    @ {Node 객체}의 프로퍼티
-                       : 전체 DOM객체로 구성된 HTML요소들을 {Node 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
-  
-                         - parentNode  
-                            : 기준 노드의 {부모 Node 객체}를 저장
-                              (= Document 객체일 경우 root에 해당함 = 부모 노드가 없음으로 null을 반환)
-  
-                         - childNode(특수성 존재)  
-                            : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
-                               -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                                        (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
-  
-                         - firstChild 
-                            : 기준 노드의 {1번째 자식 Node 객체}를 저장
-                              (= 자식이 없는 노드일 경우 null을 반환)
-  
-                         - lastChild  
-                            : 기준 노드의 {마지막 자식 Node 객체}를 저장
-                              (= 자식이 없는 노드일 경우 null을 반환)
-  
-                         - nextSibling
-                            : 기준 노드의 '아우'에 해당하는 {형제 Node 객체}를 저장
-  
-                         - previousSibling
-                            : 기준 노드의 '형님'에 해당하는 {형제 Node 객체}를 저장
-  
-                         - nodeType
-                            : 해당 {Node 객체} 유형애 해당하는 뜻하는 숫자
-                              (요소 노드 = 1, 텍스트 노드 = 3, Document = 9)
-  
-                         - nodeValue
-                            : 해당 {Node 객체}가 text 노드일 경우 텍스트 콘텐츠(= 내용)를 저장
-                              (= 요소 노드는 null를 반환)
-
-      2. {HTMLCollection 객체} VS {NodeList 객체}
-          : DOM 형식으로 구축된 HTML요소 정보를 저장하는 {객체}들을 여러개 담을 수 있는 컨테이너 역할의 {유사 배열 객체}에 해당하지만, 각자만의 방식이 다른 부분이 존재함
-
-          1) (공통점)
-              : {HTMLCollection 객체}, {NodeList 객체} 둘 다 HTML요소 저장하는 {객체}들을 여러개 담을 수 있는 컨테이너 역할의 {유사 배열 객체}에 해당
-                  -> {유사 배열 객체} != [배열] 
-                      - map, forEach, reduce와 같은 JS [배열] 객체의 메서드 사용X
-                      - length 프로퍼티를 가짐 = {객체}를 [배열]처럼 접근 가능 = 반복문을 돌 수 있음
-                      -  깊은 복사를 통하던 얕은 복사를 통하던 둘 다 {유사 배열 객체} -> [배열] 변환이 권유
-                         (= [배열] 관련 메서드를 사용하고 못하고의 차이를 극복하려고 하기 때문)
-                             -> (중요) 특히 {live DOM 객체}의 경우 무조건 실시간으로 HTML요소의 변화를 반영하니, [배열]로 변환해서 정적(static)한 HTML요소를 저장하여 다루도록 하는 것이 좋음
-                                 
-                                 ex) class속성이 'purple'이란 HTML요소들을 getElementByClassName('purple')로 찾은뒤, 해당 {HTMLCollection 객체}.length를 통해 반복문을 수행하여, class속성 값을 바꾼다면?
-                                      -> 1번쨰 {element 객체}의 class속성값이 바뀌는 순간 {HTMLCollection 객체}의 내부 구성에서 1번쨰 {element 객체}가 빠지면서 {HTMLCollection 객체}.length와 index 정보도 변경
-                                         (= 초기와 다르게 원래 2번쨰 {element 객체} -> 1번째가 되고, 3번쨰 {element 객체} -> 2번째가 되면서, {HTMLCollection 객체}[1]이 나타내는 {element 객체}가 변하기에 본래 2번쨰 객체는 건들지 못함
-
-               @ (참고) {유사 배열 객체}
-                   : index를 가지고, length 프로퍼티를 가지고 있어 순환이 가능한 iterable한 특성을 가지고 있는 {객체}지만, [배열]은 아닌 {객체}
-                     (= 일부 [배열]의 특성을 가지고 있는 {객체}를 의미)
-               
-               @ {유사 배열 객체} vs [배열]
-      
-                  - (공통점)
-                      1. index를 가지고, length 프로퍼티를 가지고 있는 iterable한 특성을 가지고 있음
-                      2. iterable한 특성이 있어 반복문(스프레드 연산자, for ...of , Array.from() 등) 사용 가능함
-            
-                  - (차이점)
-                      : map, forEach, reduce과 같은 [배열]의 메서드를 사용이 불가능함
-
-          2) (차이점)
-
-              a. ES6를 기준으로 등장 및 사용 여부가 극명하게 갈림
-                 (= getElement() VS querySelector('CSS셀렉터')와 맥락이 연관)
-
-                 - {HTMLCollection 객체}
-                    : ES6 이전부터 사용되는 DOM객체의 HTML요소 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
-                      (= 주로 ES6이전에 사용되는 DOM 탐색 메서드인 'getElement()' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
-  
-                 - {NodeList 객체}
-                    : ES6 이후부터 사용되는 DOM객체의 Node들을 기준으로 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
-                      (= 주로 ES6이후에 사용되는 DOM 탐색 메서드인 'querySelector('CSS셀렉터')' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+                @ {Node 객체}의 메서드
 
 
-              b. 내부 요소로서 저장된 {객체}가 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체}인지 여부
+                @ (참고) {live DOM 객체} VS {non-live DOM 객체}
+                   : 어떤 {객체}가 저장하는 HTML요소의 정보의 상태 변화가 실시간으로 반영되는가?
+                       -> YES : {live DOM 객체} 
+                       -> NO  : {non-live DOM 객체} = 해당 HTML요소의 정보가 저장될 시점의 값이 정적(static)으로 남아있음
 
-                 - {HTMLCollection 객체}
-                    : {live DOM 객체} 형식에 해당하는 개별 HTML요소인 {element 객체}를 여러개 저장 가능한 {유사 배열 객체}
-                       -> {HTMLCollection 객체} = 실시간으로 자신의 변화를 감지하고 반영하는 {element 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체}
+          2. {Element 객체}
+               : 표현되는 HTML요소 단위 기준이 <HTML 태그> 단위를 기반으로 함
+                   -> text단위는 <HTML 태그>가 아니니 여기 포함되지 않음 = HTML태그요소의 계층이 직관적이므로 이터러블의 기준으로 이쪽으로 삼고 순회하는 식의 코드를 짜기는 수월함
+
+                @ {Element 객체}의 특징
+
+                   1) ES6 이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루고,  HTML요소 내용를 저장해주는 {객체}
+                      (= ES6 이전 DOM 탐색을 통해 요소를 찾는 기준이 되는 단위 {객체} )
+
+                   2) 무조건 {live DOM 객체} 형태로 저장되어 있음
+                       -> {Element 객체}에 저장된 모든 HTML태그 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
+                           (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
+
+                @ {Element 객체}의 프로퍼티
+                   : 전체 DOM객체로 구성된 HTML요소들을 {Element 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+
+                     - childNodes(특수성 존재)
+                        : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
+                           -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                                    (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
+  
+                     - parentElement
+                        : 기준 HTML요소의 {부모 Element 객체}를 참조합니다.
+                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+  
+                     - firstElementChild
+                        : 기준 노드의 {1번째 자식 Element 객체}를 저장
+                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+  
+                     - lastElementChild
+                        : 기준 노드의 {마지막 자식 Element 객체}를 저장
+                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+  
+                     - nextElementSibling
+                        : 기준 HTML요소와 '아우'에 해당하는 {형제 Element 객체}를 저장
+  
+                     - previousElementSibling
+                        : 기준 HTML요소와 '형님'에 해당하는 {형제 Element 객체}를 저장
+  
+                     - childElementCount
+                        : 기준 HTML요소의 {부모 Element 객체} 개수를 저장
+                          (= children.length와 같은 의미)
+
+          3. {HTMLElement 객체} 
+
+          4. {Specific HTML Elements 객체}
+
+
+    # {HTMLCollection 객체} VS {NodeList 객체}
+       : DOM 형식으로 구축된 HTML요소 정보를 저장하는 {객체}들을 여러개 담을 수 있는 컨테이너 역할의 {유사 배열 객체}에 해당하지만, 각자만의 방식이 다른 부분이 존재함
+
+         1. (공통점)
+             : {HTMLCollection 객체}, {NodeList 객체} 둘 다 HTML요소 저장하는 {객체}들을 여러개 담을 수 있는 컨테이너 역할의 {유사 배열 객체}에 해당
+                 -> {유사 배열 객체} != [배열] 
+                     - map, forEach, reduce와 같은 JS [배열] 객체의 메서드 사용X
+                     - length 프로퍼티를 가짐 = {객체}를 [배열]처럼 접근 가능 = 반복문을 돌 수 있음
+                     -  깊은 복사를 통하던 얕은 복사를 통하던 둘 다 {유사 배열 객체} -> [배열] 변환이 권유
+                        (= [배열] 관련 메서드를 사용하고 못하고의 차이를 극복하려고 하기 때문)
                             -> (중요) 특히 {live DOM 객체}의 경우 무조건 실시간으로 HTML요소의 변화를 반영하니, [배열]로 변환해서 정적(static)한 HTML요소를 저장하여 다루도록 하는 것이 좋음
-  
+                                
                                 ex) class속성이 'purple'이란 HTML요소들을 getElementByClassName('purple')로 찾은뒤, 해당 {HTMLCollection 객체}.length를 통해 반복문을 수행하여, class속성 값을 바꾼다면?
                                      -> 1번쨰 {element 객체}의 class속성값이 바뀌는 순간 {HTMLCollection 객체}의 내부 구성에서 1번쨰 {element 객체}가 빠지면서 {HTMLCollection 객체}.length와 index 정보도 변경
                                         (= 초기와 다르게 원래 2번쨰 {element 객체} -> 1번째가 되고, 3번쨰 {element 객체} -> 2번째가 되면서, {HTMLCollection 객체}[1]이 나타내는 {element 객체}가 변하기에 본래 2번쨰 객체는 건들지 못함
-                            
-                 - {NodeList 객체}
-                    : {non-live DOM 객체} 형식에 해당하는 개별 HTML요소인 {Node 객체}를 여러개 저장 가능한 {유사 배열 객체} + 자체적으로 forEach 메서드는 사용 가능
-                       -> {NodeList 객체} = 정적(static)인 HTML요소를 저장하는 {Node 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체} + 자체적으로 forEach 메서드는 사용
-                            -> (중요) BUT! {NodeList 객체}에서도 ES6 이전 감각으로 사용가능하게 만든 {NodeList 객체}의 일부 메서드들은 최대한 유사하게 재현하였기에 예외적으로 {live DOM 객체}를 반환하기도 함
+
+              @ (참고) {유사 배열 객체}
+                  : index를 가지고, length 프로퍼티를 가지고 있어 순환이 가능한 iterable한 특성을 가지고 있는 {객체}지만, [배열]은 아닌 {객체}
+                    (= 일부 [배열]의 특성을 가지고 있는 {객체}를 의미)
+              
+              @ {유사 배열 객체} vs [배열]
+      
+                 - (공통점)
+                     1. index를 가지고, length 프로퍼티를 가지고 있는 iterable한 특성을 가지고 있음
+                     2. iterable한 특성이 있어 반복문(스프레드 연산자, for ...of , Array.from() 등) 사용 가능함
+           
+                 - (차이점)
+                     : map, forEach, reduce과 같은 [배열]의 메서드를 사용이 불가능함
+
+         2. (차이점)
+
+             a. ES6를 기준으로 등장 및 사용 여부가 극명하게 갈림
+                (= getElement() VS querySelector('CSS셀렉터')와 맥락이 연관)
+
+                - {HTMLCollection 객체}
+                   : ES6 이전부터 사용되는 DOM객체의 HTML요소 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
+                     (= 주로 ES6이전에 사용되는 DOM 탐색 메서드인 'getElement()' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+  
+                - {NodeList 객체}
+                   : ES6 이후부터 사용되는 DOM객체의 Node들을 기준으로 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
+                     (= 주로 ES6이후에 사용되는 DOM 탐색 메서드인 'querySelector('CSS셀렉터')' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+
+
+             b. 내부 요소로서 저장된 {객체}가 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체}인지 여부
+
+                - {HTMLCollection 객체}
+                   : {live DOM 객체} 형식에 해당하는 개별 HTML요소인 {element 객체}를 여러개 저장 가능한 {유사 배열 객체}
+                      -> {HTMLCollection 객체} = 실시간으로 자신의 변화를 감지하고 반영하는 {element 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체}
+                           -> (중요) 특히 {live DOM 객체}의 경우 무조건 실시간으로 HTML요소의 변화를 반영하니, [배열]로 변환해서 정적(static)한 HTML요소를 저장하여 다루도록 하는 것이 좋음
+  
+                               ex) class속성이 'purple'이란 HTML요소들을 getElementByClassName('purple')로 찾은뒤, 해당 {HTMLCollection 객체}.length를 통해 반복문을 수행하여, class속성 값을 바꾼다면?
+                                    -> 1번쨰 {element 객체}의 class속성값이 바뀌는 순간 {HTMLCollection 객체}의 내부 구성에서 1번쨰 {element 객체}가 빠지면서 {HTMLCollection 객체}.length와 index 정보도 변경
+                                       (= 초기와 다르게 원래 2번쨰 {element 객체} -> 1번째가 되고, 3번쨰 {element 객체} -> 2번째가 되면서, {HTMLCollection 객체}[1]이 나타내는 {element 객체}가 변하기에 본래 2번쨰 객체는 건들지 못함
+                           
+                - {NodeList 객체}
+                   : {non-live DOM 객체} 형식에 해당하는 개별 HTML요소인 {Node 객체}를 여러개 저장 가능한 {유사 배열 객체} + 자체적으로 forEach 메서드는 사용 가능
+                      -> {NodeList 객체} = 정적(static)인 HTML요소를 저장하는 {Node 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체} + 자체적으로 forEach 메서드는 사용
+                           -> (중요) BUT! {NodeList 객체}에서도 ES6 이전 감각으로 사용가능하게 만든 {NodeList 객체}의 일부 메서드들은 최대한 유사하게 재현하였기에 예외적으로 {live DOM 객체}를 반환하기도 함
      
-                                ex) {NodeList 객체}.childNodes, {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
+                               ex) {NodeList 객체}.childNodes, {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
 
-              c. 내부 프로퍼티 및 메서드 구성에 차이가 있음 
+             c. 내부 프로퍼티 및 메서드 구성에 차이가 있음 
 
-                 - {HTMLCollection 객체}
-                     : 메서드가 item(), nameditem() 2가지 뿐
+                - {HTMLCollection 객체}
+                    : 메서드가 item(), nameditem() 2가지 뿐
         
-                 - {NodeList 객체}
-                     : keys(), values(), entries(), item() 등의 메서드들이 존재 
-                        -> (중요) [배열]은 아니지만, 내부 요소 순환용 메서드 foreach메서드는 사용 가능함 
+                - {NodeList 객체}
+                    : keys(), values(), entries(), item() 등의 메서드들이 존재 
+                       -> (중요) [배열]은 아니지만, 내부 요소 순환용 메서드 foreach메서드는 사용 가능함 
 
     # {document 객체}의 메소드들
        : {document 객체} 내부의 메서드들에 해당하며, API 호출은 'document.메서드명(파라미터)' 식으로 호출함
@@ -363,7 +374,7 @@
                   (= {HTMLCollection 객체}는 검색된 HTML요소를 {live DOM 객체}로 변환한 데이터들을 담는 컨테이너 역할을 수행하는 {객체}라고 볼 수 있음 )
                       -> 여러개의 {live DOM 객체} 형태의 HTML요소들의 정보를 담을것을 상정하였음 = 개별 HTML요소 데이터에 접근하려면 [배열]과 같은 index접근 필요
   
-                  1) document.getElementsByTagName('html태그명')
+                  1) document.getElementsByTagName('html태그명')[index번호]
                       : 현재 화면의 DOM객체에서 parameter로 입력한 <html태그명>에 해당하는 모든 HTML 태그들을 {HTMLCollection 객체} 형식으로 반환하는 메서드
                         (= 해당 화면의 HTML에서 <html태그명>에 해당하는 모든 태그들을 {HTMLCollection 객체} 형식으로 찾아서 담아 제공함)
         
@@ -373,19 +384,19 @@
                         ex) 존재하는 모든 html 태그를 찾아서 {HTMLCollection 객체} 형식으로 반환함
                              : document.getElementByTagName("*");
      
-                  2) document.getElementsByClassName('class속성명')
+                  2) document.getElementsByClassName('class속성명')[index번호]
                       : 현재 화면의 DOM객체에서 parameter로 입력한 'class속성명'을 가지는 모든 HTML 태그들을 {HTMLCollection 객체} 형식으로 반환하는 메서드
                           -> (참고) 공백을 사용하면 여러 개의 class를 지정 가능
         
                         ex) 'product'와 'premium'라는 class속성명을 모두 가진 모든 html요소들을 찾아서 {HTMLCollection 객체} 형식으로 반환함
                               : document.getElementByClassName("product premium");
         
-                  3) document.getElementsByName('name속성명')
+                  3) document.getElementsByName('name속성명')[index번호]
                       : 현재 화면의 DOM객체에서 parameter로 입력한 'name속성명'을 가지는 모든 HTML 태그들을 {HTMLCollection 객체} 형식으로 반환하는 메서드
                          -> BUT! WebKit 브라우저에서는 NodeList 를 반환한다고 함
         
                         ex) 'my-form'라는 name속성명을 가진 모든 html요소들을 찾아서 {HTMLCollection 객체} 형식으로 반환함
-                              : document.getElementByClassName("my-form");
+                              : document.getElementsByName("my-form");
   
                b. 조건에 맞는 HTML 태그를 1개만 탐색하여, HTML 태그를 {live DOM 객체}형식의 {HTML요소 객체} 형식으로 반환하는 메서드
                   (= {HTML요소 객체} : 사실상 HTML태그 그 자체를 의미하는 {객체})
@@ -395,7 +406,7 @@
                          -> 1개만 찾는 이유는 ID속성 자체가 document 내에서 유일하다는 특성을 가진다는 의미(symantic)를 가지고 있는 속성이기 때문  
         
                         ex) 'box'라는 Id속성명을 가진 1개의 html요소들을 찾아서 {HTML요소 객체} 형식으로 반환함
-                              : document.getElementByClassName("box");
+                              : document.getElementById("box");
   
           @ (ES6 이후 사용) querySelector 메서드 seris
              : ES6 이후 querySelector라는 1종류의 DOM요소 검색 메서드에 parameter로 넣을 속성값으로 'CSS 선택자' 문법을 적용할 수 있게 개선 + {NodeList 객체}만을 반환하는 DOM검색 메서드 계열
@@ -523,17 +534,24 @@
                       c. 버블링 단계 (Bubbling Phase)
                           : 이벤트의 발동 대상이 다시 역순으로 '부모 HTML 요소 ~ 최선조 HTML 요소'로 이벤트 작동이 회수되는 과정(Bubbling)이 일어나는 단계
 
-3. HTML 태그 속성을 가져오거나 변경하는 Attribute
-(HTML 속성 = src, href 등)
 
-태그명.getAttribute() : 속성값 반환
-img.getAttribute("src"); //img태그의 src속성 가져오기
-태그명.setAttribute(속성명, 세팅값) : 속성값 변경
-img.setAttribute("src","./imges/main.jpg"); //img태그의 src속성을 main 이미지로 변경하기
-태그명.removeAttribute() : 속성값 삭제
-input.removeAttribute("onclick"); //input태그의 onclick속성 삭제
-태그명.hasAttribute() : 특정 속성을 가지고 있는지 검사
-console.log($cont.hasAttribute("id"));
+           3. HTML 요소의 속성과 연관된 메서드들
+               : {element 객체}의 메서드로 주로 ES6 이전에 JS로 HTML 속성을 통제하려 할 때 사용
+           
+
+           
+                   1. {Node 객체}.addEventListener("이벤트종류명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false) 
+                   2. {element 객체}.addEventListener("이벤트종류명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false) 
+
+
+           태그명.getAttribute() : 속성값 반환
+           img.getAttribute("src"); //img태그의 src속성 가져오기
+           태그명.setAttribute(속성명, 세팅값) : 속성값 변경
+           img.setAttribute("src","./imges/main.jpg"); //img태그의 src속성을 main 이미지로 변경하기
+           태그명.removeAttribute() : 속성값 삭제
+           input.removeAttribute("onclick"); //input태그의 onclick속성 삭제
+           태그명.hasAttribute() : 특정 속성을 가지고 있는지 검사
+           console.log($cont.hasAttribute("id"));
 
 4. CSS 속성을 변경하는 Property
 (css 속성 = width, height, color, line-height, background-color 등)
