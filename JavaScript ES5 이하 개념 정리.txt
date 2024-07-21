@@ -161,127 +161,276 @@
            3. document 객체 자체는 해당 화면의 DOM tree의 root(= 뿌리)에 해당하는 부분으로 사실상 DOM객체로 변환된 화면 전체를 의미
                -> (중요) document객체의 root에 해당하는 부분은 <html> 태그
 
-    # {Node 객체} -> {Element 객체} -> {HTMLElement 객체} -> {Specific HTML Elements 객체}
-       : DOM(Document Object Model)의 개별 HTML 단위를 구성하는 {객체} 단위들이며, {Node 객체}를 최고 선조로 한 상속 관계를 이룸
-         (= DOM tree에 존재하는 {객체}에 가장 기본적인 단위는 {Node 객체}이며, HTML 요소 또한 {Node 객체}를 기반으로 이뤄져 있음)
+    # DOM객체를 이루는 {객체}들의 상속 관계
+       : {Node 객체} -> {Element 객체} -> {HTMLElement 객체} -> {Specific HTML Elements 객체}
+           -> DOM(Document Object Model)의 개별 HTML 단위를 구성하는 {객체} 단위들이며, {Node 객체}를 최고 선조로 한 상속 관계를 이룸
+              (= DOM tree에 존재하는 {객체}에 가장 기본적인 단위는 {Node 객체}이며, HTML 요소 또한 {Node 객체}를 기반으로 이뤄져 있음)
     
-          1. {Node 객체}
-               : DOM tree를 구성하는 가장 최소의 단위에 해당하는 {객체}로 이후 이를 상속받은 요소들의 interface로서 기능
-                 (= DOM tree의 모든 {객체}들은 Node 단위의 인터페이스에서 시작함)
+         1. {Node 객체}
+              : DOM tree를 구성하는 가장 최소의 단위에 해당하는 {객체}로 이후 이를 상속받은 HTML 요소(element)들이 구현해야 할 기능들을 명시한 interface에 해당하는 존재로서 기능
+                (= DOM tree의 모든 {객체}들은 Node 단위의 인터페이스에서 시작하나.. JS에서는 interface도 {객체}를 다르게 표현한 것에 불과하다는거 잊지 마라)
 
-                  ex) <HTML 태그> 또한 Node단위로 구분 가능한 '요소(element)노드'와 text단위에 해당하는 'text 노드'까지 둘 다 포함
-                       -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
+                 ex) <HTML 태그> 또한 Node단위로 구분 가능한 '요소(element)노드'와 text단위에 해당하는 'text 노드'까지 둘 다 포함
+                      -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
 
-                @ {Node 객체}의 종류
-                   1) 문서(document)노드
-                       : DOM tree의 최상위 계층(root)이면서 전체 문서(Document)를 가리키는 {Document 객체}의 출발점에 해당하는 {Node 객체}
+               @ {Node 객체}의 종류
+                  1) 문서(document)노드
+                      : DOM tree의 최상위 계층(root)이면서 전체 문서(Document)를 가리키는 {Document 객체}의 출발점에 해당하는 {Node 객체}
 
-                   2) 요소(element)노드
-                       : DOM tree에 존재하는 HTML의 태그 요소(element)에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
+                  2) 요소(element)노드
+                      : DOM tree에 존재하는 HTML의 태그 요소(element)에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
 
-                   3) text 노드
-                       : DOM tree에 존재하는 HTML의 TEXT에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
-                           -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
+                  3) text 노드
+                      : DOM tree에 존재하는 HTML의 TEXT에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
+                          -> (참고) text노드는 부모인 요소노드의 자식노드에 해당하지만, 그 자신은 자식 노드를 가질 수 없음
 
-                   4) 주석 노드
-                       : DOM tree에 존재하는 HTML의 주석에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
+                  4) 주석 노드
+                      : DOM tree에 존재하는 HTML의 주석에 해당하는 부분에 대한 정보를 가지는 {Node 객체}
 
-                @ {Node 객체}의 특징
-                   1) ES6이후에 사용되는 DOM 탐색 메서드인 querySelector('CSS셀렉터') 메서드 종류의 반환값인 컨테이너 역할의 {NodeList 객체}의 내부 요소를 이루게 됨
-                      (= ES6 이후 DOM 탐색을 통해 요소를 찾는 기준이 되는 최소 단위 {객체} )
+               @ {Node 객체}의 특징
+                  1) ES6이후에 사용되는 DOM 탐색 메서드인 querySelector('CSS셀렉터') 메서드 종류의 반환값인 컨테이너 역할의 {NodeList 객체}의 최소 단위 요소를 이루게 됨
+                      -> But! 컨테이너 역할의 {NodeList 객체}가 담는 {객체}는 모든 {Node 객체} 계열의 자료형을 포함함
+                         (= {NodeList 객체}는 {Node 객체}만 담는 게 아니라, {Node 객체}를 상속하는 모든 {자손 객체}들도 담을 수 있다는 말)
+                              -> 그래서 {NodeList 객체}의 요소로 {Element 객체} 메서드도 사용이 가능함
+                         
+                         ex) {Element 객체), {Text 노드 객체}, {Comment 노드 객체}
+                               -> 후손인 {Element 객체}로 표현할 수 없는 HTML요소들은 가장 선조에 해당 {Node 객체}로 저장하여 담음
 
-                   2) 일반적으로 HTML 정보를 정적(static)으로 저장하여 상태 변화를 실시간으로 반영 X하는 {non-live DOM 객체} 형태로 저장되어 있음
-                       -> BUT! {Element 객체}처럼 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                          (ES6 이전부터 사용되어 왔던, {Element 객체}의 일부 DOM 탐색 메서드나 프로퍼티들을 사용하던 개발자들도 포용할 수 있도록 함)
-                            -> (중요) DOM탐색 메서드명도 같지만, 이들이 반환하는 HTML요소들을 품은 {객체}들 또한 실시간으로 변화를 반영하는 {live DOM 객체}에 해당하도록 예외성이 강한 대목
+                  2) 일반적으로 HTML 정보를 정적(static)으로 저장하여 상태 변화를 실시간으로 반영 X하는 {non-live DOM 객체} 형태로 저장되어 있음
+                      -> BUT! {Element 객체}처럼 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                         (ES6 이전부터 사용되어 왔던, {Element 객체}의 일부 DOM 탐색 메서드나 프로퍼티들을 사용하던 개발자들도 포용할 수 있도록 함)
+                           -> (중요) DOM탐색 메서드명도 같지만, 이들이 반환하는 HTML요소들을 품은 {객체}들 또한 실시간으로 변화를 반영하는 {live DOM 객체}에 해당하도록 예외성이 강한 대목
 
-                                ex) {NodeList 객체}.childNodes ( {Element 객체}.childNodes도 마찬가지 ), {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
+                               ex) {NodeList 객체}.childNodes ( {Element 객체}.childNodes도 마찬가지 ), {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
 
-                @ {Node 객체}의 프로퍼티
-                   : 전체 DOM객체로 구성된 HTML요소들을 {Node 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+               @ {Node 객체}의 프로퍼티
+                  : 전체 DOM객체로 구성된 HTML요소들을 {Node 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+                    (= {Node 객체}를 상속한 {element 객체} 같은 {객체}들도 당연히 가지고 있음)
   
-                     - parentNode  
-                        : 기준 노드의 {부모 Node 객체}를 저장
-                          (= Document 객체일 경우 root에 해당함 = 부모 노드가 없음으로 null을 반환)
+                    - parentNode  
+                       : 기준 노드의 {부모 Node 객체}를 저장
+                         (= Document 객체일 경우 root에 해당함 = 부모 노드가 없음으로 null을 반환)
   
-                     - childNode(특수성 존재)  
-                        : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
-                           -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                                    (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
+                    - childNode(특수성 존재)  
+                       : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
+                          -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                                   (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
   
-                     - firstChild 
-                        : 기준 노드의 {1번째 자식 Node 객체}를 저장
-                          (= 자식이 없는 노드일 경우 null을 반환)
+                    - firstChild 
+                       : 기준 노드의 {1번째 자식 Node 객체}를 저장
+                         (= 자식이 없는 노드일 경우 null을 반환)
   
-                     - lastChild  
-                        : 기준 노드의 {마지막 자식 Node 객체}를 저장
-                          (= 자식이 없는 노드일 경우 null을 반환)
+                    - lastChild  
+                       : 기준 노드의 {마지막 자식 Node 객체}를 저장
+                         (= 자식이 없는 노드일 경우 null을 반환)
   
-                     - nextSibling
-                        : 기준 노드의 '아우'에 해당하는 {형제 Node 객체}를 저장
+                    - nextSibling
+                       : 기준 노드의 '아우'에 해당하는 {형제 Node 객체}를 저장
   
-                     - previousSibling
-                        : 기준 노드의 '형님'에 해당하는 {형제 Node 객체}를 저장
+                    - previousSibling
+                       : 기준 노드의 '형님'에 해당하는 {형제 Node 객체}를 저장
   
-                     - nodeType
-                        : 해당 {Node 객체} 유형애 해당하는 뜻하는 숫자
-                          (요소 노드 = 1, 텍스트 노드 = 3, Document = 9)
+                    - nodeType
+                       : 해당 {Node 객체} 유형애 해당하는 뜻하는 숫자
+                         (요소 노드 = 1, 텍스트 노드 = 3, Document = 9)
   
-                     - nodeValue
-                        : 해당 {Node 객체}가 text 노드일 경우 텍스트 콘텐츠(= 내용)를 저장
-                          (= 요소 노드는 null를 반환)
+                    - nodeValue
+                       : 해당 {Node 객체}가 text 노드일 경우 텍스트 콘텐츠(= 내용)를 저장
+                         (= 요소 노드는 null를 반환)
 
-                @ {Node 객체}의 메서드
+               @ {Node 객체}의 메서드
+                 (= {Node 객체}를 상속한 {element 객체} 같은 {객체}들도 당연히 가지고 있음)
 
+                    - appendChild( {Node 객체} )
+                       : {parameter Node 객체}를 기준 노드의 마지막 자식노드로 추가
 
-                @ (참고) {live DOM 객체} VS {non-live DOM 객체}
-                   : 어떤 {객체}가 저장하는 HTML요소의 정보의 상태 변화가 실시간으로 반영되는가?
-                       -> YES : {live DOM 객체} 
-                       -> NO  : {non-live DOM 객체} = 해당 HTML요소의 정보가 저장될 시점의 값이 정적(static)으로 남아있음
+                    - removeChild( {Node 객체} )
+                       : 기준 노드의 {parameter Node 객체}에 해당하는 HTML요소를 제거한 뒤, 제거 된 {parameter Node 객체}를 반환
 
-          2. {Element 객체}
-               : 표현되는 HTML요소 단위 기준이 <HTML 태그> 단위를 기반으로 함
-                   -> text단위는 <HTML 태그>가 아니니 여기 포함되지 않음 = HTML태그요소의 계층이 직관적이므로 이터러블의 기준으로 이쪽으로 삼고 순회하는 식의 코드를 짜기는 수월함
+                    - insertBefore( {대상 Node 객체}, {위치 Node 객체} )
+                       : {위치 Node 객체}에 해당하는 HTML요소가 기준 노드에 위치한 자식 노드라면? 그 위치 바로 앞에 {대상 Node 객체}를 삽입하는 메서드
 
-                @ {Element 객체}의 특징
+                    - replaceChild( {대상 Node 객체}, {위치 Node 객체} )
+                       : {위치 Node 객체}에 해당하는 HTML요소가 기준 노드에 위치한 자식 노드라면? 그 위치에 {대상 Node 객체}로 대체하는 메서드
 
-                   1) ES6 이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루고,  HTML요소 내용를 저장해주는 {객체}
-                      (= ES6 이전 DOM 탐색을 통해 요소를 찾는 기준이 되는 단위 {객체} )
+                    - hasChildNodes()
+                       : 기준 노드가 자식 노드를 가지고 있는지를 확인한 뒤 boolean값으로 반환
+                           - true  : 자식 노드가 존재 O
+                           - false : 자식 노드가 존재 X
 
-                   2) 무조건 {live DOM 객체} 형태로 저장되어 있음
-                       -> {Element 객체}에 저장된 모든 HTML태그 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
-                           (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
+                    - contains( {Node 객체} )
+                       : 기준 노드에서 {parameter Node 객체}에 해당하는 HTML요소를 자식 노드로 가지고 있는지를 확인한 뒤 boolean값으로 반환
+                           - true  : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계
+                           - false : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계 X
 
-                @ {Element 객체}의 프로퍼티
-                   : 전체 DOM객체로 구성된 HTML요소들을 {Element 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+                    - cloneNode( boolean값 )
+                       : 기준 노드의 {Node 객체}를 복사한 뒤 복사된 {Node 객체}를 반환하는 메서드
+                           -> paramter에 해당하는 내용은 '깊은 복사' 여부를 의미
+                               - true  : 기준 노드의 하위 노드의 내용까지 싸그리 복사
+                               - false : 기준 노드의 자신의 내용만 복사
 
-                     - childNodes(특수성 존재)
-                        : 기준 노드의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
-                           -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
-                                    (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
+               @ (참고) {live DOM 객체} VS {non-live DOM 객체}
+                  : 어떤 {객체}가 저장하는 HTML요소의 정보의 상태 변화가 실시간으로 반영되는가?
+                      -> YES : {live DOM 객체} 
+                      -> NO  : {non-live DOM 객체} = 해당 HTML요소의 정보가 저장될 시점의 값이 정적(static)으로 남아있음
+
+         2. {Element 객체}
+              : 표현되는 HTML요소 단위 기준이 <HTML 태그> 단위를 기반으로 하는 {Node 객체}를 상속 받는 {객체}
+                 -> <HTML 태그> = {element Node 객체}에 해당 = {Node 객체}를 상속 받는 {객체}
+                    (= {element Node 객체}이외 {text Node 객체}, {주석 Node 객체}의 경우는 <HTML 태그>로 인정 X)
+
+               @ {Element 객체}의 특징
+
+                  1) <HTML 태그> 단위에 해당하는 내용의 프로퍼티와 메서드를 추가로 제공 
+                     (= <HTML 태그>는 {text Node 객체}, {주석 Node 객체}는 포함하지 않음 -> {Element 객체}에는 {Node 객체}에서 공유하지 않는 프로퍼티나 메서드가 존재함)
+
+                     ex) HTML의 속성(style, class, data 등)들을 관리하는 메서드
+
+                  2) ES6 이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루고, HTML요소 내용를 저장해주는 {객체}
+                     (= ES6 이전 DOM 탐색을 통해 요소를 찾는 기준이 되는 단위 {객체} )
+
+                  3) 무조건 {live DOM 객체} 형태로 저장되어 있음
+                      -> {Element 객체}에 저장된 모든 <HTML태그> 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
+                          (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
+
+               @ {Element 객체}의 프로퍼티
+                  : 전체 DOM객체로 구성된 HTML요소들을 {Element 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+
+                    a. DOM객체에 element객체 탐색 및 조작 관련 메서드
+
+                      - childNodes(특수성 존재)
+                         : 기준 <HTML태그>(= elememt 노드)의 {모든 자식 Node 객체}들의 참조가 저장된 {NodeList 객체} 형식의 유사 배열을 저장
+                            -> (중요) BUT! {NodeList 객체} 형식은 해당 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장하는 {live DOM 객체}를 저장하는 예외성이 존재
+                                     (= {Element 객체}나 {Node 객체}나 프로퍼티로 두는 childNodes는 {live DOM 객체}형식의 {NodeList 객체}를 가짐)
+    
+                      - childElementCount
+                         : 기준 <HTML태그>의 {부모 Element 객체} 개수를 저장
+                           (= children.length와 같은 의미)
+                    
+                      - children
+                         : 기준 <HTML태그>의 자식 <HTML태그>들을 담은 {HTMLCollection 객체}로 반환
+
+                      - parentElement
+                         : 기준 <HTML태그>의 {부모 Element 객체}를 참조합니다.
+                            -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+    
+                      - firstElementChild
+                         : 기준 <HTML태그>의 {1번째 자식 Element 객체}를 저장
+                            -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+    
+                      - lastElementChild
+                         : 기준 <HTML태그>의 {마지막 자식 Element 객체}를 저장
+                            -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+    
+                      - nextElementSibling
+                         : 기준 <HTML태그>와 '아우'에 해당하는 {형제 Element 객체}를 저장
+    
+                      - previousElementSibling
+                         : 기준 <HTML태그>와 '형님'에 해당하는 {형제 Element 객체}를 저장
+
+                    b. 대상 element객체의 속성 참조 및 조작 관련 메서드
+
+                      - classList
+                         : 기준 <HTML태그>의 class 속성을 조작할 수 있는 DOMTokenList 객체를 반환
+                           (= DOMTokenList 객체는 대상 <HTML태그>의 class 속성을 조작 가능한 메서드들을 가짐)
+                          
+                           (DOMTokenList 객체의 메서드)
+                             1. DOMTokenList.add('class명')
+                                 : 대상 DOMTokenList 객체로 표현된 <HTML 태그>에 'class명'에 해당하는 class속성값을 추가
+
+                                   ex) element.classList.add('my-class'); 
+                              
+                             2. DOMTokenList.remove('class명')
+                                 : 대상 DOMTokenList 객체로 표현된 <HTML 태그>에 'class명'에 해당하는 class속성값을 삭제
+
+                                   ex) element.classList.remove('my-class'); 
+
+                             3. DOMTokenList.toggle('class명')
+                                 : 대상 DOMTokenList 객체로 표현된 <HTML 태그>에 'class명'에 해당하는 class속성값을 toggle 처리
+                                   (= 'class명'에 해당하는 class속성값이 있으면 삭제, 없으면 추가)
+
+                                   ex) element.classList.toggle('my-class');   
+
+                             4. DOMTokenList.contains('class명')
+                                 : 대상 DOMTokenList 객체로 표현된 <HTML 태그>에 'class명'에 해당하는 class속성값이 있는지 확인 후 boolean값으로 반환
+
+                                   ex) element.classList.contains('my-class');   
+
+                      - style
+                         : 기준 <HTML태그>의 inline style 속성을 조작할 수 있는 CSSStyleDeclaration 객체를 반환
+                           (= CSSStyleDeclaration 객체는 대상 <HTML태그>의 inline style 속성들에 해당하는 프로퍼티들을 가짐)
+                               -> 원하는 style 속성에 해당하는 style명칭 = 프로퍼티 라고 생각하면 OK 
+
+                                  ex) element.style.color = 'red';            // 텍스트 색상을 빨간색으로 설정
+                                      element.style.backgroundColor = 'blue'; // 배경 색상을 파란색으로 설정
+                                      element.style.fontSize = '20px';        // 폰트 크기를 20px로 설정
   
-                     - parentElement
-                        : 기준 HTML요소의 {부모 Element 객체}를 참조합니다.
-                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+                      - id
+                         : 기준 <HTML태그>의 id속성값을 가져옴
+                            -> List 형식이 아닌 이유는 id는 고유한 값이기 때문
   
-                     - firstElementChild
-                        : 기준 노드의 {1번째 자식 Element 객체}를 저장
-                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+                      - tagName
+                         : 기준 <HTML태그>의 명칭을 '대문자'로 가져옴
+                            
+                           ex) 요소의 태그 이름을 가져옴 (예: 'DIV')
   
-                     - lastElementChild
-                        : 기준 노드의 {마지막 자식 Element 객체}를 저장
-                           -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
+                               let tagName = element.tagName;
   
-                     - nextElementSibling
-                        : 기준 HTML요소와 '아우'에 해당하는 {형제 Element 객체}를 저장
-  
-                     - previousElementSibling
-                        : 기준 HTML요소와 '형님'에 해당하는 {형제 Element 객체}를 저장
-  
-                     - childElementCount
-                        : 기준 HTML요소의 {부모 Element 객체} 개수를 저장
-                          (= children.length와 같은 의미)
+                      - innerHTML
+                         : 기준 <HTML태그> '내부'의 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
+                            -> {element 객체}.innerHTML의 내용을 변경해서, 해당 HTML 내부를 수정할 수 있는 이유는 innerHTML 프로퍼티가 {element 객체} 내부의 태그 내용을 '문자열'로 저장하고 있게 때문
+                               (= innerHTML 프로퍼티 자체가 '문자열'을 저장하니, 반드시 '문자열' 형식으로 변경할 HTML태그 내용을 입력해야 함)
 
+                                ex) innerHTML를 호출하면, 기준 <HTML태그> '내부'의 HTML 내용을 '문자열'로 가져옴
+                                    innerHTML에 다른 HTML 태그값을 '문자열'로 대입하면, 해당 {element 객체} 내부의 HTML태그을 새롭게 변경 가능 (= 덮어씌우기)
+       
+                                    <div id="my-div" class="my-class">Hello, world!</div>
+
+                                    element.innerHTML = '<p>Hello, world!</p>'; 
+
+                                    let content = element.innerHTML; 
+                                      -> <p>Hello, world!</p> 출력
+
+                      - outerHTML 
+                         : 기준 '<HTML태그>을 포함'한 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
+                            -> {element 객체}.innerHTML의 내용을 변경해서, HTML을 수정할 수 있는 이유는 outerHTML 프로퍼티가 {element 객체} '자신을 포함'한 태그 내용을 '문자열'로 저장하고 있게 때문
+                               (= outerHTML 프로퍼티 자체가 '문자열'을 저장하니, 반드시 '문자열' 형식으로 변경할 HTML태그 내용을 입력해야 함)
+
+                                ex) outerHTML 호출하면, 기준 <HTML태그> '자신을 포함'한 HTML 내용을 '문자열'로 가져옴
+                                    outerHTMLL에 다른 HTML 태그값을 '문자열'로 대입하면, 해당 {element 객체} '자신을 포함'한 HTML태그을 새롭게 변경 가능 (= 덮어씌우기)
+       
+                                    <div id="my-div" class="my-class">Hello, world!</div>
+
+                                    let content = element.innerHTML; 
+                                      -> <div id="my-div" class="my-class">Hello, world!</div> 출력
+
+                                    element.outerHTML = '<p>Hello, world!</p>'; 
+
+                                    let content = element.innerHTML; 
+                                      -> <p>Hello, world!</p> 출력
+
+
+                @ {Element 객체}의 메서드
+
+                   - getAttribute()
+                      : 속성값 반환
+        
+                   img.getAttribute("src"); //img태그의 src속성 가져오기
+                   태그명.setAttribute(속성명, 세팅값) : 속성값 변경
+                   img.setAttribute("src","./imges/main.jpg"); //img태그의 src속성을 main 이미지로 변경하기
+                   태그명.removeAttribute() : 속성값 삭제
+                   input.removeAttribute("onclick"); //input태그의 onclick속성 삭제
+                   태그명.hasAttribute() : 특정 속성을 가지고 있는지 검사
+                   console.log($cont.hasAttribute("id"));
+
+4. CSS 속성을 변경하는 Property
+(css 속성 = width, height, color, line-height, background-color 등)
+
+태그명.setProperty(속성명, 세팅값) : 속성값 변경
+$cont.style.setProperty('width','300px');
+
+
+                
           3. {HTMLElement 객체} 
 
           4. {Specific HTML Elements 객체}
@@ -324,10 +473,17 @@
                 - {HTMLCollection 객체}
                    : ES6 이전부터 사용되는 DOM객체의 HTML요소 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
                      (= 주로 ES6이전에 사용되는 DOM 탐색 메서드인 'getElement()' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+
+
+<HTML태그>요소의 계층이 직관적이므로 이터러블의 기준으로 이쪽으로 삼고 순회하는 식의 코드를 짜기는 수월함
   
                 - {NodeList 객체}
                    : ES6 이후부터 사용되는 DOM객체의 Node들을 기준으로 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
                      (= 주로 ES6이후에 사용되는 DOM 탐색 메서드인 'querySelector('CSS셀렉터')' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+
+
+Node 객체들의 리스트를 포함합니다. 즉, Node 타입의 모든 객체가 포함될 수 있습니다 (예: Element, Text, Comment 등).
+
 
 
              b. 내부 요소로서 저장된 {객체}가 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체}인지 여부
@@ -533,31 +689,6 @@
 
                       c. 버블링 단계 (Bubbling Phase)
                           : 이벤트의 발동 대상이 다시 역순으로 '부모 HTML 요소 ~ 최선조 HTML 요소'로 이벤트 작동이 회수되는 과정(Bubbling)이 일어나는 단계
-
-
-           3. HTML 요소의 속성과 연관된 메서드들
-               : {element 객체}의 메서드로 주로 ES6 이전에 JS로 HTML 속성을 통제하려 할 때 사용
-           
-
-           
-                   1. {Node 객체}.addEventListener("이벤트종류명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false) 
-                   2. {element 객체}.addEventListener("이벤트종류명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false) 
-
-
-           태그명.getAttribute() : 속성값 반환
-           img.getAttribute("src"); //img태그의 src속성 가져오기
-           태그명.setAttribute(속성명, 세팅값) : 속성값 변경
-           img.setAttribute("src","./imges/main.jpg"); //img태그의 src속성을 main 이미지로 변경하기
-           태그명.removeAttribute() : 속성값 삭제
-           input.removeAttribute("onclick"); //input태그의 onclick속성 삭제
-           태그명.hasAttribute() : 특정 속성을 가지고 있는지 검사
-           console.log($cont.hasAttribute("id"));
-
-4. CSS 속성을 변경하는 Property
-(css 속성 = width, height, color, line-height, background-color 등)
-
-태그명.setProperty(속성명, 세팅값) : 속성값 변경
-$cont.style.setProperty('width','300px');
 
 
  - WEB component
