@@ -238,6 +238,18 @@
                        : 해당 {Node 객체}가 text 노드일 경우 텍스트 콘텐츠(= 내용)를 저장
                          (= 요소 노드는 null를 반환)
 
+                    - textContent
+                       : 기준 {Node 객체}와 그 {후손 node 객체}들의 모든 Text에 해당하는 내용을 '문자열'로 저장하는 프로퍼티
+                          -> 정확히는 해당 {Node 객체}를 기준으로 그 내부의 {text Node 객체}가 조작의 범위 =  순수한 텍스트만 조작 가능
+                             (= 모든 내용을 내부의 {text Node 객체}의 TEXT로만 받아들이니, XSS 같은 공격을 써도 그저 '문자열'로만 인식)  
+
+                              ex) textContent를 호출하면, 기준 <HTML태그>의 {text Node 객체}에 해당하는 text 내용만, 참조하고 갱신이 가능함
+     
+                                  const element = document.querySelector('#my-element');
+                                  element.textContent = 'New text content'; 
+                                  console.log(element.textContent); 
+                                    -> New text content 출력
+
                @ {Node 객체}의 메서드
                  (= {Node 객체}를 상속한 {element 객체} 같은 {객체}들도 당연히 가지고 있음)
 
@@ -275,21 +287,18 @@
                       -> NO  : {non-live DOM 객체} = 해당 HTML요소의 정보가 저장될 시점의 값이 정적(static)으로 남아있음
 
          2. {Element 객체}
-              : 표현되는 HTML요소 단위 기준이 <HTML 태그> 단위를 기반으로 하는 {Node 객체}를 상속 받는 {객체}
-                 -> <HTML 태그> = {element Node 객체}에 해당 = {Node 객체}를 상속 받는 {객체}
-                    (= {element Node 객체}이외 {text Node 객체}, {주석 Node 객체}의 경우는 <HTML 태그>로 인정 X)
+              : 표현되는 단위 기준이 모든 HTML 및 XML 요소들의 공통적인 기본 단위를 기반으로 하는 {Node 객체}를 상속 받는 {객체}
+                 -> 모든 HTML 및 XML 요소들 = {element Node 객체}에 해당 = {Node 객체}를 상속 받는 {객체}
+                    (= {element Node 객체} 이외의 {text Node 객체}, {주석 Node 객체}의 경우는 HTML 및 XML 요소로 인정 X)
 
                @ {Element 객체}의 특징
 
-                  1) <HTML 태그> 단위에 해당하는 내용의 프로퍼티와 메서드를 추가로 제공 
-                     (= <HTML 태그>는 {text Node 객체}, {주석 Node 객체}는 포함하지 않음 -> {Element 객체}에는 {Node 객체}에서 공유하지 않는 프로퍼티나 메서드가 존재함)
+                  1) HTML 및 XML 요소 단위를 표현하는데 해당하는 내용의 프로퍼티와 메서드를 추가로 제공 
+                     (= HTML 및 XML 요소 단위는 {text Node 객체}, {주석 Node 객체}는 포함하지 않음 -> {Element 객체}에는 {Node 객체}에서 공유하지 않는 프로퍼티나 메서드가 존재함)
 
-                     ex) HTML의 속성(style, class, data 등)들을 관리하는 메서드
+                     ex) HTML의 기본 속성(id, class 등)들을 관리하는 메서드
 
-                  2) ES6 이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루고, HTML요소 내용를 저장해주는 {객체}
-                     (= ES6 이전 DOM 탐색을 통해 요소를 찾는 기준이 되는 단위 {객체} )
-
-                  3) 무조건 {live DOM 객체} 형태로 저장되어 있음
+                  2) 무조건 {live DOM 객체} 형태로 저장되어 있음
                       -> {Element 객체}에 저장된 모든 <HTML태그> 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
                           (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
 
@@ -330,8 +339,30 @@
 
                     b. 대상 element객체의 속성 참조 및 조작 관련 메서드
 
+                      - tagName
+                         : 기준 <HTML태그>의 명칭을 '대문자'로 가져옴
+                            
+                           ex) 요소의 태그 이름을 가져옴 (예: 'DIV')
+  
+                               let tagName = element.tagName;
+
+                      - id
+                         : 기준 <HTML태그>의 id속성값을 가져옴
+                            -> List 형식이 아닌 이유는 id는 고유한 값이기 때문
+
+                      - className
+                         : 기준 <HTML태그>의 class 속성값을 전부 '문자열'로 반환
+                            -> class속성값이 모두가 문자열로 저장되는지라, 문자열 다루듯 한 번에 class속성값을 수정하고 갱신할 때 유용
+                               (= 개별 클래스를 조작할 때는 불편)
+
+                               ex) 해당 <HTML태그>의 class 속성값을 전부 '문자열'로 치환하는 장/단점 모두가 존재
+                               
+                                   const element = document.querySelector('#my-element');
+                                   element.className = 'new-class another-class';    // 클래스 설정 (기존 클래스 덮어씀)
+                                   element.className += ' additional-class';         // 클래스에 새로운 클래스 추가 (기존 클래스 유지)
+
                       - classList
-                         : 기준 <HTML태그>의 class 속성을 조작할 수 있는 DOMTokenList 객체를 반환
+                         : 기준 <HTML태그>의 class 속성값들을 개별로 조작할 수 있는 DOMTokenList 객체를 반환
                            (= DOMTokenList 객체는 대상 <HTML태그>의 class 속성을 조작 가능한 메서드들을 가짐)
                           
                            (DOMTokenList 객체의 메서드)
@@ -356,26 +387,13 @@
 
                                    ex) element.classList.contains('my-class');   
 
-                      - style
-                         : 기준 <HTML태그>의 inline style 속성을 조작할 수 있는 CSSStyleDeclaration 객체를 반환
-                           (= CSSStyleDeclaration 객체는 대상 <HTML태그>의 inline style 속성들에 해당하는 프로퍼티들을 가짐)
-                               -> 원하는 style 속성에 해당하는 style명칭 = 프로퍼티 라고 생각하면 OK 
+                             5. DOMTokenList.replace('구 class명', '신 class명')
+                                 : 대상 DOMTokenList 객체로 표현된 <HTML 태그>에 '구 class명'에 해당하는 class속성값을 '신 class명'으로 변환
 
-                                  ex) element.style.color = 'red';            // 텍스트 색상을 빨간색으로 설정
-                                      element.style.backgroundColor = 'blue'; // 배경 색상을 파란색으로 설정
-                                      element.style.fontSize = '20px';        // 폰트 크기를 20px로 설정
-  
-                      - id
-                         : 기준 <HTML태그>의 id속성값을 가져옴
-                            -> List 형식이 아닌 이유는 id는 고유한 값이기 때문
-  
-                      - tagName
-                         : 기준 <HTML태그>의 명칭을 '대문자'로 가져옴
-                            
-                           ex) 요소의 태그 이름을 가져옴 (예: 'DIV')
-  
-                               let tagName = element.tagName;
-  
+                                   ex) element.classList.contains('my-class'); 
+
+                    c. 대상 element객체의 내부 node 구조 조작 관련 메서드
+
                       - innerHTML
                          : 기준 <HTML태그> '내부'의 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
                             -> {element 객체}.innerHTML의 내용을 변경해서, 해당 HTML 내부를 수정할 수 있는 이유는 innerHTML 프로퍼티가 {element 객체} 내부의 태그 내용을 '문자열'로 저장하고 있게 때문
@@ -392,7 +410,7 @@
                                       -> <p>Hello, world!</p> 출력
 
                       - outerHTML 
-                         : 기준 '<HTML태그>을 포함'한 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
+                         : 기준 <HTML태그>를 '포함'한 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
                             -> {element 객체}.innerHTML의 내용을 변경해서, HTML을 수정할 수 있는 이유는 outerHTML 프로퍼티가 {element 객체} '자신을 포함'한 태그 내용을 '문자열'로 저장하고 있게 때문
                                (= outerHTML 프로퍼티 자체가 '문자열'을 저장하니, 반드시 '문자열' 형식으로 변경할 HTML태그 내용을 입력해야 함)
 
@@ -409,31 +427,182 @@
                                     let content = element.innerHTML; 
                                       -> <p>Hello, world!</p> 출력
 
-
                 @ {Element 객체}의 메서드
 
-                   - getAttribute()
-                      : 속성값 반환
+                   - getAttribute('HTML속성명')
+                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 반환하는 메서드
         
-                   img.getAttribute("src"); //img태그의 src속성 가져오기
-                   태그명.setAttribute(속성명, 세팅값) : 속성값 변경
-                   img.setAttribute("src","./imges/main.jpg"); //img태그의 src속성을 main 이미지로 변경하기
-                   태그명.removeAttribute() : 속성값 삭제
-                   input.removeAttribute("onclick"); //input태그의 onclick속성 삭제
-                   태그명.hasAttribute() : 특정 속성을 가지고 있는지 검사
-                   console.log($cont.hasAttribute("id"));
+                        ex) img태그의 src속성 가져오기
 
-4. CSS 속성을 변경하는 Property
-(css 속성 = width, height, color, line-height, background-color 등)
+                            document.querySelector('img').getAttribute("src");
 
-태그명.setProperty(속성명, 세팅값) : 속성값 변경
-$cont.style.setProperty('width','300px');
+                   - setAttribute('HTML속성명', 'HTML속성값')
+                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 'HTML속성값'로 설정해주는 메서드
+        
+                        ex) img태그의 src속성을 main 이미지로 변경하기
 
+                            document.querySelector('img').setAttribute("src,"./imges/main.jpg");
 
-                
+                   - removeAttribute('HTML속성명')
+                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 삭제해주는 메서드
+        
+                        ex) input태그의 onclick 속성값을 삭제
+
+                            document.querySelector('input').removeAttribute("onclick");
+
+                   - hasAttribute('HTML속성명')
+                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값이 있는지 없는지를 boolean값으로 반환
+        
+                        ex) div태그의 id 속성의 속성값이 있는지 없는지를 확인 후, 결과값을 boolean값으로 반환
+
+                            document.querySelector('div').hasAttribute("id");
+  
           3. {HTMLElement 객체} 
+              : 표현되는 HTML요소 단위 기준이 엄격하게 '<HTML 태그> 단위 만'을 기반으로 하는 {Element 객체}를 상속 받는 {객체}
+                (= {HTMLElement 객체}는 {elememt 객체}가 담당한 HTML 요소들에 해당하는 정보를 기반으로 <HTML 태그>에 해당하는 정보를 완성시키기 위해 추가적인 프로퍼티와 메서드를 가짐)
+                    -> HTML 문서의 모든 <HTML 태그>들에만 공통적으로 적용되어야 할 프로퍼티들과 메서드를 추가로 가지게 됨 
+
+               @ {HTMLElement 객체}의 특징
+
+                  1) <HTML 태그> 단위에 해당하는 내용의 프로퍼티와 메서드를 추가로 제공 
+                     (= <HTML 태그>는 {text Node 객체}, {주석 Node 객체}는 포함하지 않음 -> {HTMLElement 객체}에는 {Node 객체}, {Element 객체}에서 공유하지 않는 프로퍼티나 메서드가 존재함)
+
+                     ex) HTML의 속성(style, data 등)들을 관리하는 메서드
+
+                  2) ES6 이전에 사용되는 DOM 탐색 메서드인 getElement 메서드 종류의 반환값인 컨테이너 역할의 {HTMLCollection 객체}의 내부 요소를 이루고, HTML요소 내용를 저장해주는 {객체}
+                     (= ES6 이전 DOM 탐색을 통해 요소를 찾는 기준이 되는 단위 {객체} )
+
+                  3) 무조건 {live DOM 객체} 형태로 저장되어 있음
+                      -> {Element 객체}에 저장된 모든 <HTML태그> 정보들은 각각 실시간으로 HTML객체의 변화를 감지하고 반영하여 저장함
+                          (= {Element 객체} 내부의 HTML태그들의 정보는 시시각각 동적으로 변해 예측이 힘들 수 있음)
+
+               @ {HTMLElement 객체}의 프로퍼티
+                  : 전체 DOM객체로 구성된 HTML요소들을 {Element 객체} 단위를 기준으로 이터러블하게 순회하여 탐색 및 선택할 수 있도록 도와주는 멤버변수에 해당 
+
+                    a. 대상 {HTMLElement 객체}의 <HTML태그> 전용 속성 참조 및 조작 관련 프로퍼티
+
+                       - title
+                          : 기준 <HTML태그>의 title 속성값을 가져옴
+                             -> title속성값
+                                 : 사용자가 마우스를 올렸을 때 보여주는 키워드에 해당 
+ 
+                       - lang
+                          : 기준 <HTML태그>의 lang 속성값을 가져옴
+                             -> lang속성값
+                                 : 현재 HTML 전체나 특정 HTML 요소의 언어를 지정할 때 사용
+                                   (= 웹 페이지의 언어를 명시적으로 지정하여 접근성과 SEO를 향상)
+ 
+                                   ex) <html lang="en">
+                                       <p lang="fr">Bonjour!</p>
+ 
+                       - dataset
+                          : 기준 <HTML태그>의 사용자 정의 속성들의 정보를 가지는 {dataset 객체}를 호출함
+                             -> {dataset 객체} 내부에는 사용자들이 'data-attribute-name'과 같은 'kebab-case' 방식으로 정의한 속성들이 프로퍼티로 존재하는데, 이를 data를 제외한 camelCase 형식으로 'attributeName'과 같은 방식으로 접근 가능
+                              
+                                ex) document.querySelector('div').dataset.attributeName 
+                                      -> <div data-attribute-name = "예시"> 라는 사용자 정의 속성에 접근하는 방식
+                                
+                                     <div id="myDiv" data-user-id="12345" data-role="admin"></div>
+                                     <script>
+                                         const myDiv = document.getElementById('myDiv');
+                                         console.log(myDiv.dataset.userId);               // data-user-id라는 사용자 정의 속성을 userId로 접근 "12345"
+                                         console.log(myDiv.dataset.role);                 // data-role라는 사용자 정의 속성을 role로 접근 "admin"
+                                     </script>
+ 
+                       - dir
+                          : 기준 <HTML태그>의 dir 속성값을 가져옴
+                             -> dir속성값
+                                 : 현재 HTML 전체나 특정 HTML 요소의 텍스트의 방향을 'rtl(오른쪽 -> 왼쪽)' or '왼쪽 -> 오른쪽' 지정할 때 사용
+                                   (= 문서나 요소의 텍스트 방향을 제어하여 언어에 맞는 텍스트 레이아웃을 제공)
+ 
+                                   ex) <p dir="rtl">هذا نص بالعربية</p>
+ 
+                       - style
+                          : 기준 <HTML태그>의 inline style 속성을 조작할 수 있는 CSSStyleDeclaration 객체를 반환
+                            (= CSSStyleDeclaration 객체는 대상 <HTML태그>의 inline style 속성들에 해당하는 프로퍼티들을 가짐)
+ 
+                            (CSSStyleDeclaration 객체의 프로퍼티들)
+                              : 원하는 style 속성에 해당하는 'camelCase' 형식으로 적힌 style명칭 = 프로퍼티 라고 생각하면 OK 
+                                  -> (주의) camelCase 형식으로 적는 예시
+                                       : background-color >> backgroundColor
+                                         font-size >> fontSize
+ 
+                                         ex) camelCase형식을 지켜서 CSS속성을 적어야 인식함
+                                         
+                                             element.style.color = 'red';            // 텍스트 색상을 빨간색으로 설정
+                                             element.style.backgroundColor = 'blue'; // 배경 색상을 파란색으로 설정
+                                             element.style.fontSize = '20px';        // 폰트 크기를 20px로 설정
+ 
+                            (CSSStyleDeclaration 객체의 메서드 setProperty)
+                              1. CSSStyleDeclaration.setProperty('kebab-case CSS속성명','속성값');
+                                  : CSS 속성을 설정하는 보다 공식적인 방법으로 'CSS속성명'을 parameter로 작성시 본래 방식인 kebab-case 형식으로 사용이 가능
+ 
+                                     -> (참고) setProperty를 사용시 장점
+                                          1) 'CSS속성명'을 적을 시 본래 방식인 kebab-case 형식으로 사용이 가능하여, 헷갈리지 않음
+                                              (= background-color, font-size를 그냥 CSS속성명 그대로 사용해도 됨)
+ 
+                                          2) 특정 'CSS속성명'이 JS의 예약어인 경우 setProperty 메서드를 사용하면 충돌을 예방 가능
+ 
+                                             ex) float의 경우 부동소수점 자료형에 해당하여, 충돌할 염려가 존재함
+                                                 
+                                                 element.style.setProperty('float', 'left');
+ 
+                                          3) 사용자가 정의한 'CSS 커스텀 속성'(= CSS 변수)를 지정하고 싶은 경우, setProperty 메서드를 사용하면 호환성 걱정 안해도 됨
+ 
+                                             ex) element.style.setProperty('--my-custom-color', 'green');
+ 
+                                          4) 메서드 특성상 parameter에 JS변수를 상용하여 동적으로 속성명을 변경시킬 수도 있음
+ 
+                                             ex) propertyName이란 변수를 통해, 해당 <HTML 태그>의 setProperty 메서드를 통해 동적으로 원하는 'CSS 속성명'을 변경 가능
+ 
+                                                 const propertyName = 'background-color';
+                                                 element.style.setProperty(propertyName, 'blue');
+ 
+                              2. CSSStyleDeclaration.setProperty('kebab-case CSS속성명','속성값', 'important');
+                                  : 3번째 parameter로 'important'를 적으면, CSS의 important 플래그를 해당 <HTML 태그>에 설정이 가능함
+ 
+                                    ex) element.style.setProperty('color', 'red', 'important');
+
+
+                    b. 대상 {HTMLElement 객체}의 <HTML태그> 상태 관련 속성 정보 담은 프로퍼티
+                        : boolean값으로 가져옴
+
+                       - draggable
+                          : 기준 <HTML태그>를 마우스로 drag 할수 있는지를 boolean값으로 가져옴
+ 
+                       - hidden
+                          : 기준 <HTML태그>가 화면에서 숨겨진 상태인지 여부를 boolean값으로 가져옴
+                            (= rendering은 되어있지만, 화면에는 숨겨진 상태)
+ 
+                       - contentEditable
+                          : 기준 <HTML태그>의 contents 영역을 편집할 수 있는지 여부를 boolean값으로 가져옴
+
+                    c. 대상 {HTMLElement 객체}의 내부 node 구조 조작 관련 메서드
+
+                       - innerText
+                          : 기준 <HTML태그>의 text contents 영역(= rendering 된 text)를 가져옴
+
+                @ {HTMLElement 객체}의 메서드
+                    : 해당 <HTML태그>를 대상으로 특정 이벤트 종류를 인위적으로 발생시키는 종류의 메서드가 많음
+                      (= 해당 <HTML태그>에 정의된 이벤트를 발생시킬 목적으로 사용될 의도로 제작)
+
+                   - click()
+                      : 기준 <HTML태그>에 click를 수행한 것처럼 이벤트 트리거를 일으키는 메서드
+
+                   - focus()
+                      : 기준 <HTML태그>에 포커스 되도록 설정하는 메서드
+
+                   - blur()
+                      : 기준 <HTML태그>에 포커스를 해제하는 메서드
+
+                   - scrollIntoView()
+                      : 기준 <HTML태그>에 뷰포트에 나타나도록 스크롤하도록 동작하게 하는 메서드
 
           4. {Specific HTML Elements 객체}
+               : {HTMLElement 객체}를 상속 받는 특정한 <HTML 태그>들에 해당하는 {객체}
+                   -> 각 {Specific HTML Elements 객체}는 역시 자신만의 프로퍼티와 메서드가 존재
+
+                      ex) HTMLDivElement, HTMLSpanElement, HTMLInputElement
 
 
     # {HTMLCollection 객체} VS {NodeList 객체}
@@ -471,31 +640,95 @@ $cont.style.setProperty('width','300px');
                 (= getElement() VS querySelector('CSS셀렉터')와 맥락이 연관)
 
                 - {HTMLCollection 객체}
-                   : ES6 이전부터 사용되는 DOM객체의 HTML요소 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
-                     (= 주로 ES6이전에 사용되는 DOM 탐색 메서드인 'getElement()' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+                   : 주로 ES6이전에 사용되는 DOM 탐색 메서드인 'getElement()' 메서드 종류의 반환값에 해당하는 {객체} 자료형
 
-
-<HTML태그>요소의 계층이 직관적이므로 이터러블의 기준으로 이쪽으로 삼고 순회하는 식의 코드를 짜기는 수월함
-  
                 - {NodeList 객체}
-                   : ES6 이후부터 사용되는 DOM객체의 Node들을 기준으로 내용 저장해주는 {객체}들의 컨테이너 역할을 해주는 {객체}
-                     (= 주로 ES6이후에 사용되는 DOM 탐색 메서드인 'querySelector('CSS셀렉터')' 메서드 종류의 반환값에 해당하는 {객체} 자료형)
+                   : 주로 ES6이후에 사용되는 DOM 탐색 메서드인 'querySelector('CSS셀렉터')' 메서드 종류의 반환값에 해당하는 {객체} 자료형
 
-
-Node 객체들의 리스트를 포함합니다. 즉, Node 타입의 모든 객체가 포함될 수 있습니다 (예: Element, Text, Comment 등).
-
-
-
-             b. 내부 요소로서 저장된 {객체}가 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체}인지 여부
+             b. 컨테이너 역할의 {객체}로서 내부에서 다루는 요소에 해당하는 {객체}가 다름
 
                 - {HTMLCollection 객체}
-                   : {live DOM 객체} 형식에 해당하는 개별 HTML요소인 {element 객체}를 여러개 저장 가능한 {유사 배열 객체}
-                      -> {HTMLCollection 객체} = 실시간으로 자신의 변화를 감지하고 반영하는 {element 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체}
+                    : 엄격하게 {HTML element 객체} 단위의 <HTML태그>에 해당하는 내용들만 대상으로 컨테이너 역할을 수행하는 {객체}
+                        -> DOM객체의 요소들을 <HTML태그> 단위로만 저장하기에, 계층 및 구조가 직관적이므로 이터러블 방식으로 순회하여 원하는 <HTML 태크>를 찾는 코드를 짜기는 수월함
+  
+                - {NodeList 객체}
+                    : {Node 객체}를 시작으로 그 {자손 객체}에 포함되는 모든 자료형 단위의 내용들을 대상으로 컨테이너 역할을 해주는 {객체}
+                      (= {NodeList 객체}는 특정 단위에 해당하는 {Node 객체}만 담는 게 아니라, {Node 객체}를 상속하는 모든 {자손 객체}들도 담을 수 있다는 말)
+                           -> 그래서 {NodeList 객체}의 요소로 {Element 객체} 메서드도 사용이 가능함
+                         
+                              ex) {Element 객체), {Text 노드 객체}, {Comment 노드 객체}
+                                    -> 후손인 {Element 객체}로 표현할 수 없는 HTML요소들은 가장 선조에 해당 {Node 객체}로 저장하여 담음
+
+             c. 내부 프로퍼티 및 메서드 구성에 차이가 있음 
+                 : 결국 내부요소 순환과 연관된 메서드와 프로퍼티이긴 하지만, {NodeList 객체}의 경우 반복문과 연계하기는 더 좋음
+               
+                - 공통 프로퍼티 length
+                   : 현재 {HTMLCollection 객체} 나  {NodeList 객체}가 가지는 내부 요소의 수를 저장
+
+                - {HTMLCollection 객체} 메서드 
+
+                       1) item(숫자)
+                           : parameter의 숫자를 통해 {HTMLCollection 객체}의 index에 해당하는 요소를 지정할 수 있음
+   
+                       2) nameditem('name속성값')
+                          : parameter의 'name속성값'를 통해 {HTMLCollection 객체}에서 name속성 중 'name속성값'을 가진 요소를 지정할 수 있음
+        
+                - {NodeList 객체} 메서드
+                   -> (중요) [배열]은 아니지만, 내부 요소 순환용 메서드 foreach메서드는 사용 가능함 
+
+                       1) item(숫자)
+                           : parameter의 숫자를 통해 {NodeList 객체}의 index에 해당하는 요소를 지정할 수 있음
+   
+                       2) keys()
+                          : {NodeList 객체} 내의 index를 순회할 수 있는 Iterator를 반환하는 메서드
+                              -> for...of 루프와 함께 사용
+
+                                 ex) const nodeList = document.querySelectorAll('div');
+                                     for (const index of nodeList.keys()) {
+                                         console.log(index); 
+                                           ->  0, 1, 2, ...
+                                     }
+
+                       3) values()
+                          : {NodeList 객체} 내의 value값을 순회할 수 있는 Iterator를 반환하는 메서드
+                              -> for...of 루프와 함께 사용
+
+                                 ex) const nodeList = document.querySelectorAll('div');
+                                     for (const node of nodeList.values()) {
+                                         console.log(node); 
+                                           ->  각 div 요소
+                                     }
+                                     
+                       4) entries()
+                          : {NodeList 객체} 내의 index와 value값을 순회할 수 있는 Iterator를 반환하는 메서드
+                              -> for...of 루프와 함께 사용
+
+                                 ex) const nodeList = document.querySelectorAll('div');
+                                     for (const [index, node] of nodeList.entries()) {
+                                         console.log(index, node);
+                                           ->  각 index, div 요소
+                                     }
+
+                       5) foreach()
+                          : {NodeList 객체} 내의 요소나 index를 콜백함수의 parameter로 넣으면 순차적으로 콜백함수에서 가공할 수 하는 용도로 해당 콜백함수를 parameter로 가지는 {NodeList 객체} 자체에서 제공하는 메서드
+                            (= [배열]의 그것과 이름은 같지만, 근본은 다른 메서드) 
+                          
+                            ex) const nodeList = document.querySelectorAll('div');
+                                nodeList.forEach( (node, index) => {
+                                  console.log(node, index); 
+                                    -> 각 div, index 요소 출력
+                                });
+
+             d. 내부 요소로서 저장된 {객체}가 실시간으로 HTML요소의 변화를 반영하는 {live DOM 객체}인지 여부
+
+                - {HTMLCollection 객체}
+                   : {live DOM 객체} 형식에 해당하는 개별 HTML요소인 {HTML element 객체}를 여러개 저장 가능한 {유사 배열 객체}
+                      -> {HTMLCollection 객체} = 실시간으로 자신의 변화를 감지하고 반영하는 {HTML element 객체} 여러개를 {유사 배열} 형태로 담을 수 있는 {객체}
                            -> (중요) 특히 {live DOM 객체}의 경우 무조건 실시간으로 HTML요소의 변화를 반영하니, [배열]로 변환해서 정적(static)한 HTML요소를 저장하여 다루도록 하는 것이 좋음
   
                                ex) class속성이 'purple'이란 HTML요소들을 getElementByClassName('purple')로 찾은뒤, 해당 {HTMLCollection 객체}.length를 통해 반복문을 수행하여, class속성 값을 바꾼다면?
-                                    -> 1번쨰 {element 객체}의 class속성값이 바뀌는 순간 {HTMLCollection 객체}의 내부 구성에서 1번쨰 {element 객체}가 빠지면서 {HTMLCollection 객체}.length와 index 정보도 변경
-                                       (= 초기와 다르게 원래 2번쨰 {element 객체} -> 1번째가 되고, 3번쨰 {element 객체} -> 2번째가 되면서, {HTMLCollection 객체}[1]이 나타내는 {element 객체}가 변하기에 본래 2번쨰 객체는 건들지 못함
+                                    -> 1번쨰 {HTML element 객체}의 class속성값이 바뀌는 순간 {HTMLCollection 객체}의 내부 구성에서 1번쨰 {HTML element 객체}가 빠지면서 {HTMLCollection 객체}.length와 index 정보도 변경
+                                       (= 초기와 다르게 원래 2번쨰 {HTML element 객체} -> 1번째가 되고, 3번쨰 {HTML element 객체} -> 2번째가 되면서, {HTMLCollection 객체}[1]이 나타내는 {HTML element 객체}가 변하기에 본래 2번쨰 객체는 건들지 못함
                            
                 - {NodeList 객체}
                    : {non-live DOM 객체} 형식에 해당하는 개별 HTML요소인 {Node 객체}를 여러개 저장 가능한 {유사 배열 객체} + 자체적으로 forEach 메서드는 사용 가능
@@ -504,14 +737,7 @@ Node 객체들의 리스트를 포함합니다. 즉, Node 타입의 모든 객�
      
                                ex) {NodeList 객체}.childNodes, {NodeList 객체}.getElementsByTagName(), {NodeList 객체}.getElementsByClassName()
 
-             c. 내부 프로퍼티 및 메서드 구성에 차이가 있음 
 
-                - {HTMLCollection 객체}
-                    : 메서드가 item(), nameditem() 2가지 뿐
-        
-                - {NodeList 객체}
-                    : keys(), values(), entries(), item() 등의 메서드들이 존재 
-                       -> (중요) [배열]은 아니지만, 내부 요소 순환용 메서드 foreach메서드는 사용 가능함 
 
     # {document 객체}의 메소드들
        : {document 객체} 내부의 메서드들에 해당하며, API 호출은 'document.메서드명(파라미터)' 식으로 호출함
