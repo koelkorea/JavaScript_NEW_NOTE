@@ -798,7 +798,7 @@
                a. 이벤트
                    : 사용자가 해당 HTML 요소에 취하는 조작에 해당하는 명칭에 해당하는 1번째 parameter... 
                    
-                     ex) click, change, focus, keydown, keyup, load, mousedown, mouseout, mouseover, mousemove, mouseup, select, touchstart 등...
+                     ex) click, change, focus, keydown, keyup, load, mousedown, mouseout, mouseover, mousemove, mouseup, select, touchstart, scroll 등...
                           -> 종류는 ㅈㄴ게 많기에 필요할 때 찾아서 응용하기
 
                b. 콜백함수
@@ -878,7 +878,57 @@
                       c. 버블링 단계 (Bubbling Phase)
                           : 이벤트의 발동 대상이 다시 역순으로 '부모 HTML 요소 ~ 최선조 HTML 요소'로 이벤트 작동이 회수되는 과정(Bubbling)이 일어나는 단계
 
+             @ (중요!) 스크롤바(scrollbar) 특수성
+                : 스크롤바(scrollbar)는 브라우저에 속한 요소 O = 스크롤바(scrollbar)는 window객체와 모든 것이 연관되어 있음
 
+                  1) 스크롤바(scrollbar)와 관련된 이벤트리스너를 작성하려면, window객체에서 addEventListener() 메서드를 사용해야 함
+                       -> WHY? 스크롤바(scrollbar)는 브라우저에 속한 요소 O 
+                         (= 스크롤바(scrollbar)는 화면의 어떤 요소 종속된 요소 X)
+
+                          ex) window.addEventListener('scroll', function(){
+                                console.log( window.scrollY )
+                              });
+
+                          ex) JQuery 버전
+                          
+                              $(window).on('scroll', function(){
+                                $(window).scrollTop();
+                              })
+
+                  2) 스크롤바(scrollbar)와 관련된 {window 전역 객체}의 프로퍼티와 메서드
+
+                     (프로퍼티)
+                       : 스크롤 위치에 대한 정보를 담음
+
+                         a. scrollX
+                             : 현재 x축의 스크롤 위치를 px단위로 저장
+
+                         b. scrollY
+                             : 현재 y축의 스크롤 위치를 px단위로 저장
+
+                         c. scrollWidth
+                             : 현재 스크롤 가능한 전체 너비를 px단위로 저장
+
+                         c. scrollHeight
+                             : 현재 스크롤 가능한 전체 높이를 px단위로 저장
+
+                         d. {Node 객체}.clientWidth
+                             : 현재 document요소의 스크롤 지점 너비에 해당되는 위치를 px단위로 저장
+
+                         d. {Node 객체}.clientHeight
+                             : 현재 document요소의 스크롤 지점 높이에 해당되는 위치를 px단위로 저장
+
+                     (메서드)
+                       : 스크롤을 강제 이동시키는 기능들에 해당하며, 순간이동이 되지 않는다면, CSS에 :root { scroll-behavior : auto }를 추가함
+                           -> (주의) 스크롤 내린 양은 정수 단위 표기 X에 OS 마다 부정확함..  = 스크롤 양의 여유를 두고 비교하는게 좋음
+
+                              ex)  끝까지 스크롤했는지? -> 끝에서 10px 정도 남기고 스크롤했는지로 변경
+
+                         a. scrollTo(x, y)
+                             : x, y축에 적은 숫자에 해당하는 (x, y) 좌표에 해당하는 위치에 스크롤을 강제 이동
+   
+                         b. scrollBy(x, y)
+                             : 현재  (x, y) 좌표에 해당하는 스크롤 위치에서 x, y축에 적은 숫자만큼 +하여 스크롤을 강제 이동
 
  - WEB component
     : 사용자가 스스로 정의해서 제작한 만들어진 '커스텀 HTML <태그>'라고 생각하면 됨
