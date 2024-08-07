@@ -473,13 +473,76 @@
                   -> 메모리 주소를 참조값(reference)으로 저장하기에 원시형 같은 값이 대입으로 복사해봐야 주소값만 복사되는 '얕은 복사(shallow copy)'가 일어나 제대로 된 복사가 이뤄지지 않음
                      (= 제대로 된 복사를 위해서는.. 참조하는 주소에 위치한 heap영역의 값들을 하나하나까서 목표하는 heap영역에 위치한 컨테이너 요소들에 대입해주는 '깊은 복사(deep copy)')
 
+             # 참조(reference)값에 대한 이해
+
+               1) 참조 자료형(reference type) 그 자체의 값 = 복수의 값들이 저장된 힙(heap)영역의 메모리 주소에 해당
+                  (= 단순 =연산자를 통한 대입으로는 그저 해당 변수에 저장된 참조값인 힙(heap)영역의 메모리 주소만 복사하고, 같은 위치의 heap영역의 값들을 볼 수 있을 뿐임)
+
+               2) (중요!) 두 변수가 둘 다 참조 자료형(reference type) 형태의 내용을 저장한다 쳤을 때, 그 저장된 내용이 같아보인다고 '=='로 표현되는 같음은 성립하지 않음
+                   -> 참조 자료형(reference type)의 값이 같다는 건 참조하는 힙(heap)영역의 메모리 주소가 같음을 의미함
+
+                      ex) 이름2는 이름1의 참조값인 {객체}가 저장된 메모리주소값을 복사해 온 것이기에... 
+                           -> 이름1이 참조하는 주소의 {객체}의 프로퍼티값이 바뀌면, 이름2도 마찬가지로 같은것을 봄
+                      
+                              var 이름1 = { name : '김' };
+                              var 이름2 = 이름1;
+                              이름1.name = '박';
+                              console.log(이름1);    <- { name : '박' };
+                              console.log(이름2);    <- { name : '박' };
+
+                      ex) 이름1이 참조하는 위치의 {객체}의 내용이나 이름2가 참조하는 위치의 {객체}의 내용이나 같기에 둘은 같은 {객체}를 참조하는 것처럼 보이나..
+                           -> 그 둘은 각각 다른 메모리 위치에 존재하는 {객체}를 참조함
+                              (= 이름1 != 이름2) 
+                      
+                              var 이름1 = { name : '김' };
+                              var 이름2 = { name : '김' };
+                              console.log(이름1 == 이름2);     <- false가 출력... { name : '김' }이라는 {객체}들의 내용은 유사하나, 결국 도플갱어와 같다고 봐야 함
+
+                      ex) 이름1이 저장한 {객체}의 heap영역 메모리 주소값이 obj라는 변수에 대입되지만, 결국 { name : 'park' }이라는 새롭게 생성된 객체의 heap영역 메모리 주소값을 저장함
+                          (= 변경이라는 함수의 호출로 인해 이름1이라는 변수가 저장한 {객체}의 참조값은 오염되지 않음)
+
+                          var 이름1 = { name : '김' };
+                          
+                          function 변경(obj){
+                            obj = { name : 'park' };
+                          }
+
+                          console.log(이름1);     <- { name : '김' }; 그대로 출력
+                          
+                          변경(이름1);
+                            -> 해당 함수는 parameter변수 obj에 arguments인 이름1이라는 {객체}의 참조값을 가진 변수가 대입된다는 로직으로 동작한다고 판단하면 이해가 빠를 것..
+                               (= 함수 호출시 parameter변수와 argument가 되입되는 과정까지 이해를 해야 함)
+                            
+                               function 변경(obj = 이름1){
+                                 obj = 이름1;
+                                 obj = { name : 'park' };
+                               }
+
+                      ex) 이름1이 저장한 {객체}의 heap영역 메모리 주소값이 obj라는 변수에 대입되고, 결국 그 참조값의 heap영역에 저장된 프로퍼티의 값을 직접 변경하니, 이름1의 프로퍼티의 값이 변함
+
+                          var 이름1 = { name : '김' };
+                          
+                          function 변경(obj){
+                            obj.name  = 'park';
+                          }
+
+                          console.log(이름1);     <- { name : 'park' }; 그대로 출력
+                          
+                          변경(이름1);
+                            -> 해당 함수는 parameter변수 obj에 arguments인 이름1이라는 {객체}의 참조값을 가진 변수가 대입된다는 로직으로 동작한다고 판단하면 이해가 빠를 것..
+                            
+                               function 변경(obj = 이름1){
+                                 obj = 이름1;
+                                 obj.name  = 'park';
+                               }
+                         
              # 참조 자료형(reference type) 종류
 
                1) {object(객체)}
                     : 연관된 변수(= 프로퍼티)나 그 변수들을 조작하는 함수(= 메서드)들을 모아놓은 타입을 구현한 key와 value의 집합체인 데이터 구조에 해당하는 JS의 자료형 (!= Json) 
                        -> (참고) JS에서는 함수도 '1급 객체(first-Class Citizen)'에 속하는 {객체}로서, 함수를 변수, return문, 함수의 인자로 할당 가능
  
-                     # {객체}를 기반으로 만들어진 JS의 참조 자료형
+                     - {객체}를 기반으로 만들어진 JS의 참조 자료형
                          : 까놓고 말해서, 그냥 {객체}는 JS라는 언어 성립에 있어 가장 근간을 이루는 참조 자료형이라고 보면 됨
  
                            a. 배열(Array)
@@ -506,7 +569,7 @@
                2) [Array(배열)]
                     : 숫자 index를 사용하여 메모리 공간을 할당하여, 여러개의 데이터들을 순서화 된 집합으로 나타낸 자료형
  
-                     # JS에서 [배열]과 연관된 특수사항  
+                     - JS에서 [배열]과 연관된 특수사항  
  
                         a. [배열]도 JS에서는 {객체} 기반
                            (= '배열명[index]'로 요소에 접근하는거 자체가 '객체명[프로퍼티명]'에서 나옴)
@@ -521,15 +584,234 @@
                            (= 알고리즘 짜면 많이 불리해짐)
                     
                      # [배열]의 메서드
+                        a. from(참조 자료형)
+
+                        b. foreach(무명콜백함수(set요소, index))
+
+               3) {Set(셋)}
+                    : 값이 집합된 {객체}로, 내부 요소로서 중복된 값이 허용 X  
+                        -> (용도) 보통 [배열]의 중복 제거를 위해 사용됨     
+
+                     - JS에서 {set 객체}과 연관된 특수사항  
+ 
+                        a. 셋(Set)은 내부요소 '값'의 중복을 허용X 하는 {객체}에 해당
+                            -> '값'으로는 자료형을 막론하고 뭐든 들어올 수 있음
+
+                                ex) var 출석부2 = new Set([ 'john' , 'tom', 'andy', 'tom' ]);
+
+                                    console.log(출석부2);  
+                                      -> [ 'john' , 'tom', 'andy', 'tom' ] -> {'john' , 'tom', 'andy'}로 중복제거한 {객체} 형식으로 출력
+
+                        b. ES6 이후 등장한 class 기반 {객체}
+                           (= 생성자(constructor)가 존재하며, 메서드(method)가 존재) 
+
+                        c. iterable 함 (= 반복문 순회 가능)
+
+                        d. 생성자를 통해 {set객체}를 생성할 때, parameter변수에 argument로 [배열]을 넣으면, 그 배열을 {set 객체} 형식으로 바꿔줌
+
+                        e. {set객체} -> [배열]하는 것은 스프레드 연산자(spread operator) '...'를 쓰면 쉬움
+
+                           ex) var 출석부 = [ 'john' , 'tom', 'andy', 'tom' ];
+
+                               var 출석부2 = new Set(출석부);   // Array를 Set으로 바꾸기
+                               출석부 = [...출석부2]            // Set을 Array로 바꾸기1
+                               출석부 = Array.from(출석부2);    // Set을 Array로 바꾸기2
+                    
+                     - {set 객체}의 생성자 함수와 메서드
+
+                        A. {set객체} 생성자 함수 
+                            : 생성자를 통해 {set객체}를 생성할 때, new Set([배열]) 형태의 parameter변수에 argument로 [배열]을 넣으면, 그 배열을 {set 객체} 형식으로 바꿔줌
+                              (= argument인 [배열]을 먼저 들어온 순서대로 적용하고, 뒤에 중복으로 들어온 요소는 다 쳐냄)
+
+                               ex) var 출석부2 = new Set([ 'john' , 'tom', 'andy', 'tom' ]);
+
+                                   console.log(출석부2);  
+                                     -> {'john' , 'tom', 'andy'}로 중복제거한 {객체} 형식으로 출력
+
+                        B. {set객체}의 멤버
+
+                            - 프로퍼티
+                               a. size
+                                   : 해당 {set객체}의 요소가 몇 개인지 저장
+                            
+                            - 메서드
+                               a. add('요소값')
+                                   : 해당 '요소값'에 해당하는 값을 해당 {set 객체}에 추가할 수 있는지 검토하고, 중복이 아니라면 내부 요소로 추가한 뒤 {set 객체} 반환
+                                     (= 메서드 체이닝이 쌉가능)
+
+                                     ex) set.add(1).add("A").add(true);    // {1, 'A', true}
+
+                               b. clear()
+                                   : 해당 {set 객체}의 요소들을 전부 지움
+                               
+                               c. delete('요소값')
+                                   : 해당 '요소값'에 해당하는 값을 해당 {set 객체}에 삭제할 수 있는지 검토하고, 삭제했는지 여부를 boolean으로 반환
+
+                                     ex) set.delete(1); // true
+                                         set.delete(2); // false
+                              
+                               d. has('요소값')
+                                   : 해당 '요소값'에 해당하는 값이 현재 해당 {set 객체}에 존재하는지 검토
+
+                                     ex) var 출석부 = [ 'john' , 'tom', 'andy', 'tom' ];
+                                         var 출석부2 = new Set(출석부);   //Array를 Set으로 바꾸기
+ 
+                                         출석부2.add('sally');     // { 'john' , 'tom', 'andy', 'sally'}
+                                         출석부2.add('tom');       // { 'john' , 'andy', 'sally'}                                        
+                                         출석부2.has('tom');       // false
+                                         출석부2.size;             // 3
+ 
+                                         출석부 = [...출석부2]      //Set을 Array로 바꾸기
+
+                               e. forEach(무명콜백함수(개별요소parameter, 인덱스parameter){ 내용부 });
+                                   : 해당 {set 객체}의 모든 내부 요소를 무명콜백함수 내용부에 해당하는 내용으로 순회반복
+                                      -> parameter 변수는 전부 필수는 아니나... 목적을 생각하면 1번째는 적어도 넣어야겠지?
+
+                                         ex) 0, 4, 4를 차례대로 순회
+                                         
+                                             const numSet = new Set([4, 4, 2]);
+                                             numSet.forEach((num, index) => console.log(num * index));
+
+               4) {Map(맵)}
+                    : 순서가 유지되고 중복 허용X인 key - value 쌍의 집합 형태의 {객체}
+
+                      - {Map 객체} 개별 key값의 의미하는 것
+                          : 개별 key값(= seed값) -> hash변환 알고리즘 -> hash값 = 메모리주소값 그 자체!
+                            (= key값이 중복을 허용하지 않는 이유 = value값이 실제로 저장될 고유한 메모리주소값이기 떄문)
+                                -> (중요) key값을 통해 hash값인 메모리주소 그 자체를 얻을 수 있는지라 '값'에 해당하는 value에 대한 빠른 조회, 추가, 삭제 등이 가능
+
+                      - JS에서 {Map 객체}과 연관된 특수사항  
+  
+                         a. {Map 객체}의 key는 '참조(reference)값'이고 value는 'heap영역의 참조주소값에 실제로 저장된 값'으로서 연결하여, 관계를 짓고 구분할 수 있도록, 설계된 자료형을 구현한 {객체}에 해당
+                              -> {맵(Map) 객체}를 출력하면 { key =>  value, ... , } 형식의 객체로 출력
+                                   : '=>' 가 보이는 이유는 key - value의 관계가 '참조 자료형(reference type)'의 '참조값 - 저장내용'과 같은 관계에 있기 때문
+ 
+                                      ex) var person = new Map();
+                                          person.set('name', 'Kim');
+                                          person.set('age', 20);
+      
+                                          console.log(person);  
+                                            -> {"name" => "kim" , "age" => 20} 형식의 {객체}로 출력
+
+                         b. key, value 둘 다 자료형을 막론하고 뭐든 들어올 수 있음
+                             -> key의 경우는 메모리주소값으로 변환되는 고유성이 있기에 {set 객체}처럼 중복되지 않기만 하면 됨
+
+                                ex) var person = new Map();
+                                    person.set([1,2,3], 'Kim');
+                                    person.set('age', 20);
+ 
+                         c. ES6 이후 등장한 class 기반 {객체}
+                            (= 생성자(constructor)가 존재하며, 메서드(method)가 존재) 
+ 
+                         d. iterable 함 (= 반복문 순회 가능)
+ 
+                         f. 생성자를 통해 {Map 객체}를 생성할 때, parameter변수에 argument로 원하는 key - value 쌍을 [key, value] 형식으로 반복해서 넣으면, 그 배열을 {Map 객체}의 내부 요소로 넣어줌
+ 
+                            ex) var person = new Map([
+                                   ['age', 20],
+                                   ['name', 'Kim']
+                                ]); 
+                     
+                      - {Map 객체}의 생성자 함수와 메서드
+ 
+                         A. {Map 객체} 생성자 함수 
+                             : 생성자를 통해 {Map 객체}를 생성할 때, new Map() 형태나 new Map() parameter변수에 argument로 원하는 key - value 쌍을 [key, value] 형식으로 반복해서 넣으면, 그 배열을 {Map 객체}의 내부 요소로 넣어줌
+ 
+                               ex) 빈 {Map 객체} 생성
+                                   var person = new Map();
+
+                               ex) 내용이 찬 {Map 객체} 생성
+                               
+                                   var person = new Map([
+                                      ['age', 20],
+                                      ['name', 'Kim']
+                                   ]); 
+
+                         B. {Map 객체}의 멤버
+ 
+                             - 프로퍼티
+                                a. size
+                                    : 해당 {Map 객체}의 요소가 몇 개인지 저장
+                             
+                             - 메서드
+                                a. set('key값', 'value값')
+                                    : 'key값'의 hash값인 메모리주소에 'value값'을 저장하고, 해당 {Map 객체}의 key-value 형식으로 저장
+ 
+                                      ex) var person = new Map();
+                                          person.set('age', 20);
+
+                                          console.log(person);  
+                                            -> {"age" => 20} 형식의 {객체}로 출력
+ 
+                                b. get('key값')
+                                    : 해당 {Map 객체}에서 'key값'에 해당하는 위치에 저장된 'value값'을 꺼내서 반환
+                                
+                                c. delete('key값')
+                                    : 해당 'key값'에 해당하는 값을 해당 {Map 객체}에 삭제할 수 있는지 검토하고, 삭제했는지 여부를 boolean으로 반환
+ 
+                                      ex) map.delete(1); // true
+                                          map.delete(2); // false
+                               
+                                d. has('key값')
+                                    : 해당 'key값'에 해당하는 값이 현재 해당 {Map 객체}에 존재하는지 검토
+ 
+                                      ex) 
+ 
+                                e. clear()
+                                   : 해당 {Map 객체}의 내부 요소들을 전부 지움
+
+                      - {Map 객체} vs {object 객체}
+                          : {object 객체}가 범용성은 좋으나, 유연성이 부족해서 가끔 씀
+
+평소에 개발할 땐 여기까지만 알고계시면 되는데 
+
+실은 알고리즘 공부를 하게 된다면 Map 자료형을 다시 만나게 될 겁니다.
+
+array 같은 곳에 자료를 저장할 때 자료가 천만개 1억개 이상으로 많으면 Hash Map, Hash Table 이라는걸 사용합니다.
+
+왜냐면 1억개 자료가 저장된 array에서 원하는 것만 쏙 뽑고 싶으면 반복문을 돌리든가 해서 1억개를 전부 들춰봐야하니까요. 
+
+여러분 종이 영어사전에서 단어 찾을 때도 abc 알파벳 순으로 정렬되어있어서 빠르게 찾을 수 있잖아요.  
+
+그래서 자료가 1억개고 거기서 원하는걸 찾을 일이 많으면 Hash Table을 사용합니다. 
+
+자료에 key값을 부여해놓고 정렬하면 그게 Hash Table 만들기 끝입니다. 
+
+실은 여태까지 잘 쓰던 object 자료형이 Hash Table이랑 비슷합니다. 
+
+근데 Hash Table을 만들기 위해선 쌩 자바스크립트 object 자료 쓰면 되긴 하는데
+
+1. object 자료형은 hasOwnProperty, toString 이런 키들도 집어넣을 수 있어서 너무 유연하고
+
+2. key값으로 들어올 수 있는게 문자형태로 제한되어있어서
+
+Map 자료형을 사용합니다. 그냥 new Map() 쓰면 끝임 
+
+가끔 Map 이라는 클래스를 직접 똑같이 만들어보는 것도 좋은 연습문제로 등장합니다.
 
 
-               3) 셋(Set)
-                    : 값의 집합으로, 중복된 값이 허용 X       
-                      (= 중복X인 유사 [배열])         
 
-               4) 맵(Map)
-                    : 키-값 쌍의 집합으로, 키의 순서가 유지되고 중복 허용X
-                      (= key영역 중복X인 유사 마이너 {객체})
+             # 얕은 복사(shallow copy) VS 깊은 복사(shallow copy)
+
+                - 얕은 복사(shallow copy)
+                   : 참조 자료형(reference type)에 해당하는 값을 저장하는 변수의 참조값만 복사하는 것을 '얕은 복사(shallow copy)'라고 함
+
+                     ex) 이름1이 저장한 heap영역 참조값 = 이름2이 저장한 heap영역 참조값 = {name : '김'}이 존재하는 heap영역 주소
+                         (= 이름1이나 이름2나 특정 heap영역의 메모리주소에 어떤 값이 있는지는 모르겠고 {객체}가 있다고만 앵무새처럼 말하는 중)
+                     
+                         var 이름1 = { name : '김' };
+                         var 이름2 = 이름1;
+                         console.log(이름1 == 이름2);     <- ture
+
+                - 깊은 복사(shallow copy)
+                   : 참조 자료형(reference type)에 해당하는 값을 저장하는 변수의 참조값이 가르키는 참조 자료형(reference type)의 내용을 다른 heap영역에 똑같은 내용으로 복사하는 것을 '깊은 복사(shallow copy)'라고 함
+
+                     ex) 이름2는 이름1과 1도 관계없는 heap영역에 {객체}를 생성하고 그 메모리주소를 참조값으로 저장하며, 단지 프로퍼티인 name의 값만 이름1의 주소값을 참조해서 프로퍼티를 뒤져서 가져옴
+                         (= 이름2는 이름1에서 프로퍼티 값만 뽑아온거 뿐, 1도 참조값과 관계가 없음)
+                     
+                         var 이름1 = { name : '김' };
+                         var 이름2 = { name : 이름1.name };
+                         console.log(이름1 == 이름2);     <- false
 
              # (ES6 이후) 스프레드(펼침) 연산자 '...' (spread operator)
                  : '원시형'에 해당하는 값만 가지는 참조 자료형에 해당하는 변수에 '...변수명' 붙여서 해당 참조 자료형에 해당하는 다른 {}나 [] 내부에 사용하면, '깊은 복사(deep copy)'하게 됨
@@ -703,12 +985,37 @@
                                       더하기(3);        <- 13 출력
 
                     B. [인자](arguments array)
-                        : 
+                        : 함수 선언시 내용부에 해당하는 함수의 {}안에 arguments라는 키워드(미리 함수라는 {객체}에 정의된 프로퍼티에 해당)에 해당 함수의 모든 parameter변수가 전부 [배열]의 요소로 들어가 있음
+                            -> [arguments]를 통해, parameter변수에 들어간 각 argument들을 배열의 요소처럼 index로 접근이 가능함... 
+                               (= 불특정한 개수의 나머지 매개변수(rest parameter)가 상정된 함수와 시너지가 유익함)
+
+                               ex) arguments[index]값으로 a,b,c라는 parameter변수를 언급하지 않아도 접근에 문제없음
+
+                                   function 함수(a,b,c){
+                                     console.log(arguments[0])
+                                     console.log(arguments[1])
+                                     console.log(arguments[2])
+                                   }
+                                  
+                                  함수(2,3,4);
+
+                               ex) 나머지 매개변수(rest parameter)와 병행해서 사용도 가능은 함... 사실 굳이 이렇게 안해도 그냥 [나머지 매개변수명]도 똑같이 [배열] 형식이니 굳이 이렇게 안 써도 됨
+                                     -> (중요!) [arguments]가 함수의 전체 parameter변수들의 [배열]이면, [나머지 매개변수(rest parameter)]는 따로 정의된 parmeter변수들을 제외한 parameter변수들의 [배열]에 해당함
+
+                                   function 함수2(a, b, ...파라미터들){
+                                     for (var i = 0; i < arguments.length; i++){
+                                       console.log(arguments[i]);                <- [3,4,5,6,7,11,22,33,44] 출력
+                                     }
+                                   }
+
+                                   var 스프레드연산자 = [11, 22, 33, 44]; 
+                                   
+                                   함수2(1,2,3,4,5,6,7, ...스프레드연산자);  <- 스프레드연산자 '...'를 사용하여 나머지 매개변수를 사용한 함수호출에 유용하게 사용
        
                     C. 나머지 매개변수(rest parameter)
                         : 함수 선언시 parameter를 입력하는 () 영역의 '가장 뒷쪽'에 '...parameter명' 형식으로 '...' 연산자를 붙여서 작성가능
                            -> (중요) 그렇게 하면.. 
-                                - 함수 호출시 앞선에 미리 정의된 parameter들 이외의 다른 불특정한 갯수의 parameter들이 더 들어온다고 가정하고 함수의 내용부를 {}작성이 가능함
+                                - 함수 호출시 앞선에 미리 정의된 parameter들 이외의 다른 불특정한 갯수의 parameter들이 더 들어온다고 가정하고 함수의 내용부를 {} 작성이 가능함
                                 - 앞선에 미리 정의된 parameter들 순서 이후에 들어올 모든 parameter들에 해당하는 변수들을 parameter명이란 변수를 통해 [배열] 형식으로 통제가 가능함
                                   (= 미리 정의된 parameter들 순서 이후에 들어오는 모든 나머지 parameter들 자리의 argument들을 [] 중괄호로 감싸줘 [배열]화 시킨 변수가 rest parameter)
 
@@ -723,7 +1030,7 @@
                                   ex) (참고) 나머지 파라미터(rest parameter)를 사용하여 선언한 함수를 호출할 떄 ()안에 인자(argument) 입력시 '스프레드 연산자'인 '...'의 연계가 아주 좋음
 
                                       function 함수2(a, b, ...파라미터들){
-                                        console.log(파라미터들)                <- [3,4,5,6,7,11, 22, 33, 44] 출력
+                                        console.log(파라미터들)                <- [3,4,5,6,7,11,22,33,44] 출력
                                       }
 
                                       var 스프레드연산자 = [11, 22, 33, 44]; 
