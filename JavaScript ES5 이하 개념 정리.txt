@@ -540,7 +540,9 @@
 
                1) {object(객체)}
                     : 연관된 변수(= 프로퍼티)나 그 변수들을 조작하는 함수(= 메서드)들을 모아놓은 타입을 구현한 key와 value의 집합체인 데이터 구조에 해당하는 JS의 자료형 (!= Json) 
-                       -> (참고) JS에서는 함수도 '1급 객체(first-Class Citizen)'에 속하는 {객체}로서, 함수를 변수, return문, 함수의 인자로 할당 가능
+                       -> (참고) 
+                            a. JS에서는 함수도 '1급 객체(first-Class Citizen)'에 속하는 {객체}로서, 함수를 변수, return문, 함수의 인자로 할당 가능
+                            b. {Map 객체}와 마찬가지로 {object 객체}의 key값(key명) 또한 메모리주소값으로 사용되는 hash값으로 변환되는 seed값임 
  
                      - {객체}를 기반으로 만들어진 JS의 참조 자료형
                          : 까놓고 말해서, 그냥 {객체}는 JS라는 언어 성립에 있어 가장 근간을 이루는 참조 자료형이라고 보면 됨
@@ -674,8 +676,9 @@
 
                4) {Map(맵)}
                     : 순서가 유지되고 중복 허용X인 key - value 쌍의 집합 형태의 {객체}
+                       -> JS의 {Map 객체}는 key값을 hash table로 구성해 사용하는 식의 Hash Map으로 구현
 
-                      - {Map 객체} 개별 key값의 의미하는 것
+                      - {Map 객체} 개별 key값이 의미하는 것
                           : 개별 key값(= seed값) -> hash변환 알고리즘 -> hash값 = 메모리주소값 그 자체!
                             (= key값이 중복을 허용하지 않는 이유 = value값이 실제로 저장될 고유한 메모리주소값이기 떄문)
                                 -> (중요) key값을 통해 hash값인 메모리주소 그 자체를 얻을 수 있는지라 '값'에 해당하는 value에 대한 빠른 조회, 추가, 삭제 등이 가능
@@ -695,10 +698,20 @@
 
                          b. key, value 둘 다 자료형을 막론하고 뭐든 들어올 수 있음
                              -> key의 경우는 메모리주소값으로 변환되는 고유성이 있기에 {set 객체}처럼 중복되지 않기만 하면 됨
+                                 -> (주의!) {객체}나 함수도 key값으로 넣기가 가능하지만, get()이나 has()의 parameter값에 {객체} 자체를 넣거나, 무명함수를 key값으로 찾는다치면 참조값 문제로 false가 뜲
 
-                                ex) var person = new Map();
+                                ex) 모든 자료형이 key값으로 들어올 수 있지만, 참조 자료형 자체는 변수나 함수명으로 저장하지 않는 이상 여기서도 ==의 개념을 조심스럽게 접근해야함
+                                
+                                    var person = new Map();
+
                                     person.set([1,2,3], 'Kim');
                                     person.set('age', 20);
+                                    person.set({}, 'value associated with an object');
+                                    person.set(function() {}, 'value associated with a function');
+
+                                    console.log(myMap.get('age'));            // 20 출력
+                                    console.log(myMap.get({}));               // undefined (key값의 {}와는 다른 객체이기 때문에)
+                                    console.log(myMap.get(function() {}));    // undefined (key값의 무명함수와는 다른 함수이기 때문에)
  
                          c. ES6 이후 등장한 class 기반 {객체}
                             (= 생성자(constructor)가 존재하며, 메서드(method)가 존재) 
@@ -745,7 +758,13 @@
  
                                 b. get('key값')
                                     : 해당 {Map 객체}에서 'key값'에 해당하는 위치에 저장된 'value값'을 꺼내서 반환
-                                
+
+                                      ex) var person = new Map();
+                                          person.set('age', 20);
+
+                                          console.log(person.get('age'));  
+                                            -> 20 반환     
+
                                 c. delete('key값')
                                     : 해당 'key값'에 해당하는 값을 해당 {Map 객체}에 삭제할 수 있는지 검토하고, 삭제했는지 여부를 boolean으로 반환
  
@@ -755,41 +774,84 @@
                                 d. has('key값')
                                     : 해당 'key값'에 해당하는 값이 현재 해당 {Map 객체}에 존재하는지 검토
  
-                                      ex) 
- 
+                                      ex) var person = new Map();
+                                          person.set('age', 20);
+
+                                          console.log(person.has('age'));  
+                                            -> true 반환     
+
                                 e. clear()
                                    : 해당 {Map 객체}의 내부 요소들을 전부 지움
 
                       - {Map 객체} vs {object 객체}
-                          : {object 객체}가 범용성은 좋으나, 유연성이 부족해서 가끔 씀
-
-평소에 개발할 땐 여기까지만 알고계시면 되는데 
-
-실은 알고리즘 공부를 하게 된다면 Map 자료형을 다시 만나게 될 겁니다.
-
-array 같은 곳에 자료를 저장할 때 자료가 천만개 1억개 이상으로 많으면 Hash Map, Hash Table 이라는걸 사용합니다.
-
-왜냐면 1억개 자료가 저장된 array에서 원하는 것만 쏙 뽑고 싶으면 반복문을 돌리든가 해서 1억개를 전부 들춰봐야하니까요. 
-
-여러분 종이 영어사전에서 단어 찾을 때도 abc 알파벳 순으로 정렬되어있어서 빠르게 찾을 수 있잖아요.  
-
-그래서 자료가 1억개고 거기서 원하는걸 찾을 일이 많으면 Hash Table을 사용합니다. 
-
-자료에 key값을 부여해놓고 정렬하면 그게 Hash Table 만들기 끝입니다. 
-
-실은 여태까지 잘 쓰던 object 자료형이 Hash Table이랑 비슷합니다. 
-
-근데 Hash Table을 만들기 위해선 쌩 자바스크립트 object 자료 쓰면 되긴 하는데
-
-1. object 자료형은 hasOwnProperty, toString 이런 키들도 집어넣을 수 있어서 너무 유연하고
-
-2. key값으로 들어올 수 있는게 문자형태로 제한되어있어서
-
-Map 자료형을 사용합니다. 그냥 new Map() 쓰면 끝임 
-
-가끔 Map 이라는 클래스를 직접 똑같이 만들어보는 것도 좋은 연습문제로 등장합니다.
+                          : {object 객체}에서 'key값'을 입력 할 떄 제약이 많음 = {Map 객체}를 쓰는게 더 부담이 없음
+                             -> {객체}의 크기가 {object 객체}가 더 큼 = 자유도와 유연성, 단순함 측면에서 {Map 객체}가 더 유리함
+                             
+                                a. {object 객체}는 개발자가 'key값'을 입력 시, 기본 내장 프로퍼티명과 같으면 충돌 가능성이 존재함
+                                     <-> {Map 객체}는 이런 내장 프로퍼티가 없기에 key값 쓰는데 부담이 없음
+                                 
+                                         ex) hasOwnProperty, toString같은 key값은 {object 객체}의 key값으로 쓸 수 없음
+                                
+                                b. {object 객체}는 개발자가 'key값'을 입력 시, '문자열' 또는 심볼(Symbol)이외 다른 자료형은 전부 '문자열'로 변환
+                                     <-> {Map 객체}는 그냥 JS의 모든 자료형을 'key값'으로 입력 가능
 
 
+
+             # (중요) 해시(Hash)
+                : 임의 크기의 입력 데이터를 seed값으로 하여 어떤 고정된 크기의 출력 데이터(= 해시값(Hash Value))로 변경하는 과정(= 이 과정을 해시함수(Hash function)가 함)에 대한 개념
+                  (= 해시함수(seed){ return 해시값 }과 같은 느낌)
+                  
+                  - 해시와 관련된 개념들
+                     a. 해시함수(Hash function)
+                         : seed값을 고정된 크기를 가지는 해시값(hash value)으로 변환해 주는 역할을 하는 함수
+                            -> parmeter값에 들어가는 argument에 해당하는 원본인 seed값은 어떤 형태의 자료형도 상관없음
+
+                     b. 해시값(Hash value)
+                        : 해시함수(seed값)이 호출된 고정된 크기를 가지는 return값으로 보통 숫자나 '문자열'로 변환
+                           -> 해시값은 주로 [배열] 형태의 해시 테이블(hash table)의 인덱스(index)로서 사용
+                              (= 해시테이블[해시값] = value값에 해당)
+
+                     d. 충돌(colution) = 해시값 중복
+                         : 같은 해시값(hash value)을 가지는 서로 다른 키가 존재하는 경우를 지칭
+                            -> 이렇게 되면, index의 의미가 조금씩 사라지기에 이를 해결할 필요가 존재
+                                -> (방안1) 체이닝
+                                     : 같은 해쉬값(index)를 가지는 여러 개의 데이터를 연결 리스트(linked list)로 연결
+
+                                       ex) hashTable[fruit의 해쉬값] = [["fruit", "apple"], ["fruit", "apricot"]];
+                                            -> 문제가 되는 "fruit"를 ket값으로 가지는 key-value 쌍들을 연결 리스트(linked list)로 연결해서 따로 관리
+
+                                -> (방안2) 오픈 어드레싱
+                                     : 충돌이 발생하면, 문제되는 데이터를 다른 빈 인덱스를 찾아서 저장
+
+                     d. 해시 테이블(Hash table)
+                        : 'key값'을 seed로 해시함수 돌린 해시값(hash value)를 index 삼아 그 안에 key-value 쌍을 내부요소로 저장하는 [배열] 형식의 자료구조 
+                           -> 쉽게 말해, key값 -> hash값 -> index로 변환하여 key-value 쌍에 해당하는 데이터들의 순서를 정렬하여 배치한 [배열]로 보면 됨
+
+                  - 해시 테이블(hash table)의 성능
+                     : 해쉬값의 중복D이 많을 수록 O(1) ~ O(n)으로 수렴
+
+                        a. 해쉬값의 중복X(= 충돌X)의 경우 
+                            : key값이 중복되지 않아 index를 곧장 찾으면 됨 = 데이터 검색, 삽입, 삭제 작업의 평균적 시간 복잡도 = O(1)
+                              (= 데이터의 크기에 상관없이 거의 일정한 시간만 소요)
+                                  -> (중요!) {Map 객체}와 {object 객체}의 key값이 중복을 허용하지 않는 이유
+
+                        b. 모든 해쉬값의 중복되는 경우 
+                            : 모든 key값이 같아 index를 찾아봐야 의미X, 데이터의 크기만큼 순회해야 함 = 데이터 검색, 삽입, 삭제 작업의 평균적 시간 복잡도 = O(N)
+                              (= 데이터의 크기와 검색 속도가 비례함 = 사실상 list 자료구조처럼 작동함)
+                                  -> {Map 객체}와 {object 객체}의 key값이 중복을 허용하지 않는 이유
+
+                  - 해시 테이블(casg table) 사용 예시
+                  
+                    a. 데이터베이스: 
+                      : 키-값 쌍으로 이루어진 데이터를 빠르게 검색하고 저장하기 위해 해시 테이블이 사용
+                    
+                    b. 캐싱
+                        : 자주 조회되는 데이터를 캐싱하기 위해 사용
+                          (= 해시 테이블을 사용하면, 키를 통해 매우 빠르게 데이터를 검색 가능)
+                    
+                    c. {Set 객체], {Map 객체}, {object 객체} 구현
+                         : 값의 중복을 허용하지 않는 집합(Set)을 구현하는 데 사용
+                            -> 해시 테이블을 사용하면, 요소의 존재 여부를 매우 빠르게 확인 가능
 
              # 얕은 복사(shallow copy) VS 깊은 복사(shallow copy)
 
@@ -1696,3 +1758,17 @@ Map 자료형을 사용합니다. 그냥 new Map() 쓰면 끝임
                         console.log(`q1. ${i}`);
                       }
 
+
+
+
+-> 작성 필요
+   this, 
+   apply call 함수, 
+   {객체} 생성자, prototype 상속, ES6 class, _proto_,  getter seteer, extend/super
+   구조분해
+   모듈 시스템
+   promise
+   콜백대체(then ~ catch, asycn/await)
+   비동기처리(macro quote, micro quote)
+   웹브라우저의 stack/quote
+   캔버스 api
