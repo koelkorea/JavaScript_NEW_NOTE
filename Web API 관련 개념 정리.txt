@@ -46,10 +46,39 @@
                     ex) 오디오에 이펙트를 추가, 소리 파형을 시각화
           
           10. WebRTC(Web Real-Time Communication) API
-              : client - client 간 웹브라우저를 통해서, 별도의 중간 소프트웨어 없이 음성이나 영상 데이터 및 임의의 데이터를 포착하고 마음대로 재생하고 P2P로 교환할 수 있도록 하는 기술인 WebRTC를 사용하게 해주는 API
+               : client - client 간 웹브라우저를 통해서, 별도의 중간 소프트웨어 없이 음성이나 영상 데이터 및 임의의 데이터를 포착하고 마음대로 재생하고 P2P로 교환할 수 있도록 하는 기술인 WebRTC를 사용하게 해주는 API
           
           11. Notification API 
-              : 웹브라우저에서 사용자에게 알림 기능 구현시 이를 쉽게 가능하게 해주는 API
+               : 웹브라우저에서 사용자에게 알림 기능 구현시 이를 쉽게 가능하게 해주는 API
+
+          12. Web Worker API
+               : 브라우저에서 다른 JS파일을 사용하여 멀티 쓰레드 환경인거 마냥, 하나의 작업에 '병렬성(Parallelism)'을 만족하는 '동시 처리'가 가능하도록 해주는 API
+
+다른 자바스크립트 파일을 이용해서 
+그 파일에서 힘든 연산을 시키고 그게 완료가 되면 값을 가져오라고 명령이 가능합니다.
+이미 만들어진 Worker라는 클래스를 사용하면 됩니다.
+
+ 
+(메인 js 파일)
+var myWorker = new Worker('worker.js'); 
+
+w.onmessage = function(e){
+  console.log(e.data) //이러면 1 나올듯
+};
+ 
+
+(worker.js 파일)
+
+var i = 0;
+postMessage(i + 1); //postMessage라는 특별한 함수가 있음
+
+이런 식으로 셋팅해놓으면
+
+worker.js에서 작업이 완료될 시 postMessage() 이렇게 실행하면
+
+다른 파일로 완료된 결과값을 전달해줄 수 있습니다. 
+
+이러면 Stack이 바빠지지 않습니다. 
 
     # DOM(document object model) VS CSSOM(CSS object model)
 
