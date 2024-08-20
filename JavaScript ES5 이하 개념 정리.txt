@@ -1814,144 +1814,373 @@
 
             1) (ES6 이전) 일반함수로서 구현된 생성자 함수
                  : function 생성자함수명(...프로퍼티값){ this.멤버변수명; this.멤버메서드명 }과 같은 식으로 this를 통해 해당 멤버들이 생성된 {객체}의 참조값을 참조한다는 부분을 언급하여 작성
-                     -> (일반함수 생성자함수 호출법)
-                          : new 생성자함수명(...프로퍼티값); 형식으로 앞에 새로운 참조값(reference value)를 생성한다는 생성자인 new를 꼭 붙여야 함
+                    -> new 생성자함수명(...프로퍼티값); 형식으로 앞에 새로운 참조값(reference value)를 생성한다는 생성자인 new를 꼭 붙여서 호출
 
-                            ex) 기계라는 생성자함수는 name이라는 프로퍼티의 값을 이름이라는 parameter변수로 받아서 입력하여, 새로운 {기계} 형식의 {객체}를 생성함... 이를 통해 {객체}의 생성을 동적으로 할 수 있음
-                            
-                                function 기계(이름){
-                                  this.name = 이름;
-                                  this.age = 15;
-                                  this.sayHi = function(){
-                                    console.log('안녕하세요' + this.name + ' 입니다');
-                                  }
+                       ex) 학생라는 생성자함수는 name이라는 프로퍼티의 값을 이름이라는 parameter변수로 받아서 입력하여, 새로운 {학생} 형식의 {객체}를 생성함... 이를 통해 {객체}의 생성을 동적으로 할 수 있음
+                       
+                           function 학생(이름, 나이){
+                             this.name = 이름;
+                             this.age = 나이;
+                             this.sayHi = function(){
+                               console.log('안녕하세요' + this.name + ' 입니다. 저는 현재 ' + this.age + '살 입니다');
+                             }
+                           }
+                           
+                           var 학생1 = new 학생('Park', 15);
+                           var 학생2 = new 학생('Kim', 20);
+                           
+                           학생2.sayHi();
+                            -> '안녕하세요 Kim 입니다. 저는 현재 20살 입니다' 출력
+
+            2) (ES6 이후) class 내부에 constructor 문법으로 구현된 생성자 함수 
+                : class 클래스명 { constructor(...프로퍼티값){ this.멤버변수명; this.멤버메서드명 } }과 같은 식으로 this를 통해 해당 멤버들이 생성된 {객체}의 참조값을 참조한다는 부분을 언급하여 작성하는 부분도 같음
+                    -> new 생성자함수명(...프로퍼티값); 형식으로 앞에 새로운 참조값(reference value)를 생성한다는 생성자인 new를 꼭 붙여서 호출
+
+                       ex) 보다시피 외관은 차이가 아주 OOP와 흡사함.. BUT! 기능상 차이 X
+                       
+                           class 학생 {
+                             constructor(이름, 나이){
+                               this.name = 이름;
+                               this.age = 나이;
+                             }
+                             sayHi(){
+                                console.log('안녕하세요' + this.name + ' 입니다. 저는 현재 ' + this.age + '살 입니다');
+                             }
+                             sayHello(){
+                               console.log('안녕하세요');
+                             }
+                           }
+
+                           var 학생1 = new 학생('Park', 15);
+                           var 학생2 = new 학생('Kim', 20);
+                           
+                           학생2.sayHi();
+                            -> '안녕하세요 Kim 입니다. 저는 현재 20살 입니다' 출력
+
+       @ (중요) {객체} 상속과 [[prototype]] 체인 로직
+          : OOP언어가 아닌 JS에서 {객체}의 상속(inheritance)를 다룰 수 있도록 만도록 [[prototype]] 속성을 활용하는데, 이를 {객체} 내부의 속성(프로퍼티, 메서드)를 상속 계보 전체를 대상으로 찾는데 사용할 수 있도록 하는 로직
+             -> 쉽게 말해, [[prototype]] 속성으로 '선조 - 후손' 구분 + 어떤 '요소명'을 {자신} TO {부모}가 가지고 있는지 [[prototype]] 속성을 사용해서 검사하는데도 사용함
+                (= 이 [[prototype]]를 바탕으로 JS는 OOP도 아니지만, 그 수많은 내부기능들을 {Object}를 최상위 기반으로 한 {객체}로서 구현하고 확장이 가능함)
+
+            # (참고) {객체}에서 '상속'이 가능하다는 이점
+               1) 코드 재사용
+                   : 상속을 사용하면, 코드의 재사용성이 높아짐 = 유지보수와 확장이 쉬워짐
+
+               2) 성능 최적화 
+                   : '상속'이 없다면, 자주 쓰는 프러퍼티나 메서드를 추가하는 노고도 들지만, 메모리에서도 이를 일일히 할당하게 됨...
+                       -> 하지만, '상속' 기능을 사용하게 되면, 공통된 부분은 1개의 참조값으로 같이 쓰면 그만임
+
+               3) 확장 가능성
+                   : 공통기능 추가가 매우 쉽고, 이를 통해 복잡한 구조를 가진 {객체}라도 체계적으로 생성 및 조작이 체계적으로 가능함
+
+            # 최선조 {Object} 객체
+               : JS에서 모든 {객체} 기반 자료형이나 요소들 위에 군림하는 최상위 선조와 같은 요소로.. JS에서 {객체} 자료형이란 이 녀석을 최선조로 하여 생성되고 작동함
+                 (= 최상위 선조에 해당하는 {객체}이므로 [[prototype]] 프로퍼티에는 아무것도 존재하지 않음)
+
+                 ex) 모든 [배열]의 [[prototype]]에는 [배열] 생성자 함수인 Array()가 있으며, 그 생성자 함수 Array()의 [[prototype]]에는 Object() 생성자 함수가 존재
+                      -> [배열] 자료형에서는 sort, push, toString, map, forEach 등 이런 내장함수들이 [[prototype]]에 존재하기에 사용이 가능함
+
+                         var arr = [1,2,3];
+                         console.log( arr.toString() ); 
+                          -> [arr]가 [[prototype]]에 참조되는 Array()라는 '생성자 함수'가 자신의 {부모}에 해당하는 [[prototype]] 속성 중 toString()이라는 함수도 포함되어 있으니 사용이 [[prototype]] 체인 로직으로 찾아 사용이 가능 
+
+            # [[prototype]] 프로퍼티
+                 : 모든 JS {객체}가 가지고 있는 숨겨진 내부 프로퍼티로 {부모}에 해당하는 {객체}의 참조값을 저장하여 상속 관계 구현 용도에 사용
+                   (= 모든 JS {객체}는 어떻게든 생성되는 순간 [[prototype]] 속성 또한 생성되며, {부모 객체}의 참조값을 저장하기에 {부모}의 속성(프로퍼티, 메서드)에 접근할 수 있게 됨으로서 상속관계를 구현함)
+                       -> (중요) 'function 생성자 함수'을 통해 생성된 {객체}는 '생성자 함수'의 [[prototype]] 속성을 자신의 [[prototype]] 속성으로 상속받게 되어 있음
+
+                  - (중요) [[prototype]] 속성 특성
+
+                      1) 일반적인 {객체}와 [[prototype]] 속성
+                          : 일반적인 {객체}와 [[prototype]] 속성은 '캡슐화'와 '은닉화'가 적용되어 있는 속성이라 접근제어자(getter, setter)를 통해 접근해야 함
+                            (= {객체명}.prototype으로 접근하려고 해봐야 아무것도 나오지 않으며, 특별한 접근제어자(getter, setter) 역할을 하는 무언가를 통해 접근해야 함)
+
+                      2) '생성자 함수'와 [[prototype]] 속성
+
+                          A. (중요) 'function 생성자 함수'을 통해 생성된 {객체}는 '생성자 함수'의 [[prototype]] 속성을 자신의 [[prototype]] 속성으로 상속받게 되어 있음
+                          B. '생성자 함수'는 {함수 객체}로서 [[prototype]] 속성을 내부적으로 가지고 있지만 그냥 접근이 가능함
+                                -> Why? '생성자 함수'에서의 [[prototype]] 속성은 개발자로 하여금 다른 '생성자 함수'와의 상속관계를 설계할 수 있도록 하는 정보를 담는 프로퍼티이기 때문에 '캡슐화'와 '은닉화'는 되어 있지 않음
+                                   (= OOP언어에서 class 간의 '상속'과 같은 기능과 유사한 기능을 수행하도록 하기 위한 목적)
+  
+                                   ex) 그 증거로 [배열]들을 생성하는 Array() 생성자 함수의 [[prototype]]는 접근제어자 안 쓰고도 접근 가능 
+         
+                                       console.log(Array.prototype);
+                                        -> Array() 생성자 함수의 [[prototype]]에 설정해 놓은 프러퍼티, 메서드 그리고 Array()와 상속 관계로 설정된 '생성자 함수'의 정보를 중첩된 [[prototype]] 속성으로 볼 수 있음
+
+                          C. a의 연장으로 '생성자함수명.prototype.속성명'를 통해 {부모}에게 있는 '속성'은 볼 수 있고, 없는 '속성'면 해당 속성에 값이나 함수를 대입하여 새로운 프러퍼티나 메서드로 생성이 가능함
+                              -> [[prototype]]이 참조하는 것은 {부모}의 참조값이라... 값을 여러개 부여할 수도 있고, 심지어 함수도 집어넣으실 수 있음
+
+                                 ex) gender라는 속성은 본래 부모에는 없었지만 설정이 가능
+           
+                                     function 기계(){
+                                       this.name = 'Kim';
+                                       this.age = 15;
+                                     }
+                                     
+                                     기계.prototype.gender = '남';
+   
+                                     var 학생1 = new 기계();
+                                     
+                                     console.log(학생1.__proto__);   // 남
+                                     console.log(기계.prototype);    // 남
+
+                          D. 특정 {객체} 형식들의 인스턴스들이 공통적으로 가지고 있다는 점에서 클래스(class)의 정적(static) 멤버변수 개념에 더 가까움
+                             (= 생성자 함수의 {prototype} 내부의 프로퍼티가 변하면, 클래스(class)의 정적(static) 멤버변수와 마찬가지로 모든 해당 생성자 함수를 거친 {객체}들에 일괄 적용됨)
+       
+                              ex) gender가 '남'으로 변하던, '여'로 변하던, {학생1}의 __proto__나 Object.getPrototypeOf(학생1)은 값이 변하는 족족 바로 갱신함
+        
+                                  console.log(학생1.__proto__);   // 남
+                                  console.log(기계.prototype);    // 남
+                                  
+                                  기계.prototype.gender = '여';
+                                  
+                                  console.log(학생1.__proto__);   // 여
+                                  console.log(기계.prototype);    // 여
+
+                  - (중요) {일반 객체}의 [[prototype]]속성에 접근하기 위한 접근제어자(getter/setter) 역할의 메서드 및 프러퍼티
+
+                     1) (ES5 이전) 모든 {객체}들의 접근제어자 __proto__
+                         : 어떤 {객체}의 {부모} 위치에 대한 참조값을 가지는 [[prototype]] 속성에 대한 접근자(getter/setter) 역할을 하는 '비표준' 프로퍼티
+                           (= __proto__는 비표준 {Object}를 통한 get/set 메서드는 표준이기에... 성능이나 호환성이나 명확성이나 후자가 압도적으로 권장됨!)
+                               -> {객체명}.__proto__를 들여다보면 getter역할, 거기에 {객체}를 참조값으로 대입하면 setter역할이 됨
+                               
+                                   ex) {객체명}.__proto__ 
+                                         : 현재 {객체명}의 [[prototype]]의 참조값을 반환해주는 getter역할을 수행
+                                         
+                                   ex) {객체명}.__proto__  = {대상 객체명}
+                                         : 현재 {객체명}의 [[prototype]]의 값을 다른 객체의 참조값으로 대입해주는 setter역할을 수행
+   
+                                           ex) {자식}의 {부모 객체}를 {부모}라고 임의적으로 관계를 정립
+                                                 -> 자식.__proto__.name =  자식.name 과 같이 사용도 가능
+                                           
+                                                    var 부모 = { name : 'Kim' };
+                                                    var 자식 = {};
+                                                    
+                                                    자식.__proto__ = 부모;
+                                                    console.log(자식.name);   
+
+                     2) (ES5 이후) {Object}의 '표준' 메서드
+                         : JS에서 표준으로 인정하는 {객체} 간 상속관계를 규정하는 [[prototype]] 관련 접근제어자를 다루는 일종의 정적 메서드
+                            -> (참고) 비표준이 아니라서 유리한점
+                                 1) 호환성 : 표준인 쪽은 모든 최신 브라우저에서 동일하게 동작하게끔 명시되어 있어 그렇게 설계됨
+                                 2) 성능   : 당연한 이야기지만, 성능적으로도 표준이라 제작시에도 신경써서 검증과 최적화를 거침
+                                 3) 명확성 : 명시적으로 알아먹을수 있게 설계가 되기에, 의도치 않은 오류를 줄일 수 있어서, 유지보수와 안정성이 높아짐
+
+                           [1] Object.getPrototypeOf(객체명)
+                                : 해당 {객체명}의 [[prototype]]의 참조값을 반환해주는 getter역할을 수행
+      
+                           [2] Object.setPrototypeOf(객체명, 대상 객체명)
+                                : 현재 {객체명}의 [[prototype]]의 값을 다른 객체의 참조값으로 대입해주는 setter역할을 수행
+
+            # [[prototype]] 체인 알고리즘 로직의 진행과정
+               : 어떤 {객체}가 자신의 계보를 대상으로 '프로퍼티'나 '메서드'를 검색할 때 사용하는 알고리즘.. 
+                  -> 간단하게 적자면, {자신} TO {부모}가 가지고 있는지 [[prototype]] 속성을 사용해서 검사하고, 없으면 자신의 [[prototype]] 내부의 중첩된 [[prototype]]을 통해 재귀식으로 {자신}의 선조들에게도 똑같은 방식으로 대상 '속성'이 있는지를 검색함
+                     (= ES6이후 외관이 class 문법으로 변한 상속 문법에서도 똑같은 방식으로 작동하게 되어있음)
+
+                     1) 해당 {객체명} 내부에 '요소명'에 해당하는 '프로퍼티'나 '메서드'가 존재하는지 check하고
+                         -> 있으면 쓰고, 없으면 [2]로 ..
+     
+                     2) 해당 {객체명}의 {부모 객체}가 {prototype 객체} 정보를 담는 내부 프러퍼티 {__proto__}에는 해당 '요소명'이 있는지 check
+                         -> 있으면 쓰고, 없으면 [3]로 ..
+     
+                     3) 해당 {prototype 객체}의 부모의 prototype 정보를 담는 중첩된 {prototype 객체}에는 해당 '요소명'이 있는지 check
+                         -> 있으면 쓰고, 없으면 [3]을 계속 반복하여 최선조까지 치고 올라감.. 없으면 [4]로..
+                            (= 같은 '요소명'을 {객체명}의 선조들이 가지고 있다쳐도, 자신에게 더 가까운 선조의 '요소명'을 가져다 쓰게 되어 있음 = 일종의 오버라이드(override)의 구현)
+     
+                     3) 4)을 반복해서 Root인 Object.prototype까지 거슬러 올라서도 해당 '요소명'을 찾을 수 없으면 undefined를 반환
+
+                        ex) 그 두 생성자 함수는 Dog.prototype = Object.create(Animal.prototype) 코드를 통해 '상속 관계' 처리가 되어있음 
+                             -> 생성자 함수인 Animal과 Dog은 각각 [[prototype]]으로 speak라는 메서드를 각각 {자식}에 보내는데, [[prototype]] 체인을 통해 {dog}는 자신과 가장 가까운 Dog 함수 객체의 speak() 메서드를 찾아 실행함
+
+                                function Animal(name) {
+                                  this.name = name;
                                 }
                                 
-                                var 학생1 = new 기계('Park');
-                                var 학생2 = new 기계('Kim');
+                                Animal.prototype.speak = function() {
+                                  console.log(`${this.name} makes a noise.`);
+                                };
                                 
-                                학생2.sayHi();
-                                 -> '안녕하세요 Kim 입니다' 출력
+                                function Dog(name) {
+                                  Animal.call(this, name);
+                                }
+                                
+                                Dog.prototype = Object.create(Animal.prototype);
+                                Dog.prototype.constructor = Dog;
+                                
+                                Dog.prototype.speak = function() {
+                                  console.log(`${this.name} barks.`);
+                                };
+                                
+                                const dog = new Dog('Rover');
+                                dog.speak();  // "Rover barks." 출력
+
+            # (중요) JS에서 구현하는 {객체} 간 '상속'을 생성 단계에서 구현하는 방법
+               : 각 {일반 객체}의 [[prototype]]을 일일히 setter 방식으로 조작해도 되지만, 원시적인데다가 애초에 생성 단계에서 상속을 규정하는게 더 깔끔
+
+                 1) (ES6 이전) Object.create(부모 객체 참조값) 사용
+                     : 해당 Object 메서드를 통해, 원하는 {객체}를 {부모 객체}로서 [[prototype]] 속성에 넣어줄 수 있음  
+   
+                      - 어떤 {일반 객체}와 '상속 관계'를 규정하고 싶은 경우 
+                         : 
+   
+                           ex) 
+                               var 부모 = { name : 'Kim', age : 50 };
+                               var 자식 = Object.create(부모);
+                               자식.age  = 20;
+                               
+                               var 손자 = Object.create(자식);
+                               
+                               console.log(손자.age);
+   
+                      - '생성자 함수'를 통해 '상속' 관계를 규정하고 싶은 경우
+   
+   
+                           ex) 
+   
+                               function Animal(name) {
+                                 this.name = name;
+                               }
+                               
+                               Animal.prototype.speak = function() {
+                                 console.log(`${this.name} makes a noise.`);
+                               };
+                               
+                               function Dog(name) {
+                                 Animal.call(this, name);
+                               }
+                               
+                               Dog.prototype = Object.create(Animal.prototype);
+                               Dog.prototype.constructor = Dog;
+   
+                               const dog = new Dog('Rover');
+                               dog.speak();  // "Rover barks." 출력
+   
+                 2) (ES6 이후) class 문법의 extends, super 사용
+                     : 일반적인 OOP언어의 class문법과 유사한 상속 문법을 JS에서도 사용 가능함
+                       (= extends, constructor, super 등 OOP의 그 문법 그대로 사용 가능)
+                         -> (중요!) 껍데기가 바뀌었다는거지.. 기존 function부터 시작하던 문법과 마찬가지로 [[prototype]]를 사용하여 기능과 근본적인 구현에는 차이가 없음
+                             (= prototype 체인을 통한 내부요소 검색법도 고대로 적용된다는 것)
+   
+                      - class 문법 용어 정리
+
+                         A. class
+                             : 어떤 {객체}에 대한 명세서(= 설계도) 같은 개념... 
+                                -> {객체}와 [[prototype]] 속성을 통해 상속을 구현한걸 변경하지 않으니, JS에서는 사실상 그냥 class 형식으로 [[prototype]] 속성을 만지기 위해 위해 쓰는 시작점과 다르게 않음 
+   
+                         B. extends
+                             : 어떤 class와 다른 class를 '부모class - 자식class' 관계로 설정하기 위한 키워드..
+                                -> 이 녀석도 사실상 [[prototype]] 속성을 다른 방식으로 작성한 것 = 객체명.prototype = Object.create(부모명.prototype)과 다르지 않음
+   
+                         C. super
+                             : 자식 class에서 부모 class에 대한 참조값을 저장하는 키워드... 사실상 [[prototype]] 속성을 다른말로 쓴거
+                               (= 참조값이기에 단독으로는 {부모 class}와 그 내부 속성을 불러오는데 쓰거나, 함수 형태의 super()는 {부모 class}의 생성자를 호출함)
+                                   -> (중요) super()는 {부모 class}의 생성자이기에, {자식 class}의 '생성자 함수'의 내용부에 꼭 써줘야 자식 class '생성자 함수'가 정상적으로 작동함 
+   
+                      - class로 구현한 {객체}간 상속 관계 문법
+                         : class 자식클래스명 extends 부모클래스명 { constructor(...프로퍼티){ super(); ... ; } 자식의메서드(){} } 이런식으로 작성
+   
+                           ex) 할아버지 - 아버지 라는 상속관계가 존재
+                                -> prototype 체인을 통한 내부요소 검색법도 고대로 적용되기에, 메서드 override도 자연스럽게 성립하여 만수.sayHi()는 자식class의 메서드을 호출항
+   
+                                   class 할아버지{
+                                     constructor(name){
+                                       this.성 = 'Kim';
+                                       this.이름 = name;
+                                     }
+                                     sayHi(){
+                                       console.log('안녕 나는 할아버지 ' + name + '이다');
+                                     }
+                                   }
+                                   
+                                   class 아버지 extends 할아버지{
+                                     constructor(name, age){
+                                       super(name);
+                                       this.나이 = age;
+                                     }
+                                     sayHi(){
+                                       console.log('안녕 나는 아버지 ' + name + '이다');
+                                     }
+                                     sayHi2(){
+                                       console.log('나는 아버지되는 사람이니 할아버지를 소개하며');
+                                       super.sayHi();
+                                     }
+                                   }
+                                   
+                                   var 만수 = new 아버지('만수', 40);
+                                   만수.sayHi2();
+
+       @ (ES6 이후) {객체} 내부의 getter, setter 함수 기능
+           : 
+
+얕게 말하자면 오브젝트 내의 함수들을 괄호없이 쓸 수 있게 만들어주는 키워드인데
+깊숙히 들어가면 데이터의 무결성을 보존하기 위해 쓰는 키워드라고 보시면 됩니다. 
+
+요즘 원본 데이터는 immutable 해야한다 이런말 들어보셨습니까.
+데이터를 수정하거나 출력할 때 직접 원본 데이터를 만지는게 아니라 함수로 간접적으로 다루는게 대세를 이루고 있는데 
+거기에 합치되는 일종의 코딩 테크닉이라고 보시면 됩니다. 
 
 
-       @ {prototype} 속성 & {_proto_} 속성
-          : OOP언어가 아닌 JS에서 {객체}의 유사 상속(inheritance)를 다룰 수 있도록 만드는 개념으로 '생성자(constructor) 함수'와 그를 통해 생성되는 {객체}로 관계가 이어짐
-            (= (중요!) 일반적으로 OOP의 상속에 해당하는 '부모 class - 자식 class'이 관계랑 전혀 다른 느낌이니 아예 다른 개념으로 받자)
-                 -> '생성자(constructor) 함수' : '생성된 모든 {객체}' = '부모' : '자식' 관계로 규정
-                      -> (중요) 정확히는 '생성자 함수' 또한 중첩된 {부모 객체} '생성자 함수'를 통해 상속 관계가 규정되며, 그 최상위에는 Object()가 존재함
-                          
-                         ex) 모든 [배열]의 부모는 Array()고, 그 Array()의 부모는 Object()
+굳이 왜 이렇게 하냐면 
 
-            1) {prototype} 속성
-                 : 어떤 {객체} 형식을 생성하는 {생성자(constructor) 함수} 내부의 {프로퍼티(property) 객체}로 {prototype 객체}의 내부 값들은 해당 생성자를 통해 생성된 {자식 객체}에 자동으로 이식됨
-                   (= {prototype 객체}는 {부모 객체}인 {생성자 함수 객체}의 유전자에 해당하는 정적 프로퍼티(static property) 보관하는 비밀 공간에 해당한다고 생각하면 편함)
+- object 안의 데이터가 복잡할 수록 함수 만들어놓는게 데이터 꺼내기 쉽습니다.
+- 내부에 있는 name, age 변수를 건드리지 않아서 실수를 방지할 수 있어서 안전합니다.
 
-                  # {prototype} 속성 관련 특이사항
-                      a. {prototype}은 {생성자 함수}의 {프로퍼티(property) 객체} = 반드시 {생성자 함수} 내부에만 존재해야 함
-                         (= 기본적으로 생성자 함수가 {객체}들보다 더 서열이 높음)
+특히 매우 긴 object 안에 원하는 자료 몇개만 뽑고 싶을 때
+미리 저렇게 함수를 만들어놓으면 매번 기능개발해줄 필요가 없습니다. 
 
-                      b. 특정 {객체} 형식들의 인스턴스들이 공통적으로 가지고 있다는 점에서 클래스(class)의 정적(static) 멤버변수 개념에 더 가까움
-                         (= 생성자 함수의 {prototype} 내부의 프로퍼티가 변하면, 클래스(class)의 정적(static) 멤버변수와 마찬가지로 모든 해당 생성자 함수를 거친 {객체}들에 일괄 적용됨)
+ 
 
-                      c. {prototype} 또한 {객체} 형식이라 값을 여러개 부여할 수도 있고 심지어 함수도 집어넣으실 수 있음
-                      d. {prototype}에 추가된 데이터들은 자식들이 직접 가지는게 아니라 부모만 가지고 있음
-                         (= {자식}들이 {__proto__}속성에 가지고 있는 건 {부모}의 {prototype} 프러퍼티의 참조값)
+(참고)
+
+다른 언어에선 코드가 class 단위로 동작하는데 
+class 안에 가끔 외부로 부터 보호하고 싶은 변수들이 있습니다.  
+그럴 때 저런 함수를 많이 만들어 사용합니다. 그런 코딩스타일을 자바스크립트에 그대로 적용하고 있다고 보면 됩니다.
+(보호라는 뜻은 그냥 실수로 수정하는거 방지입니다)
 
 
-            2) {__proto__} 속성
-                 : 어떤 {객체}를 생성한 부모에 해당하는 {생성자(constructor) 함수}의 유전자에 해당하는 {prototype 객체}가 무엇인지 저장하는 {객체} 내부의 프러퍼티
-                   (= {__proto__} = 부모에 해당하는 {생성자(constructor) 함수}의 {prototype} = 해당 {객체}의 근본을 물어볼 때 보는 내부요소)
-                        -> (참고) {생성자(constructor) 함수}의 {prototype} 내부의 프로퍼티가 변하면, 해당 생성자의 {prototype}를 참조값으로 저장하는 {__proto__} 프러퍼티 역시도 값이 변함
+get/set 사용하는 기준은 
 
-                  # {__proto__} 속성 관련 특이사항
-                      a. 어떤 {객체}의 근본을 알고 싶으면 {__proto__} 프로퍼티를 확인하면 됨
-                      b. 어떤 {객체}의 {__proto__} 프로퍼티를 내부 요소들의 값을 확인할 시 __proto__는 생략가능
+그냥 데이터를 뽑아주는, 가져와주는, get 해주는 함수들은 get 쓰시면 되고
+데이터를 입력해주는, 수정해주는, set 해주는 함수들은 set 쓰시면 됩니다. 
+그리고 규칙도 있습니다.
 
-function 기계(){
-  this.name = 'Kim';
-  this.age = 15;
+set 함수는 데이터를 입력해서 수정해주는 함수니까 파라미터가 한개 꼭 존재해야하고
+get 함수는 파라미터가 있으면 안되고 함수 내에 return을 가져야합니다.
+
+잘못 쓰면 에러를 알려주니까 외울 건 없고
+보통 그냥 get 느낌나는 함수들은 get 붙이면 별일 없으니 그닥 어렵진 않습니다.  
+ 
+
+class에서 사용하는 get/set 
+class 안에서 함수 만들 때 get/set 키워드를 이용해서 getter/setter 식으로 함수를 만들 수 있습니다. 
+
+
+class 사람 {
+  constructor(){
+    this.name = 'Park';
+    this.age = 20;
+  }
+  get nextAge(){
+    return this.age + 1
+  }
+  set setAge(나이){
+    this.age = 나이;
+  }
 }
-기계.prototype.gender = '남';
-var 학생1 = new 기계();
 
-console.log(학생1.gender)
-▲ 학생1.gender라고 사용하면 '남'이 출력되죠? 그 이유는..
+var 사람1 = new 사람();
+class 안의 함수들을 getter/setter로 만들어 쓰고 싶으면 이렇게 하시면 됩니다. 
 
-자바스크립트는 오브젝트에서 값을 출력할 때 이런 순서로 물어봅니다.
+이제 새로 뽑인 object인 사람1은 
 
-(1) 학생1에 직접 gender라는 값이 있는가?
-
-(2) 그럼 부모 유전자에 gender라는 값이 있는가?
-
-(3) 그럼 부모의 부모 유전자에 gender라는 값이 있는가?
-
-(4) 그럼 부모의 부모의 부모의 유전자에 .. 그게 있는가?
-
+사람1.nextAge;
+사람1.setAge = 50;
+이렇게 사용하실 수 있겠군요.
  
 
- 
-
-자바스크립트는 이런 알고리즘으로 작동합니다.
-
-그냥 쉽게말하자면 오브젝트에서 값을 뽑을 때 
-
-1. 내가 직접 가지고 있는지 검사
-
-2. 내가 가지고 있지 않으면 부모 유전자들을 차례로 검사하는구나
-
-라고 잘 기억해주시면 됩니다. 
-
- 
-
- 
-
-그래서 학생1이라는 오브젝트가 gender라는 값을 가지고 있지 않지만
-
-부모의 유전자(기계.prototype) 에 있는 gender라는 걸 출력할 수 있는 이유입니다. 
-
-                         ex) 자식.__proto__.name =  자식.name
-
-                      c. (중요) 어떤 {객체}의 {__proto__} 프로퍼티에 대한 {객체}값을 직접 대입하거나,  {__proto__} 프로퍼티의 요소를 직접 입력하는 것도 가능함
-                           -> 이를 통해서, {객체}들 간의 상속(inheritance) 관계도 개발자가 인위적으로 지정이 가능함
-                              (= 생성자 함수 - {객체} 뿐 아니라, {객체} - {객체} 간 상속 관계를 성립시킬 수 있음)
-
-                              ex) {자식}의 {부모 객체}를 {부모}라고 임의적으로 관계를 정립
-                              
-                                  var 부모 = { name : 'Kim' };
-                                  var 자식 = {};
-                                  
-                                  자식.__proto__ = 부모;
-                                  console.log(자식.name); 
-
-                      d. {생성자(constructor) 함수}의 {prototype} 내부의 프로퍼티가 변하면, 해당 생성자의 {prototype}를 참조값으로 저장하는 {__proto__} 프러퍼티 역시도 값이 변함
-
-                         ex) gender가 '남'으로 변하던, '여'로 변하던, {학생1}의 __proto__는 값이 변하는 족족 바로 갱신함
-
-                             function 기계(){
-                               this.name = 'Kim';
-                               this.age = 15;
-                             }
-                             
-                             기계.prototype.gender = '남';
-                             
-                             var 학생1 = new 기계();
-                             
-                             console.log(학생1.__proto__);   // 남
-                             console.log(기계.prototype);    // 남
-                             
-                             기계.prototype.gender = '여';
-                             
-                             console.log(학생1.__proto__);   // 여
-                             console.log(기계.prototype);    // 여
-
-                      e. 어떤 {객체}의 {__proto__}는 디버깅 모드로도 확인 가능하고, 계속 까서 거슬러 올라가다보면 이 {객체}에 해당하는 모든 생성자 함수에 대한 내용을 알 수 있음
-                           -> 이를 통해서, 생성자 함수 내부의 다른 {객체}의 생성자 함수를 만들고, {Object} 생성자 함수까지 존재하게 함으로서 유사 상속(inheritance)를 구현했음을 알 수 있음
-
-                              ex) 모든 [배열]의 부모는 Array()고, 그 Array()의 부모는 Object()
-
-
-          {객체} 생성자, prototype 상속, ES6 class, _proto_,  getter seteer, extend/super
-
+class에서의 getter/setter 용도는 위에서 설명한 내용과 똑같습니다. 
+새로 뽑힌 오브젝트들 내용을 편리하게 수정할 때 사용합니다. 
+굳이 get/set 키워드가 없어도 상관없습니다. 
 
 
 
