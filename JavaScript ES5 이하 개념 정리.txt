@@ -224,36 +224,37 @@
       
                    B. 부수 업무 대기열(Micro task Queue)에 임의의 작업 추가
       
-                      - (중요) 주요 업무 대기열(Macro task Queue)의 스케쥴링 방법들
+                      - (중요) 부수 업무 대기열(Micro task Queue)의 스케쥴링 방법들
 
                          1) queueMicrotask(함수명) 사용하기
-                             -> 이를 반복문 + 재귀함수로 호출과 연계하면 복잡한 큰 업무를 여러 개로 쪼개서 진행 가능하게 할 수 있음
+                             : 부수 업무 대기열(Micro task Queue)에 새로운 작업을 비동기적으로 작동하게 추가하는 JS 표준 API에 해당하는 메서드
+                                -> 이를 반복문 + 재귀함수로 호출과 연계하면 복잡한 큰 업무를 여러 개로 쪼개서 진행 가능하게 할 수 있음
                   
-                                ex) count() 함수의 호출에 따른 호출 더미(call stack)이 끝나지 않는 한, 렌더링은 진행되지 않음
-                                      -> 1000ms 마다 함수를 종료해도, 부수 업무 대기열(Micro task Queue)에 재귀함수가 남아있으니, 결국 랜더링은 부수 업무 대기열(Micro task Queue)이 완전히 끝나는 마지막에 이뤄짐
-                                         (= 하지만?  애플리케이션 상태의 일관성은 가장 믿을 수 있음)
-                        
-                                         <div id="progress"></div>
-                                         
-                                         <script>
-                                           let i = 0;
-                                         
-                                           function count() {
-                                         
-                                             // 무거운 작업을 쪼갠 후 이를 수행
-                                             do {
-                                               i++;
-                                               progress.innerHTML = i;
-                                             } while (i % 1e3 != 0);
-                                         
-                                             if (i < 1e7) {
-                                               queueMicrotask(count);
-                                             }
-                                         
-                                           }
-                                         
-                                           count();
-                                         </script>
+                                   ex) count() 함수의 호출에 따른 호출 더미(call stack)이 끝나지 않는 한, 렌더링은 진행되지 않음
+                                         -> 1000ms 마다 함수를 종료해도, 부수 업무 대기열(Micro task Queue)에 재귀함수가 남아있으니, 결국 랜더링은 부수 업무 대기열(Micro task Queue)이 완전히 끝나는 마지막에 이뤄짐
+                                            (= 하지만?  애플리케이션 상태의 일관성은 가장 믿을 수 있음)
+                           
+                                            <div id="progress"></div>
+                                            
+                                            <script>
+                                              let i = 0;
+                                            
+                                              function count() {
+                                            
+                                                // 무거운 작업을 쪼갠 후 이를 수행
+                                                do {
+                                                  i++;
+                                                  progress.innerHTML = i;
+                                                } while (i % 1e3 != 0);
+                                            
+                                                if (i < 1e7) {
+                                                  queueMicrotask(count);
+                                                }
+                                            
+                                              }
+                                            
+                                              count();
+                                            </script>
                   
                          2) Promise.resolve().then( 함수명 ) 사용하기
                          3) async/await를 사용한 함수
@@ -2015,45 +2016,64 @@
                                 dog.speak();  // "Rover barks." 출력
 
             # (중요) JS에서 구현하는 {객체} 간 '상속'을 생성 단계에서 구현하는 방법
-               : 각 {일반 객체}의 [[prototype]]을 일일히 setter 방식으로 조작해도 되지만, 원시적인데다가 애초에 생성 단계에서 상속을 규정하는게 더 깔끔
+               : 각 {일반 객체}의 [[prototype]]을 일일히 setter 방식으로 조작해도 되지만, 원시적인데다가 애초에 {객체} 생성 단계에서 상속을 규정하는게 더 깔끔
 
-                 1) (ES6 이전) Object.create(부모 객체 참조값) 사용
-                     : 해당 Object 메서드를 통해, 원하는 {객체}를 {부모 객체}로서 [[prototype]] 속성에 넣어줄 수 있음  
+                 1) (ES6 이전) Object.create({부모 객체}) 사용
+                     : 해당 Object 메서드를 통해, 원하는 {객체}를 {부모 객체}로서 [[prototype]] 속성에 넣어서 {자식 객체}를 단일로 생성 가능
    
                       - 어떤 {일반 객체}와 '상속 관계'를 규정하고 싶은 경우 
-                         : 
+                         : 원하는 {일반 객체명}를 Object.create({일반 객체명})에 넣어서 {객체}를 생성하면 됨
+                             -> (단점) 이렇게 해버리면? 단일 {객체}에 밖에 영향을 못 미침... 
    
-                           ex) 
-                               var 부모 = { name : 'Kim', age : 50 };
-                               var 자식 = Object.create(부모);
-                               자식.age  = 20;
-                               
-                               var 손자 = Object.create(자식);
-                               
-                               console.log(손자.age);
+                           ex) {부모}라는 객체를 기반 {자식}을 만들고, {자식}을 바탕으로 {손자}를 만드니..
+                                 -> [[prototype]] 체인 로직으로 자식부터 age가 20으로 변환되서 상속
+
+                                    var 부모 = { name : 'Kim', age : 50 };
+                                    var 자식 = Object.create(부모);
+                                    자식.age  = 20;
+                                    
+                                    var 손자 = Object.create(자식);
+                                    
+                                    console.log(손자.age);
+                                     -> 20 출력
    
                       - '생성자 함수'를 통해 '상속' 관계를 규정하고 싶은 경우
+                          a. {부모 생성자함수명}.call(...parameters);
+                              : {자식 생성자함수명}의 프로퍼티를 규정하는 내용부를 규정 = OOP의 super키워드를 통한 {부모}의 프로퍼티 속성 채우기
+
+                          b. {자식 생성자함수명}.prototype = Object.create({부모 생성자함수명}.prototype);
+                              : {자식 생성자함수명}가 어떤 {부모 생성자함수명}를 부모로 삼는지를 [[prototype]]에 지정
+
+                          c. {자식 생성자함수명}.prototype.constructor = {자식 생성자함수명}
+                              : {자식 생성자함수명}의 생성자함수가 자신임을 제대로 지정함
+
+                          d. {자식 생성자함수명}.prototype.메서드명 = function() { 내용부 }
+                              : {부모 생성자함수명}의 동일 메서드를 override 하거나, 메서드를 신설하여 {손자 생성자함수명}에 물려줄 용도로 메서드를 생성
+                                  -> (중요) [[prototype]] 체인 로직으로 가까운 순서대로 메서드 속성이 호출되니 잘 적용됨
+
+                          ex) Dog라는 생성자 함수는 Animal이란 생성자를 {부모 생성자함수}로 삼고, speak라는 메서드를 override함
    
+                              function Animal(name) {
+                                this.name = name;
+                              }
+                              
+                              Animal.prototype.speak = function() {
+                                console.log(`${this.name} makes a noise.`);
+                              };
+                              
+                              function Dog(name) {
+                                Animal.call(this, name);
+                              }
+                              
+                              Dog.prototype = Object.create(Animal.prototype);
+                              Dog.prototype.constructor = Dog;
+
+                              Dog.prototype.speak = function() {
+                                console.log(`${this.name} barks.`);
+                              };
    
-                           ex) 
-   
-                               function Animal(name) {
-                                 this.name = name;
-                               }
-                               
-                               Animal.prototype.speak = function() {
-                                 console.log(`${this.name} makes a noise.`);
-                               };
-                               
-                               function Dog(name) {
-                                 Animal.call(this, name);
-                               }
-                               
-                               Dog.prototype = Object.create(Animal.prototype);
-                               Dog.prototype.constructor = Dog;
-   
-                               const dog = new Dog('Rover');
-                               dog.speak();  // "Rover barks." 출력
+                              const dog = new Dog('Rover');
+                              dog.speak();  // "Rover barks." 출력
    
                  2) (ES6 이후) class 문법의 extends, super 사용
                      : 일반적인 OOP언어의 class문법과 유사한 상속 문법을 JS에서도 사용 가능함
@@ -2109,81 +2129,108 @@
                                    var 만수 = new 아버지('만수', 40);
                                    만수.sayHi2();
 
-       @ (ES6 이후) {객체} 내부의 getter, setter 함수 기능
-           : 
+       @ (ES6 이후) {객체} 내부의 get, set 키워드를 통한 getter, setter 메서드 기능
+           : JS에서 {객체} 내부의 프로퍼티 속성들의 원본값들의 무결성(immutable)을 유지하기 위하여, 데이터들을 데이터를 수정하거나 출력할 때 직접 {객체} 내부의 원본 프로퍼티 속성값에 접근하지 않고, 개별 프로퍼티별 getter와 setter 메서드의 내용부에 적힌 로직을 따라가 값을 받아오거나 및 수정하는 일종의 방법론
+              -> 개발자 입장에서 {객체} 내부의 프러퍼티들의 무결성(immutable)을 보장하고  예측 불가능한 수정이나 의도치 않는 자료형 입력 등의 사태로부터 보호하기 위해 인터페이스화 시켜놓은 {객체} 내부의 프로퍼티 출력/수정 기능
 
-얕게 말하자면 오브젝트 내의 함수들을 괄호없이 쓸 수 있게 만들어주는 키워드인데
-깊숙히 들어가면 데이터의 무결성을 보존하기 위해 쓰는 키워드라고 보시면 됩니다. 
+             # (중요) {객체} 내부의 프로퍼티 속성값을 직접 변경이 아니라, 메서드를 사용해야 하는 이유 
+                 : getter, setter 메서드의 필요성 또한 여기서 시작됨
 
-요즘 원본 데이터는 immutable 해야한다 이런말 들어보셨습니까.
-데이터를 수정하거나 출력할 때 직접 원본 데이터를 만지는게 아니라 함수로 간접적으로 다루는게 대세를 이루고 있는데 
-거기에 합치되는 일종의 코딩 테크닉이라고 보시면 됩니다. 
+                   1) 메서드를 통해 간접적으로 {객체} 내부의 프로퍼티 속성값에 접근/수정이 가능
+                        -> {객체} 내부의 프로퍼티 속성값을 직접적으로 건들지 않아서, 개발자 개인의 실수를 방지 가능
+                             -> (중요) 보통 OOP를 정식으로 지원하는 언어는 여기에 접근제어자를 private로 놓아서, {객체} 내부의 프로퍼티 속성값에 접근하는 것 자체를 컴파일 단계에서 감지할 수 있도록 안전장치를 더 걸어둠
 
+                   2) 1)과 같이 사전에 내용부를 통한 검증된 로직을 작성하는 쪽이 구조가 복잡한 {객체} 내부의 프로퍼티들을 꺼낼때도 유리함 
+                   3) 메서드의 내용부를 통해, {객체} 내부의 프로퍼티 속성값을 가공하여, 원하는 자료형으로만 가공되도록 할 수도 있음
 
-굳이 왜 이렇게 하냐면 
+                      ex) 매년 {사람}의 나이인 age 프러퍼티 속성값을 +1해주는 메서드 nextAge(), 나이를 변경해주는 setAge(나이)를 만들어 사용
+                           -> 이렇게 age 프러퍼티 속성을 직접 건들지 않아도 수정이 간편하고, 나이를 입력시 문자열로 입력해도 parseInt() 함수가 이를 변환해주기에 안전함도 보장함 
 
-- object 안의 데이터가 복잡할 수록 함수 만들어놓는게 데이터 꺼내기 쉽습니다.
-- 내부에 있는 name, age 변수를 건드리지 않아서 실수를 방지할 수 있어서 안전합니다.
+                              var 사람 = {
+                                name : 'Kim',
+                                age : 30,
+                                setAge(나이){
+                                  this.age = parseInt(나이)
+                                },
+                                nextAge(){
+                                  return this.age + 1
+                                }
+                              }
 
-특히 매우 긴 object 안에 원하는 자료 몇개만 뽑고 싶을 때
-미리 저렇게 함수를 만들어놓으면 매번 기능개발해줄 필요가 없습니다. 
+                              사람.setAge('200');   // 문자 넣었는데도 숫자 200으로 저장됨
+                              사람.nextAge();       // 문자 넣었는데도 숫자 200으로 저장됨
 
+             # (ES6 이후) JS에서의 get, set 메서드 지정 및 사용법
+                 : ES6 이전부터 get, set 메서드는 기존 OOP 스타일대로 잘 만들어 쓰고 있었지만, ES6부터 대충 어떤게 get, set인지 지정 및 공인이 가능해지고 해당 메서드의 내용부가 그에 부합하는지 검사해주는 로직이 생김
+                    -> (중요) class 문법에서도 예외없이 사용이 가능함
+
+                   1) get 메서드
+                       
+                       a. get 메서드 선언
+                           : 원하는 {객체}의 메서드 앞에 'get' 키워드를 작성하면, 메서드 선언 완료
+                           
+                            - (중요) get 메서드 선언시 꼭 지켜야 할 점 = 안 지킴? 에러를 유발 
+                              (= 사실상 ES6의 get, set 키워드의 용도라고 할 수 있음)
+
+                               [1] get 메서드는 선언부에 parameter 변수를 가지고 있으면 안 됨
+                               [2] get 메서드는 해당되는 {객체}의 프로퍼티 속성의 현재값을 가져와야 하므로, return을 적어서 이를 내보내줄 수 있어야 함
+                                    -> (주의) return 이후 어떤 프로퍼티를 가져올지까지는 컴파일러가 잡아주진 않음
+
+                       b. get 메서드 호출
+                           : 원하는 {객체}.get메서드명 방식으로 프로퍼티 호출하듯 호출하면 간편하게 사용 가능
+                             (= {객체}.get메서드명(); 이런식으로 안 해도 된다는 건데... 불편하면 굳이 안 써도 됨)
+
+                   2) set 메서드
+                       
+                       a. set 메서드 선언
+                           : 원하는 {객체}의 메서드 앞에 'set' 키워드를 작성하면, 메서드 선언 완료
+                           
+                            - (중요) set 메서드 선언시 꼭 지켜야 할 점 = 안 지킴? 에러를 유발 
+                                : set 메서드는 선언부에 parameter 변수를 1개 이상 꼭 가지고 있어야함 
+
+                       b. set 메서드 호출
+                           : 원하는 {객체}.set메서드명 = 값, 이런 식으로 프로퍼티에 값을 대입하듯 간편하게 사용 가능
+                             (= {객체}.get메서드명(값); 이런식으로 안 해도 된다는 건데... 불편하면 굳이 안 써도 됨)
+
+             # (ES6 이후) JS에서의 get, set 메서드 사용 예시
+
+                ex1) {일반 객체}에 사용하는 get, set 키워드를 통한 메서드
+                       -> 이렇게 set, get 키워드로 해당 getter, setter 역할의 메서드를 프로퍼티처럼 쓸 수 있음
  
-
-(참고)
-
-다른 언어에선 코드가 class 단위로 동작하는데 
-class 안에 가끔 외부로 부터 보호하고 싶은 변수들이 있습니다.  
-그럴 때 저런 함수를 많이 만들어 사용합니다. 그런 코딩스타일을 자바스크립트에 그대로 적용하고 있다고 보면 됩니다.
-(보호라는 뜻은 그냥 실수로 수정하는거 방지입니다)
-
-
-get/set 사용하는 기준은 
-
-그냥 데이터를 뽑아주는, 가져와주는, get 해주는 함수들은 get 쓰시면 되고
-데이터를 입력해주는, 수정해주는, set 해주는 함수들은 set 쓰시면 됩니다. 
-그리고 규칙도 있습니다.
-
-set 함수는 데이터를 입력해서 수정해주는 함수니까 파라미터가 한개 꼭 존재해야하고
-get 함수는 파라미터가 있으면 안되고 함수 내에 return을 가져야합니다.
-
-잘못 쓰면 에러를 알려주니까 외울 건 없고
-보통 그냥 get 느낌나는 함수들은 get 붙이면 별일 없으니 그닥 어렵진 않습니다.  
+                          var 사람 = {
+                            name : 'Kim',
+                            age : 30,
+                            set setAge(나이){
+                              this.age = parseInt(나이)
+                            },
+                            get nextAge(){
+                              return  this.age + 1  
+                            }
+                          }
+                          
+                          사람.setAge = 40;            // set 키워드를 추가하면 이렇게 프로퍼티처럼 메서드를 사용가능
+                          console.log( 사람.nextAge )  // get 키워드를 추가하면 이렇게 프로퍼티처럼 메서드를 사용가능
+                          
+                ex2) class 문법에 사용하는 get, set 키워드를 통한 메서드
+                       -> 똑같은데, class를 통해 탄생한 {객체}의 해당 getter, setter 역할의 메서드를 프로퍼티처럼 쓸 수 있음
  
-
-class에서 사용하는 get/set 
-class 안에서 함수 만들 때 get/set 키워드를 이용해서 getter/setter 식으로 함수를 만들 수 있습니다. 
-
-
-class 사람 {
-  constructor(){
-    this.name = 'Park';
-    this.age = 20;
-  }
-  get nextAge(){
-    return this.age + 1
-  }
-  set setAge(나이){
-    this.age = 나이;
-  }
-}
-
-var 사람1 = new 사람();
-class 안의 함수들을 getter/setter로 만들어 쓰고 싶으면 이렇게 하시면 됩니다. 
-
-이제 새로 뽑인 object인 사람1은 
-
-사람1.nextAge;
-사람1.setAge = 50;
-이렇게 사용하실 수 있겠군요.
- 
-
-class에서의 getter/setter 용도는 위에서 설명한 내용과 똑같습니다. 
-새로 뽑힌 오브젝트들 내용을 편리하게 수정할 때 사용합니다. 
-굳이 get/set 키워드가 없어도 상관없습니다. 
-
-
-
+                          class 사람 {
+                            constructor(){
+                              this.name = 'Park';
+                              this.age = 20;
+                            }
+                            get nextAge(){
+                              return this.age + 1
+                            }
+                            set setAge(나이){
+                              this.age = 나이;
+                            }
+                          }
+                          
+                          var 사람1 = new 사람();
+                           
+                          사람1.setAge = 40;            // set 키워드를 추가하면 이렇게 프로퍼티처럼 메서드를 사용가능
+                          console.log( 사람1.nextAge )  // get 키워드를 추가하면 이렇게 프로퍼티처럼 메서드를 사용가능
 
   4. 함수(function)
       : 특정 기능에 해당하는 입력(input), 출력(output) 코드 묶음을 쉽게 불러와서 재사용하기 위해 스코프{}를 지정해놓고 모아서 모듈화해놓은 코드
@@ -2224,7 +2271,6 @@ class에서의 getter/setter 용도는 위에서 설명한 내용과 똑같습�
                     b. 함수를 선언한 코드가 위치에 상관없이 무조건 최상단으로 호이스팅이 일어남
                         -> 작성 의도와는 다른 결과가 나올 수 있음
                         -> 그렇게 호이스팅 된 함수는 무조건 먼저 읽기 때문에, 함수 종류가 많아지면 성능에 문제 생김
-
 
                   # (중요) (ES6 이후) 함수 정의 시 사용 가능한 기능 정리
        
@@ -3202,18 +3248,369 @@ class에서의 getter/setter 용도는 위에서 설명한 내용과 똑같습�
                         console.log(`q1. ${i}`);
                       }
 
-  7. (ES6 이후) {Promise 객체}
-       : 
+  7. (ES6 이후) {Promise 객체}를 활용한 콜백함수 대체 디자인 패턴
+       : ES6 이전 비동기함수들의 순차적 처리에 있어 무수한 중첩된 콜백지옥(nested callback hell)로 인한 문제를 해결하기 위해 고안된 어떤 함수의 내용을 성공, 실패 판정해주는 {객체}와 메서드를 사용한 디자인 패턴
+          -> (참고) 보통 어디에 사용하냐면, 비동기 로직인 ajax를 통한 api 호출의 성공/실패를 조건으로 업무 코드들을 구간별로 묶어서 처리하기 위해 콜백함수를 써왔는데, 이에 대한 제어를 상대적으로 단순하고 직관적으로 할 수 있게 만들어 줌
+               -> 대충 콜백함수로 처리되던 코드들의 debug가 쉬워지는 효과도 존재 
+
+     @ (참고) 기존 콜백 함수(callback function)의 단점
+        : (결론) 이 녀석의 장점은 살리고, 단점은 최소화하기 위해 고안된 결과물이.. ES6의 'Promise'를 이용한 디자인 패턴인 'then, catch, finally', ES8의 'async/await'
+     
+          1) 콜백 지옥(callback hell)
+              : 중첩(nested)된 콜백 함수가 많아져서, 함수{}들이 2중 3중으로 중첩되어 있으면 코드가 복잡해지고 가독성이 떨어질 수 있음
+                 -> 이를 개선하기 위한 시작점으로 ES6의 promise를 이용한, 
+
+                    ex) 전형적인 콜백지옥으로, 엄청나게 많은 함수{}가 중첩되어 있음
+                          -> 코드가 실행은 되지만, 이거 인간의 시선에서 함수가 어떻게 작동하는지와 디버깅이 참 답도 없음
+                    
+                             첫째함수(function(){
+                               둘째함수(function(){
+                                 셋째함수(function(){
+                                   어쩌구..
+                                 });
+                               });
+                             }):
+     
+          2) 비동기 작업 에러 처리
+              : 비동기 작업에서 발생하는 에러를 처리하기 어려울 수 있음
+
+          3) 어떤 작업이 실패했을 경우 코드 처리가 어려움..
+             (= 따로 조건문 만들어서 처리해야 하는데, 이러면 코드가 더 개판나고 콜백지옥이 더 심해짐)
+
+     @ (ES6 이후) {Promise 객체}
+         : parameter 변수에 augument로 들어오는 실행자(executor)라고 불리는 parameter가 2개 존재하는 함수를 실행한 뒤, 그에 대한 성공/실패의 여부를 판별한 뒤, 그에 따라 자신의 상태(state)값을 변환하고 그에 맞는 후속처리를 순차적으로 해주는 역할의 {객체}
+
+           # {Promise 객체}를 구성하는 요소들
+
+               1) 실행자(executor) 함수
+                   : {Promise 객체}의 생성자(constructor) 함수의 parameter 자리에 들어가는 augument로서 들어가는 함수로, {promise 객체}가 생성시 자동으로 실행되어 성공/실패를 판별하는 기준이 되어서, 그에 따른 프로퍼티의 변화와 후속 메서드의 호출의 트리거가 되어주는 1번째 업무 구간의 함수
+
+                    - 실행자(executor) 함수의 특성
+                       a. 실행자(executor) 함수는 {promise 객체}가 생성시 자동으로 바로 실행되는 내용부에 해당하는 함수
+                          (= 자동으로 바로 실행되는 함수라는 건, 이 녀석이 {promise 객체}를 통해 수행되는 업무로직의 1번째 구간에 해당하는 내용임을 의미)
+                          
+                       b. 보통 resolve와 reject로 불리는 콜백함수들을 parameter 변수에 augument로 보냄
+                           -> (중요) 무엇(정확히는 몇번째 콜백함수)이 호출되느냐에 따라 추후 {promise 객체}의 상태(state)값과 호출하는 메서드가 변함
+                           
+                       c. 보통 resolve와 reject 둘 중 하나가 호출되면, 실행자(executor) 함수는 거기서 종료되고, {promise 객체}의 프로퍼티가 변하고, 후속 메서드가 상태(state)값에 따라 연계(chaining) 됨
+                           -> 아무것도 호출 안하면, 실행자(executor) 함수의 종료는 곧 {promise 객체} 연계(chaining) 로직의 종료를 의미함.. 
+                              (= 근데 애초에 의도가 콜백함수를 통한 동적인 작동순서 확보임을 생각하면 이따위로 써봤자 의미가 없음)
+
+                    - 실행자(executor) 함수의 parameter로 들어가는 콜백함수(callback function)의 종류와 용도
+                       : 보통 resolve와 reject로 불리는 2가지의 JS에서 자체 제공한 콜백함수가 augument로 들어갈 수 있음
+                          -> (중요) BUT! resolve와 reject라고 augument명을 고정할 필요도 없는게, 왜냐하면 JS에서 실행자(executor) 함수의 성공/실패 여부를 규정하는 건 몇번째로 적혀있는 콜백함수인지 여부를 따지기 떄문
+
+                             A. resolve(성공시 value값) = 1번째 augument인 callback함수(성공시 value값)
+                                (= 1번째 augument인 callback함수가 호출되었음 = resolve 호출 = 실행자(executor) 함수의 성공 = then을 연계(chaining) 메서드로 호출)
+                                    : 호출 자체가 실행자(executor) 함수의 '성공'을 의미하는 콜백함수로 1번째 augument인 callback함수가 호출되어도 같은 의미를 지니며, {promise 객체} 내부 프로퍼티 속성( 상태(state), 결과(result) )들을 변환하고, 현재 코드기준 가장 위에 있는 then을 연계(chaining) 메서드로 호출
+                                        -> resolve(성공시 value값) 호출 시, 변환되는 {promise 객체} 내부의 프러퍼티 속성과 값
+                                            [1] 상태(state)
+                                                 : 보류(pending) -> 이행(fulfilled)
+                                            
+                                            [2] 결과(result)
+                                                 : undefined -> 성공시 value값 (= resolve 콜백함수 호출에 사용한 augument값)
+                                                    -> 결과(result) 값은 다음 {promise 객체}의 연계(chaining) 된 then의 1번째 콜백함수의 parameter변수에 augument로 전달됨
+                                    
+    
+                             b. reject({Error 객체}) = 2번째 augument인 callback함수({Error 객체})
+                                (= 2번째 augument인 callback함수가 호출되었음 = reject 호출 = 실행자(executor) 함수의 실패)
+                                    : 호출 자체가 실행자(executor) 함수의 '실패'을 의미하는 콜백함수로 2번째 augument인 callback함수가 호출되어도 같은 의미를 지니며, {promise 객체} 내부 프로퍼티 속성( 상태(state), 결과(result) )들을 변환하고, 현재 코드기준 가장 위에 있는 then(2번째 콜백함수가 있는 경우)이나 catch을 연계(chaining) 메서드로 호출
+                                        -> reject({Error 객체}) 호출 시, 변환되는 {promise 객체} 내부의 프러퍼티 속성과 값
+                                            [1] 상태(state)
+                                                 : 보류(pending) -> 거부됨(rejected)
+                                            
+                                            [2] 결과(result)
+                                                 : undefined -> {Error객체} (= reject 콜백함수 호출에 사용한 augument값)
+                                                    -> (중요) 결과(result) 값은 다음 {promise 객체}의 연계(chaining) 된 then의 2번째 콜백함수 or catch의 1번째 콜백함수의 parameter변수에 augument로 전달됨
+                                                    -> (참고) 실패시 value값도 뭐든 상관없지만, 그래도 {Error객체}를 추천
+
+               2) {promise 객체}의 프로퍼티들
+               
+                  A. 상태(state)값
+                      : {promise 객체}가 수행하고 있는 함수 로직의 흐름이 현재 성공인지 실패인지 여부를 기록하기 위해 존재하는 {promise 객체} 내부의 프로퍼티 속성으로 초기값은 'pending(보류)'
+                          -> 이후 실행자(executor) 함수가 어떤 콜백함수를 수행하냐에 따라 속성값이 변화하고, 그에 따라 호출하는 메서드도 변화함
+                       
+                        - 상태(state)값의 종류
+                           a. pending(보류)
+                               : {promise 객체}가 처음 생성되었을 때 초기화된 상태(state)값으로
+                                   -> 이후 실행자(executor) 함수의 실행으로 인한 결과로 몇 번쨰 콜백함수를 호출했냐에 따라 해당 속성값이 변화
+                               
+                           b. fulfuilled(이행)
+                               : 실행자(executor) 함수의 실행의 결과가 1번째 augument인 callback함수(= resolve)인 경우에 변환되는 속성값
+                                   -> 이후 {promise 객체}의 then(1번째 콜백함수, 2번째 콜백함수) 메서드를 연계(chaining) + 상태(state)가 이행(fulfilled)시 실행되는 무명 함수인 1번째 콜백함수를 실행함
+                                       -> 상태(state)가 이행(fulfilled)시 실행되는 무명 함수인 1번째 콜백함수를 실행의 결과로 또 해당 값은 변화의 가능성을 맞으며, 다시 fulfuilled(이행)이냐 rejected(거부됨)에 따라 호출하는 연계(chaining) 메서드가 달라짐
+
+                           c. rejected(거부됨)
+                               : 실행자(executor) 함수의 실행의 결과가 2번째 augument인 callback함수(= reject)인 경우에 변환되는 속성값
+                                   -> 이후 {promise 객체}의 2번째 콜백함수가 있는 then(1번째 콜백함수, 2번째 콜백함수) 메서드의 상태(state)가 거부됨(rejected)시 실행되는 무명 함수인 2번째 콜백함수를 실행함 or catch(콜백함수)를 호출하여 해당 콜백함수를 실행함
+                                       -> 상태(state)가 거부됨(rejected)으로 끝났으면, 더 이상 변화의 가능성은 없으며, 이후 finally 연계(chaining) 메서드가 해당 코드 하단에 존재하지 않으면 거기서 {promise 객체}의 메서드 연계(chaining) 종료됨
 
 
+               3) {promise 객체}의 메서드들
+                    : 주로 실행자(executor) 함수의 결과에 따른 콜백함수의 종류에 따라 연계(chaining) 메서드로서 실행되는 녀석들
+                      (= 실행자(executor) 함수의 결과에 따라 연계(chaining) 된다는 것 = {promise 객체}를 통해 수행되는 업무로직의 n번째 구간을 담당함)
+                           -> (중요) {promise 객체}가 상태(state)값에 따라 업무로직을 구간별로 순차적으로 수행하기 위해 존재하는 {객체}라는 사실을 시사
+                  
+                       a. then( 상태(state)가 fulfilled 시 실행되는 무명콜백함수, 상태가 rejected 시 실행되는 무명콜백함수 )
+                           : 상태(state)가 이행(fulfilled) 시에는 무조건 호출되고, 거부됨(rejected)시에는 상태가 rejected 시 실행되는 무명함수인 2번쨰 무명함수가 존재할 시에만 연계(chaining) 호출되는 {promise 객체}의 메서드
+                              -> 상태(state)가 이행(fulfilled) 시 호출되었다면, fulfilled 시 실행되는 무명콜백함수의 결과에 따라 또 해당 값은 변화의 가능성을 맞으며, 다시 fulfuilled(이행)이냐 rejected(거부됨)에 따라 호출하는 연계(chaining) 메서드가 달라짐
+     
+                       b. catch( 상태가 rejected 시 실행되는 무명콜백함수 )
+                           : 상태(state)가 rejected(거부됨) 시에 연계(chaining) 호출되어, 자신의 parameter가 받는 무명콜백함수를 실행하는 {promise 객체}의 메서드 
+     
+                       c. finally( 상태(state)값 여부랑 상관없이 실행되는 무명콜백함수 )
+                           : 상태(state)값과 상관없이 자기 차례가 오면 무조건 연계(chaining) 호출되어, 자신의 parameter가 받는 무명콜백함수를 실행하는 {promise 객체}의 메서드
+
+           # {Promise 객체} 이해에 필요한 주의사항들
+               1) {Promise 객체}는 과거의 콜백함수의 단점들을 보완하기 위해 제작된 {객체}로 이를 이용한 디자인 패턴이 과거의 콜백함수의 단점들을 보완하여 작동됨
+                  (= {Promise 객체}는 동기/비동기와는 전혀 상관없고, 단지 업무 로직들을 구간별로 구분하고 조건에 따라 실행되게 만드는 기능을 담당하는 {객체}라는 것)
+                       -> (참고) 비동기로 작동하는 함수를 사용하고 싶다면, ES8 이전에는 queueMicrotask(함수명)을 통해 억지로 비동기적으로 함수를 실행되게 하거나, ES8부터 지원되는 {promise 객체} 기반 async/await를 쓰도록 하자
+
+               2) {Promise 객체}를 통해, 콜백함수가 중첩될 경우 디버깅(debug)을 통해, 내부 프로퍼티인 state, result를 통한 현재 진행상활을 쉽게 판단이 가능함
+
+               3) 어떤 코드가 실패로 끝났을 때, 상태(state)값 변화로 인한 조건문 처리가 쉬움... 
+                   -> then()의 2번째 콜백함수나, catch() 구분으로 처리하면 됨
+
+               4) {Promise 객체}의 메서드 연계(chaining)은 현재 위치를 기준으로 '상단 -> 하단'으로 switch문 처럼 순차적으로 진행되며, 해당 코드에 진입했을 때 실행조건이 맞으면 호출되는 식으로 연쇄적으로 진행됨
+                    -> 그렇게 쭉 가다가 가장 끝까지 도래하고 실행할 코드가 없으면, 연계(chaining)가 끝나게 됨
+
+     @ (ES6 이후) {Promise 객체}와 then, catch, finally 메서드 연계(chaining)을 활용한 디자인 패턴
+         : {Promise 객체}의 특성을 이용하여, 업무로직을 순차적으로 구간을 기준으로 수행하고 조건에 따라 분기처리를 쉽게 하는 콜백함수를 대체하는 디자인 패턴  
+             -> 중요한건 이미 {Promise 객체}에서 다 설명했으니 예시로 바로 들어가도록 하자
+
+           # then, catch, finally 메서드 연계(chaining)을 활용한 디자인 패턴을 사용하는 케이스
+              1) 시간이 오래걸리는 비동기적 수학연산 성공 후에 특정 코드를 실행하려면?
+
+                 ex)
+
+                     var 프로미스 = new Promise(function(성공, 실패){
+                       var 어려운연산 = 1 + 1;
+                       성공(어려운연산);
+                     });
+                     
+                     프로미스.then(function(결과){
+                       console.log('연산이 성공했습니다' + 결과)
+                     }).catch(function(){
+                       console.log('실패했습니다')
+                     });
+
+              2) 1초 대기 성공 후에 비동기적인 특정 코드를 실행하려면?
+
+                 ex)
+
+                     var 프로미스 = new Promise(function(성공, 실패){
+                       setTimeout(function(){
+                         성공();
+                       }, 1000);
+                     });
+                     
+                     프로미스.then(function(){
+                       console.log('1초 대기 성공했습니다')
+                     }).catch(function(){
+                       console.log('실패했습니다')
+                     });
+
+     @ (ES8 이후) async/await 패턴
+         : 내부적으로는 {Promise 객체} 기반의 디자인 패턴으로 작동하지만, 비동기 함수 제작의 형태로 더 쉽고 직관적으로 콜백함수 로직을 대체하는 {Promise 객체} 기반의 디자인 패턴을 보완하는 새로운 디자인 패턴
+           (= {Promise 객체} 기반의 디자인 패턴 = async/await 패턴은 try ~ catch ~ finally와 혼용 및 연계가 가능함..)
+                -> 비동기적으로 동작하는 함수를 async라는 키워드 하나를 함수에 붙여서 쉽게 작성하게 하고, 해당 함수 내부의 비동기 코드들의 흐름을 순차적으로 통제할 업무구간 로직을 await 키워드로 관리할 수 있도록 함
+
+           # async/await 키워드 개념
+              : 함수명을 선언하고, 그 앞에 async 키워드를 붙이면, 비동기적으로 작동하는 함수가 선언되며, 그 내용부에 await 키워드를 배치하면 기존의 then에 해당되는 부분을 대체하여 비동기로 작동하는 코드들을 업무 구간을 기준으로 묶어 실행흐름을 통제함  
+
+                1) async 키워드
+                    : '함수명'이 존재하는 함수 앞에 해당 async 키워드를 붙이면, '비동기 함수' 형태로 동작하는 {Promise 객체}를 생성해 주며, 결과값으로도 {Promise 객체}를 반환함
+                      (= async {비동기 함수 객체}를 생성할 수 있는 키워드로 봐도 무방하며, 단지 {Promise 객체}로서 작동할 수 있는 프로퍼티와 메서드 또한 가지고 있는 형태로 보면 됨)
+                          
+                      - async 키워드 사용시 주의 및 특이사항
+                      
+                         a. (중요) async 키워드로 만들어진 비동기 함수의 결과값은 무조건 {이행(fulfilled) 상태의 promise 객체}를 반환함
+                              -> then, catch, finally 메서드를 통한 패턴을 사용가능
+
+                                 ex) fetchData 라는 비동기함수의 결과값 또한 {promise 객체}로 반환되기에, then catch finally 패턴으로 연결이 가능함
+     
+                                      async function fetchData() {
+                                          let response = await fetch('https://example.com');
+                                          let data = await response.json();
+                                          return data;
+                                      }
+     
+                                      fetchData().then(function(결과){
+                                        console.log(결과)
+                                      })catch(function(실패원인){
+                                        console.log(실패원인)
+                                      })
+   
+                         b. (중요) 반드시 해당 키워드를 쓰기 위해서는 '함수명'이 존재해야 하며, 그것만 존재한다면 함수 표현식(expression)이던 선언(declaration)이던 상관이 없음
+                              -> class 문법과도 연계가 가능함
+
+                                 ex1) 함수 선언(Function Declaration)에서의 async 사용 예시
+             
+                                      async function fetchData() {
+                                          let response = await fetch('https://example.com');
+                                          let data = await response.json();
+                                          return data;
+                                      }
+             
+                                 ex2) 함수 표현식(Function Expression)에서의 async 사용 예시
+             
+                                      const fetchData = async function() {
+                                          let response = await fetch('https://example.com');
+                                          let data = await response.json();
+                                          return data;
+                                      }
+             
+                                 ex3) 화살표 함수(Arrow Function)에서의 async 사용 예시
+             
+                                      const fetchData = async () => {
+                                          let response = await fetch('https://example.com');
+                                          let data = await response.json();
+                                          return data;
+                                      }
+             
+                                 ex4) 객체 메서드(Object Method)에서의 async 사용 예시
+             
+                                      const obj = {
+                                          async fetchData() {
+                                              let response = await fetch('https://example.com');
+                                              let data = await response.json();
+                                              return data;
+                                          }
+                                      };
+       
+                                 ex5) 클래스 메서드(Class Method)에서의 async 사용 예시
+             
+                                      class MyClass {
+                                          async fetchData() {
+                                              let response = await fetch('https://example.com');
+                                              let data = await response.json();
+                                              return data;
+                                          }
+                                      };
+
+                         c. (중요) 예외적으로 즉시 실행 무명함수(IIFE)와 사용이 가능함..
+                              -> 이를 통해, 해당 async 함수는 실행 순서가 되면 바로 실행되고, {promise 객체}의 실행자(executor) 함수로 연결되서 실햄됨
+                                 
+                                 ex) async 키워드를 사용한 즉시 실행 무명함수(IIFE)로 감싸면, async 함수 안에서 실행되기에 실행이 가능함
+                                 
+                                     (async () => {
+                                       let response = await fetch('/article/promise-chaining/user.json');
+                                       let user = await response.json();
+                                       ...
+                                     })();
+
+                2) await 키워드
+                    : async 키워드를 쓴 함수 내용부에서만 동작하는 키워드로, 해당 async 함수 내부에 중첩하여 존재하는 {promise 객체}에 대해 then 메서드 역할을 대체할 수 있는 키워드
+                       -> 정확히는 {promise 객체}의 실행자(executor) 함수가 처리되어 상태(state)값이 변경될 때까지 기다리는(await) 의미를 가짐 
+                           -> (중요) await 앞에 놓은 {promise 객체}의 실행자(executor) 함수나 현재 콜백함수의 처리가 완료되면 반환되는 내용은 상태(state)와 result(결과)값이 포함된 {promise 객체}
+                                -> BUT! 어차피 상태(state)값이 이행(fulfilled)인 경우에 한해서만, 에러없이 후속동작 되므로, 사실상 await 앞에 놓은 {promise 객체}가 전달하는  상태(state)와 result(결과)값은 실행자(executor) 함수나 현재 콜백함수가 성공했을 경우에 해당하는 값임
+                                   (= then() 메서드랑 정확히 하는 일이 겹치진 않음.. 하지만 결국 연계(chaining) 호출로 {}가 중첩되는 일이 생기지 않고, 비동기 코드를 await를 기점으로 순차적으로 진행할 수 있다는게 의의)  
+                       
+                                    ex) 어려운연산이라는 {promise 객체}의 실행자(executor) 함수의 결과가 1번째 콜백함수 '성공(결과)'를 호출함에 따라, 상태(state)와 결과(result)값은 각각 이행(fulfilled)와 2로 바뀌고
+                                         -> '결과'라는 변수는 어려운연산이란 {promise 객체}의 result 프로퍼티에 해당하는 2를 대입받게 됨
+
+                                             async function 더하기(){
+                                               var 어려운연산 = new Promise((성공, 실패)=>{
+                                                 var 결과 = 1 + 1;
+                                                 성공(결과);
+                                               });
+                                               var 결과 = await 어려운연산;       <- 어려운연산.then( 결과 -> console.log(결과) ); 을 대체하는 await를 이용한 코드
+                                               console.log(결과);                <- async/await 덕분에 {}를 중첩하지 않아도 후속코드를 이어 쓸수 있음(물론 state가 fulfilled 일때만 가정하니까 쓸 수 있는 코드이긴 함)
+                                             }
+                                             더하기();
+
+                      - await 키워드 사용시 주의 및 특이사항    
+                         a. 반드시 async 키워드가 쓰인 함수 내부에 쓰여야 함
+                            (= 일반함수에는 사용할 수 없음)
+                            
+                         b. 태생이 {promise 객체}와 호환이 되는 모든 {객체} 앞에 await 사용이 가능함
+                             -> (중요) 정확히는 메서드로 then을 가지고 있어서, {promise 객체}와 호환이 가능한 {객체}에 await를 사용 가능함
+                                  -> {promise 객체}와 호환이 가능한 {객체}를 await이 받을 시, 그 {객체} 내부의 then 메서드를 즉시 실행하여 실행자(executor) 함수로서 호출함
+
+                                      ex) await는 { thenable객체 }(then 메서드가 있는 호출 가능한 {객체}로 {promise 객체}와 호환 가능) 앞에 사용이 가능함
+                                           -> Thenable 클래스의 then 메서드가 실행자(executor) 함수로서 호출됨
+          
+                                              class Thenable {
+                                                constructor(num) {
+                                                  this.num = num;
+                                                }
+                                                then(resolve, reject) {
+                                                  alert(resolve);
+                                                  setTimeout(() => resolve(this.num * 2), 1000); 
+                                                }
+                                              };
+                                              
+                                              async function f() {
+                                                let result = await new Thenable(1);
+                                                alert(result);
+                                              }
+               
+                                              f();
+
+                         c. await의 결과값을 받아줄 변수가 반드시 필요하지는 않음
+
+                            ex) await new Promise((resolve, reject) => setTimeout(resolve, 3000)) 형식의 코드도 3초대기 후 잘 작동함.. 단지 결과값을 아무도 안 받아줄 뿐
+                                async function showAvatar() {
+                                
+                                  let img = document.createElement('img');
+                                  img.src = githubUser.avatar_url;
+                                  img.className = "promise-avatar-example";
+                                  document.body.append(img);
+                                
+                                  await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+                                  
+                                  img.remove();
+                                  return githubUser;
+                                }
+                                
+                                showAvatar();
+
+                         d. (중요) await는 async가 동반되지 않은 스코프 {}인 전역 스코프 {} 레벨에서 작동하지 않음
+                              -> BUT! async 키워드를 사용한 즉시 실행 무명함수(IIFE)로 감싸면, await는 전역 스코프 {} 레벨에서 작동하지 않음
+
+                                 ex) 최상위 레벨 코드에선 await 문법 에러가 발생함
+                                 
+                                     let response = await fetch('/article/promise-chaining/user.json');
+                                     let user = await response.json();
+                                 
+                                 ex) async 키워드를 사용한 즉시 실행 무명함수(IIFE)로 감싸면, async 함수 안에서 실행되기에 실행이 가능함
+                                 
+                                     (async () => {
+                                       let response = await fetch('/article/promise-chaining/user.json');
+                                       let user = await response.json();
+                                       ...
+                                     })();
+
+                         e. (중요) await는 Promise.all과도 함께 쓸 수 있음
+                              -> 여러 개의 프라미스가 모두 처리되길 기다려야 하는 상황이라면 이들을 Promise.all로 감싸고 여기에 await를 붙여 사용할 수 있음
+
+                                 ex) {promise 객체}인 fetch 처리 결과가 담긴 [배열]을 기다림
+                                 
+                                     let results = await Promise.all([
+                                       fetch(url1),
+                                       fetch(url2),
+                                       ...
+                                     ]);
+                                     
+                         f. 사실상 해당 {promise 객체}의 상태(state)값이 이행(fulfilled)이 되었을 때, 연계(chaining) 호출되는 then()만을 대체 가능함
+                            (= await 키워드로는 해당 {promise 객체}의 상태(state)값이 rejected(거부됨)인 상태를 처리할 수 없음)
+                                -> (중요) 그래서 {promise 객체}의 실행자(executor) 함수 및 후속 then 메서드의 1번째 콜백함수가 실패하는 경우가 예상되면 try ~ catch 문법이 보통 같이 쓰이거나, then, catch finally가 쓰임
+
+                                    ex) 더하기라는 async 키워드를 붙인 {promise 객체} 기반 비동기 함수 내부에 어려운연산이라는 {promise 객체}가 중첩되어 있고 실행자(executor) 함수의 결과가 나올떄까지 기다림
+                                         -> 결과가 실패하여, 상태(state)값이 rejected(거부됨)이라면, 이는 catch로 나가 떨아지게 됨
+
+                                            async function 더하기(){
+                                              var 어려운연산 = new Promise((성공, 실패)=>{
+                                                실패();
+                                              });
+                                              try {  var 결과 = await 어려운연산 }
+                                              catch { 어려운연산 Promise가 실패할 경우 실행할 코드 }
+                                            }
 
 -> 작성 필요
 
    모듈 시스템
 
    [배열] API 정리
-
-   promise
-   콜백대체(then ~ catch, asycn/await)
 
    캔버스 api
