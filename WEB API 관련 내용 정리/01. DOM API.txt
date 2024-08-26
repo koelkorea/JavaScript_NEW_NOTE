@@ -1,85 +1,11 @@
- - WEB API
-    : 웹표준에서 모든 웹 브라우저에서 제공하기로 표준화 되어 있는 기능을 의미
-      (= WEB API에 명시된 기능을 API로 제공할 수 없는 브라우저는 제대로 된 브라우저가 아니라는 말씀)
 
-     # WEB API와 JavaScript(= EMCA Script)의 관계
-         : (중요) 분명 양쪽은 별개의 개념이지만! 애초에 JS자체가 브라우저에서 사용하기 위해 개발된 프로그래밍 언어 = WEB API는 JavaScript로 접근하고 사용할 수 있는 기능
-            -> 브라우저 엔진은 JavaScript 엔진으로 일부가 구성되고, Web API는 JavaScript 엔진으로 구현됨
-               (= 새로운 JavaScript 기능이 추가될 시, 이를 연계하여 Web API에 사용하면 여러가지 측면의 개선점을 보일 수 있음)
-
-               ex) fetch API의 발전
-                    : 무자비한 비동기 구문의 콜백지옥을 벗어나기 위한 ES6의 Promise 기능을 기반으로 WEB API에 새롭게 등장함
-                       -> 이후 ES8에서 등장한 async/await를 fetch API에 사용가능하게 적용하여, 개발자 편의성과 만족도를 개선
-
-     # WEB API의 종류
-        : 매우 많지만, 대표적인거 몇가지 추리면 다음과 같음
-
-          1. DOM API
-              : HTML 및 XML 문서의 구조를 표현하고 조작하게 해주는 API (DOM 트리 탐색 및 수정)
-  
-          2. CSSOM API
-              : CSS 스타일시트를 조작할 수 있게 해주는 API (CSSOM 트리 탐색 및 수정)
-  
-          3. Fetch API
-              : Promise 문법 기반으로 제작되어, 비동기적으로 네트워크 요청을 더 쉽게 수행할 수 있게 해주는 API
-  
-          4. Web Storage API
-              : 클라이언트 측에서 데이터를 로컬 및 세션에 저장하게 해주는 브라우저 내부의 저장소 관리용 API
-  
-          5. Canvas API
-              : 브라우저 화면에 2D 그래픽을 그릴 수 있게 하며(= 2D 렌더링 컨텍스트), 프레임 단위로 동적인 환경에 반응하고 움직일 수 있는 무대를 제공하는 API
-                 -> 극단적으로는 이걸로 게임도 만들 수 있으며, 기능을 확장해주는 라이브러리들도 많으니... 브라우저로 그래픽을 그리고 싶으면 참고해보기
-  
-          6. WebSocket API
-              : client - server간 실시간 양방향 통신을 가능하게 해주는 WebSocket을 사용하게 해주는 API
-  
-          7. Geolocation API
-              : 사용자의 위치 정보를 가져올 수 있게 해주는 API
-  
-          8. File API
-              : 사용자가 로컬 파일을 웹 애플리케이션에 업로드하고 처리할 수 있게 해주는 API
-  
-          9. Web Audio API
-              : 브라우저에서 <audio> 태그 이상의 기능으로 오디오를 복합적으로 제어하는 다양한 기능을 구현할 수 있도록 도와주는 API
-                 -> Video나 WebRTC(Web Real-Time Communication) API에서도 사용하는 범용성이 높은 API
-
-                    ex) 오디오에 이펙트를 추가, 소리 파형을 시각화
-          
-          10. WebRTC(Web Real-Time Communication) API
-               : client - client 간 웹브라우저를 통해서, 별도의 중간 소프트웨어 없이 음성이나 영상 데이터 및 임의의 데이터를 포착하고 마음대로 재생하고 P2P로 교환할 수 있도록 하는 기술인 WebRTC를 사용하게 해주는 API
-          
-          11. Notification API 
-               : 웹브라우저에서 사용자에게 알림 기능 구현시 이를 쉽게 가능하게 해주는 API
-
-          12. Web Worker API
-               : 브라우저에서 다른 JS파일을 사용하여 멀티 쓰레드 환경인거 마냥, 하나의 작업에 '병렬성(Parallelism)'을 만족하는 '동시 처리'가 가능하도록 해주는 API
-
-다른 자바스크립트 파일을 이용해서 
-그 파일에서 힘든 연산을 시키고 그게 완료가 되면 값을 가져오라고 명령이 가능합니다.
-이미 만들어진 Worker라는 클래스를 사용하면 됩니다.
-
- 
-(메인 js 파일)
-var myWorker = new Worker('worker.js'); 
-
-w.onmessage = function(e){
-  console.log(e.data) //이러면 1 나올듯
-};
- 
-
-(worker.js 파일)
-
-var i = 0;
-postMessage(i + 1); //postMessage라는 특별한 함수가 있음
-
-이런 식으로 셋팅해놓으면
-
-worker.js에서 작업이 완료될 시 postMessage() 이렇게 실행하면
-
-다른 파일로 완료된 결과값을 전달해줄 수 있습니다. 
-
-이러면 Stack이 바빠지지 않습니다. 
-
+ - DOM(Document Object Model) API
+    : 브라우저에서 표준적으로 기본 제공하는 WEB API 중 하나로, 개별 HTML요소를 JS로 통제 가능한 하나의 {객체}로서 효과적으로 선택 및 조작까지 가능하게 해주는 기능
+      (= 당장 HTML의 영역이라 볼 수 있는 document 또한 DOM조작을 통해 접근이 가능하며, 그렇기에 브라우저의 화면에 표현된 HTML이나 XML요소들을 조작이 가능)
+          -> (중요) How?
+               : HTML 문서(document)의 HTML요소(element)들을 읽고 파싱(parsing)하여서 분리하여 JS로 조작이 가능한 {Node객체}로 변환하고, document객체에 다른 {Node객체}와의 상하관계를 표현하여 배치된 DOM tree구조로 HTML 문서의 구조를 표현함 
+                 (= {Node객체}는 곧 {JS객체}로서의 특징을 모두 가지고 있다고 생각하면 됨)
+   
     # DOM(document object model) VS CSSOM(CSS object model)
 
       @ 공통점
@@ -90,48 +16,6 @@ worker.js에서 작업이 완료될 시 postMessage() 이렇게 실행하면
          : 각 모델이 제어하는 객체와 목적이 차이점
             -> DOM(document object model) : HTML 요소들을 객체화시켜 트리 구조로 표현하여, 이를 JS로 조작하고 변경이 목적
             -> CSSOM(CSS object model)    : style sheet의 각각의 규칙들중 '화면에 들어가야 할 녀석'들만 render 객체화하여 트리 구조로 표현, 이를 조작하고 변경이 목적
-
-
- - (참고) 브라우저의 랜더링 과정
-    : 브라우저의 랜더링 엔진이 웹페이지의 구체적인 렌더링을 담당하게 되며 다음과 같은 과정을 거침
-      (DOM트리, CSS트리 -> Render 트리 ->  Render & Graphic 레이어 -> Layout 설정 -> 레이어 paint -> composite 레이어 -> GPU텍스처 이미지화 -> 택스터 랜더링)
-        -> 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것이라고 볼 수 있음
-
-           1. 작성된 HTML문을 파싱, 각각의 Node로 구성되어 연결된 DOM트리를 구축하여 웹페이지 구조를 잡음
-           2. CSS도 마찬가지로 파싱, 적혀있는 스타일 규칙들이 연결된 CSSOM트리를 구축
-           3. CSSOM과 스타일규칙과 DOM의 Node들의 정보를 결합하여, Render Object(랜더 객체)로 구축된 Render Tree(랜더 트리)를 생성
- 
-           4. Render Tree의 내용 중 화면에 없는 요소라 쳐낼거 쳐내고, 최적화할거 최적화해서 Render Layer(랜더 레이어)를 완성
-               -> display:none이 포함된 노드는 지우고, 상속적인 스타일은 부모노드에만 위치하게 설계하는 과정이 여기 들어감
-                   -> (중요) display:none인 Node가 지워지기에 렌더트리와 DOM트리는 1:1 대응이 아니다!
-  
-           5. 만약, Render Layer(랜더 레이어)가 완성될 때 'GPU에서 처리되는 부분'이 있다면, 이 부분들은 강제적으로 Graphic Layer(그래픽 레이어)로 분리
-               -> Grapic 레이어 부분은 GPU가 작업처리를 하기에, 결과적으로 멀티쓰레드적인 비동기처리를 하게 됨
-                  (= 이 모든 건, 브라우저가 C++로 제작되어 있기 때문에, 랜더링 쓰레드를 따로 쓸 수 있기에 가능한 것)
- 
-                   ex) CSS3D / video & canvas / filter / animation/ transform : translateZ(0) 등
- 
-           6. (4, 5의 과정을 거쳐 만들어진) Render Layer(랜더레이어)을 기반으로 LayOut 설정
-                -> 좌표는 보통 부모를 기준으로 설정
-                -> 이 과정에서 CSS의 width, height, margin, padding 등의 HTML 요소의 공간과 연관된 속성을 처리함
-                -> Global Layout은 브라우저 화면 크기를 늘리거나 폰트 사이즈가 커지면 변경
- 
-           7. Render Layer(랜더레이어)을 대상으로 paint(칠하기) = 레스터화
-               -> 이 과정에서 CSS의 color 관련 속성을 처리해줌
- 
-           8. 만들어진 레이어(Render & Graphic Layer)들을 합쳐서, 복합 레이어(composite layer)로 만들고 표기하기
-               -> 이 과정에서 CSS의 transform, opacity 속성을 처리해줌
- 
-           9. (8의 결과로) 각각의 레이어로부터 비트맵이 생성되고, GPU에 텍스처로 업로드..
-               -> GPU 텍스처들은 서로 합쳐져 하나의 이미지로 렌더링되어 화면으로 출력되어 마무리
-
-
- - DOM(Document Object Model) API
-    : 브라우저에서 표준적으로 기본 제공하는 WEB API 중 하나로, 개별 HTML요소를 JS로 통제 가능한 하나의 {객체}로서 효과적으로 선택 및 조작까지 가능하게 해주는 기능
-      (= 당장 HTML의 영역이라 볼 수 있는 document 또한 DOM조작을 통해 접근이 가능하며, 그렇기에 브라우저의 화면에 표현된 HTML이나 XML요소들을 조작이 가능)
-          -> (중요) How?
-               : HTML 문서(document)의 HTML요소(element)들을 읽고 파싱(parsing)하여서 분리하여 JS로 조작이 가능한 {Node객체}로 변환하고, document객체에 다른 {Node객체}와의 상하관계를 표현하여 배치된 DOM tree구조로 HTML 문서의 구조를 표현함 
-                 (= {Node객체}는 곧 {JS객체}로서의 특징을 모두 가지고 있다고 생각하면 됨)
 
     # document 객체
        : window 객체의 프로퍼티로 'DOM(Document Object Model) tree 구조로 표현된 HTML 문서에 대한 전체 정보'를 담고 있는 {Node객체}로 웹 페이지 그 자체를 의미
@@ -1217,4 +1101,3 @@ worker.js에서 작업이 완료될 시 postMessage() 이렇게 실행하면
                            appearance : none;  <- 기존 브라우저의 HTML 스타일을 아예 꺼버리는 기능 (shadow DOM 커스텀 스타일링 적용할거면 잘 참고하자) 
                            display : block;
                          }
-

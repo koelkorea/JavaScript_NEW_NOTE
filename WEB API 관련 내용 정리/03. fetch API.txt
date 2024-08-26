@@ -1,0 +1,116 @@
+- fetch API
+   : ECMA 6에서 브라우저 및 JS 런타임 환경의 어플리케이션에서 공식적으로 지원하는 Ajax API기능
+      -> {promise 객체}를 기반으로 만들어져, 브라우저 및 JS 런타임 환경의 어플리케이션에서 수신성공/실패에 따른 콜백함수 처리를 공식적으로 쉽게 할 수 있도록 함
+
+    @ fetch 메서드 호출법
+       : fetch('URL명', {method : 'HTTP 메서드', body : '본문' , ... } )
+
+    @ fetch API를 활용한 디자인 패턴
+      : promise객체를 기반으로 제작되었기에, URL에 따른 API호출을 시작으로 늘 성공/실패에 따른 콜백함수 처리를 해줘야함
+         
+        1) async / await 방식
+            : Ajax 방식의 API호출 과정을 async 함수화시킨 모듈로 처리하고, 비동기적으로 작도하는 코드에 기다림의 질서를 부여할 await 처리를 해줌  
+
+              ex) async function submit() {
+
+                    // 1번째 await 포인트
+                    let blob = await new Promise(resolve => canvasElem.toBlob(resolve, 'image/png'));
+
+                    // 2번째 await 포인트 : 웹서버에 API호출
+                    let response = await fetch('/article/fetch/post/image', {
+                      method: 'POST',
+                      body: blob
+                    });
+              
+                    // 3번째 await 포인트 : 전송이 잘 되었다는 응답이 오고, 이미지 사이즈가 얼럿창에 출력됩니다.
+                    let result = await response.json();
+                    alert(result.message);
+                  }
+
+        2) then, catch, finally
+            : Ajax 방식의 API호출 과정을 고전적으로 promise 체이닝 메서드 형식으로 실행
+
+              ex) function submit() {
+
+                    canvasElem.toBlob(function(blob) {
+
+                      fetch('/article/fetch/post/image', {
+                        method: 'POST',
+                        body: blob
+                      })
+                        .then(response => response.json())
+                        .then(result => alert( JSON.stringify(result, null, 2) ) )
+
+                    }, 'image/png');
+                  }
+
+    @ fetch API 사용법
+
+      1) API 요청
+          : 사용할 fetch API의 방식을 정하고, 거기에 맞게 URL과 fetch 형식을 정함
+              -> ({ option 객체 }를 적어야 하는 경우) 
+                   a. method  : GET 이외의 HTTP메서드를 쓸 경우
+                   b. headers : client 측에서 header 영역을 따로 설정하고 싶은 경우 사용
+                   c. body    : 웹서버로 데이터(문자열, Form객체, Blob이나 BufferSource, URLSearchParams)를 보내고 싶은 경우 
+                                 -> (주의) {JS객체}, [배열]을 보내려도 '문자열'로 보내야 하므로, 반드시 JSON 형식으로 변환하여 보낼 것
+
+      2) API 응답
+          : API의 요청에 웹서버가 성공적으로 응답한다면, 데이터를 응답(response)객체 형식으로 보내줌
+            (async/await 형식에서는 변수가 이를 받는다면, then() catch() 형식은 무명콜백함수의 1번째 객체 parameter가 이를 받음)
+
+    @ fetch API 응답(response) 객체의 구조
+
+      1) 멤버변수 (= properties)
+          : 주로 메타 데이터에 해당하는 데이터를 가지고 있는 객체의 멤버변수 영역
+
+            a. response.status  : 응답시의 HTTP 상태코드
+            b. response.ok      : 응답 상태가 200과 299 사이에 있는 경우 true
+            c. response.headers : 응답 데이터의 HTTP 헤더데이터가 담긴 변수
+
+      2) 메서드 
+          : 웹서버의 API 응답에 대한 데이터의 본문을 파싱하기 위한 메서드
+            (= 보통은 json으로 변환하게 될 것)
+               -> (주의사항)
+                    1. fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해줘야 client측이 알아먹을 수 있음
+                    2. 단! 한번만 사용이 가능함 
+                       (= 가장 먼저 실행한 메서드로 데이터는 파싱됨)
+
+            a. response.text()        : 응답객체 body 본문을 텍스트 형태로 반환함
+            b. response.json()        : 응답객체 body 본문을  파싱해 JSON 객체로 변경함
+            c. response.formData()    : 응답객체 body 본문을 FormData 객체 형태로 반환
+            d. response.blob()        : 응답객체 body 본문을  Blob(타입이 있는 바이너리 데이터) 형태로 반환
+            e. response.arrayBuffer() : 응답을 ArrayBuffer(바이너리 데이터를 로우 레벨로 표현한 것) 형태로 반환
+
+               ex) 이런식으로 응답객체의 프로퍼티와 메서드를 사용
+         
+                   fetch('/URL')
+                   .then((응답)=>{
+                     if(응답.status == 200) {
+                       return 응답.json()
+                     } else {
+                       //서버가 에러코드 전송시 실행할코드
+                     }
+                   }).then((응답)=>{ 
+                     // 성공시 실행할코드
+                   })
+                   .catch((실패)=>{
+                     // 인터넷문제 등으로 실패시 실행할코드
+                     console.log(error)
+                   })
+
+    @ fetch API 주의사항 모음
+      1) fetch 요청시 {JS객체}, [배열]을 보내려도 '문자열'로 보내야 하므로, 반드시 JSON 형식으로 변환하여 보낼 것
+
+      2) fetch 요청시, option에 body속성을 넣어야 한다면, 반드시 데이터를 넣어야 함
+
+      3) fetch 요청시, POST 요청을 보낼 때 body속성값이 문자열이면 Content-Type 헤더가 text/plain;charset=UTF-8로 기본 설정됨
+
+      4) fetch 요청시, URL을 적을 때 URL parameter와 queryString 형식까지 포함해서 데이터를 보내는 거도 가능은 함
+
+      5) fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해줘야 client측이 알아먹을 수 있음
+
+      6) fetch API에서는 응답 변환 메서드는 단! 한번만 사용이 가능함
+          (= 가장 먼저 실행한 메서드로 데이터는 파싱됨)
+
+      7) server component를 사용한다면, fetch API를 사용할 것이 Nextjs 13부터는 권장됨 
+          -> fetch에 특별한 기능이 추가되어 있기에 때문

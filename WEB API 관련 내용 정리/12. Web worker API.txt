@@ -1,0 +1,31 @@
+
+- Web Worker API
+   : 브라우저에서 다른 JS파일을 사용하여 멀티 쓰레드 환경인거 마냥, 하나의 작업에 '병렬성(Parallelism)'을 만족하는 '동시 처리'가 가능하도록 해주는 API
+      -> 보통 싱글 쓰레드(single thread) 동기적 처리 환경의 JS런타임 환경에서, 작업처리시간이 오래걸려서 병목현상이 생기는 작업으로 인해 '응답없음' 상태가 되는 것을 방지하여 유저 경험을 개선하기 위한 방법 중에 하나로 사용
+         (= 나머지 하나는 과도한 반복을 수행시 한번에 다 수행하지 않고, settimeout을 통한 인위적인 반복문을 나누는 코딩테크닉을 사용)
+
+    @ Web Worker API 사용법
+       : {Web Worker 객체}를 이용하며, onmessage 메서드를 함수표현식 형식으로 정의하여, 다른 JS파일에서 다중 코어로 연산을 시킴
+
+       1) Web Worker를 쓸 화면의 JS파일에서
+           a. 'Web Worker가 동작할 JS파일명'을 augument로 한 Web Worker 생성자 함수로 {Web Worker객체}를 생성
+           b. {Web Worker객체}.onmessage 메서드를 이벤트객체 e가 augument로 들어간 무명함수를 대입한 형식으로 함수표현식 형식으로 작업할 초기 데이터를 넘김
+
+               ex) 메인 js 파일에서 {Worker 객체}를 원하는 'js파일명'으로 생성하고, 이벤트객체 e를 인자로 쓰는 함수표현식 형식의 onmessage를 정의하여 초기값을 보냄
+               
+                   var myWorker = new Worker('worker.js'); 
+                   
+                   w.onmessage = function(e){
+                     console.log(e.data) //이러면 1 나올듯
+                   };
+ 
+
+       2) Web Worker JS파일에서
+           : window.postMessage(값) 함수를 통해, Web Worker를 쓸 화면의 JS파일에 작업을 마친 값을 전송함
+
+              ex) Web Worker 파일에서, postMessage(값) 함수를 통해, 원하는 js에 값을 변경해서 가져다 둘 수 있음 
+              
+                  var i = 0;
+                  postMessage(i + 1); // postMessage라는 특별한 함수가 있음
+
+
