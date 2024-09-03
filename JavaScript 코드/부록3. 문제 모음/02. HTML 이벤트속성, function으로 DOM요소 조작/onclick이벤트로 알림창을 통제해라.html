@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="alert-box">알림창임</div>
+    <script>
+    // [이벤트 속성]과 [DOM API]을 이용해서 다음을 풀어라
+
+    //  Q1. [닫기] 버튼을 누르면, 상단의 Alert 박스에 해당하는 창이 보이게 만들되, function으로 함수화 한 코드로 제작해라
+    //       -> display 속성을 none으로 변화시키도록 유도
+    function alertWindowOpen(){
+        document.querySelector('.alert-box').style.display = 'block';
+    }
+
+    //  Q2. [알림창 열기] 버튼을 누르면, 상단의 Alert 박스에 해당하는 창이 보이게 만들어라
+    //       -> display 속성을 block으로 변화시키도록 유도
+    </script> 
+    <button onclick="alertWindowOpen()">알림창 여는 버튼</button>
+    <button onclick="document.querySelector('.alert-box').style.display = 'none';"> 알람창 닫는 버튼 </button>
+</body>
+</html>

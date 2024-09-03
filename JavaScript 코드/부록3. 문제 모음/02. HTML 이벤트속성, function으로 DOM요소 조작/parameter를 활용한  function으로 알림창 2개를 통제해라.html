@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="alert-box" style="display: block;">버튼을 클릭하시라</div>
+    <script>
+    // [이벤트 속성]과 [DOM API] [parameter를 쓰는 function]을 이용해서 다음을 풀어라
+
+    //  Q1. 버튼1과 버튼2를 누르면 각각 다른 이름의 alert 박스가 나오도록 코드를 짜봅시다.
+    //      - 버튼1을 누르면 '아이디를 입력하세요' 라는 alert 박스가 등장해야합니다.
+    //      - 버튼2를 누르면 '비밀번호를 입력하세요' 라는 alert 박스가 등장해야합니다. 
+    function alertWindowOpen(textValue){
+        document.querySelector('.alert-box').innerHTML = textValue;
+    }
+
+    </script> 
+    <button onclick="alertWindowOpen('아이디 입력하세요')">버튼1</button>
+    <button onclick="alertWindowOpen('비번 입력하세요')">버튼2</button>
+</body>
+</html>
