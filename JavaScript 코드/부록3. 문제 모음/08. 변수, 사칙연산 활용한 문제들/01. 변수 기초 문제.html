@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Q1. 내 나이와 출신지역을 자바스크립트 변수와 상수로 만들어봅시다
+
+        let 나이 = 34;
+        const 출신지역 = '서울';
+
+        // Q2. 다음 코드를 실행했을 때 콘솔창에 무엇이 출력될까요? (힌트) 전역변수, 지역변수 개념과 var의 특징을 알아야..
+        //   -> var는 함수 영역 스코프 {}를 기준으로 호이스팅 하는 변수로 함수 showName()의 name, id는 전역변수의 그것과는 별개
+        //       -> 1번쨰 콘솔에는 'kim', 2번째 콘솔에는 0 출력
+        var name = 'park';
+        var id = 0;
+
+        function showName(){
+            var name = 'kim';
+            var id = 1;
+            console.log(name);
+        }
+
+        showName();
+        console.log(id);
+    </script>
+</body>
+</html>

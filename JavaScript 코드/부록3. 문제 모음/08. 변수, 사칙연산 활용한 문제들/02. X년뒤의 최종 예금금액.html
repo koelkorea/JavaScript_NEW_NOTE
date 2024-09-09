@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Q3. 예금 금액이 5만원 미만 / 이상에 따라 이율이 15% / 20% 로달라지는 상황인데, 예금액을 입력하면 2년 후의 총 예금액을 자동으로 콘솔창에 출력해주는 함수를 작성하라
+
+        //  (결과 예시)
+        //    - var 예금액이라는 변수에 60000을 집어넣으면 86400 이게 콘솔창에 출력되어야 합니다. (이자 20%가 2번 붙음)
+        //    - var 예금액이라는 변수에 10000을 집어넣으면 13225 이게 콘솔창에 출력되어야 합니다. (이자 15%가 2번 붙음)
+        function 미래예금액(현재예금액, 예금연수) {
+
+            현재예금액 = parseInt(현재예금액);
+            예금연수 = parseInt(예금연수);
+            let 이자율 = 0;
+
+            // NaN은 특수한 값으로, 어떤 값과도 일치하지 않음
+            //  -> NaN === NaN은 false가 되기에, NaN값 여부를 알고 싶으면 isNaN() 함수를 사용하여 해당 값이 NaN인지 확인하는 방식으로 수정
+            if( isNaN(현재예금액) || isNaN(예금연수) ){
+                alert('숫자를 입력해줘');
+                return;
+            }
+
+            if(현재예금액 >= 50000 ){
+                이자율 = 1.2;
+            }else{
+                이자율 = 1.15;
+            }
+
+            let 최종금액 = Math.round(현재예금액 * Math.pow(이자율, 예금연수));
+
+            alert(최종금액);
+        }
+
+        while(true){
+            let 현재예금액 = prompt('예금액을 입력해줘라');
+            let 예금연수 = prompt('예금연수을 입력해줘라');
+            미래예금액(현재예금액, 예금연수);
+        }   
+    </script>
+</body>
+</html>

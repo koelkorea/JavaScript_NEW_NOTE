@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    // Q1. 원래 369 게임 룰대로 함수 만들어봐라
+    //   -> 하단의 삼육구게임오리지날() 이란 함수를 parameter까지 넣어서 완성해라
+
+    //  (결과 예시)
+    //    - 삼육구게임(13);  실행하면 3으로 끝나니 '박수'라는 글자가 떠야합니다.
+    //    - 삼육구게임(26);  실행하면 6으로 끝나니 '박수'라는 글자가 떠야합니다.
+    //    - 삼육구게임(36);  실행하면 9으로 끝나니 '박수'라는 글자가 떠야합니다.
+
+    function 삼육구게임오리지날(숫자) {
+
+        let 정수 = parseInt(숫자)
+
+        // NaN은 특수한 값으로, 어떤 값과도 일치하지 않음
+        //  -> NaN === NaN은 false가 되기에, NaN값 여부를 알고 싶으면 isNaN() 함수를 사용하여 해당 값이 NaN인지 확인하는 방식으로 수정
+        if(isNaN(정수)){
+            alert('숫자를 입력해줘');
+            return;
+        }
+
+        while(정수 >= 10){
+            정수 = 정수 % 10;
+        }
+
+        if(정수 === 3 || 정수 === 6 || 정수 === 9 ){
+            alert('박수');
+        }else{
+            alert('통과');
+        }
+    }
+
+    while(true){
+        let 변수 = prompt('숫자를 입력해줘라');
+        삼육구게임오리지날(변수);
+    }
+
+    </script>
+</body>
+</html>

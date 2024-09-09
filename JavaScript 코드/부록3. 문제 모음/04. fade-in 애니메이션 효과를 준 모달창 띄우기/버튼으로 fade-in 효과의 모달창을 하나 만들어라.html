@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand">Navbar</span>
+            <div>
+                <button class="login-button" type="button">로그인</button>
+                <button class="navbar-toggler" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </nav> 
+
+    <div class="black-bg">
+        <div class="white-bg">
+            <h4>로그인하세요</h4>
+            <button class="btn btn-danger" id="close">닫기</button>
+        </div>
+    </div> 
+
+    <ul class="list-group slide-off">
+        <li class="list-group-item">An item</li>
+        <li class="list-group-item">A second item</li>
+        <li class="list-group-item">A third item</li>
+        <li class="list-group-item">A fourth item</li>
+        <li class="list-group-item">And a fifth one</li>
+    </ul> 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // [이벤트 속성]과 [DOM API] [opacity 속성값 변화, transition 속성값]을 이용해서 fade-in 모달창을 구현해라
+        //   -> A 상태에서 B 상태로만 움직이는 one-way 일방향 애니메이션 만드는 법
+        //        1. 시작스타일 만들고 (class로)
+        //        2. 최종스타일 만들고 (class로) 
+        //        3. 원할 때 최종스타일로 변하라고 JS 코드짭니다
+        //        4. 시작스타일에 transition 추가 
+        //            (참고)
+        //              -> display : none을 주면 애니메이션이 잘 동작하지 않음 (= visiblity 속성에 hidden 속성값 사용)
+        //              -> height: auto는 구체적인 숫자 값이 아니므로 transition이 적용되지 않음 (= max-height, min-height 사용)
+
+        //   -> fade-in 애니메이션
+        //       : 서서히 사라지고 나타나는 그런 애니메이션... opacity값과 transistion 속성의 조절로 구현
+
+        //   -> silde 애니메이션
+        //       : 특정방향으로 밀리듯 사라지고 나타나는 그런 애니메이션... overflow : hidden;과 max-min-height, width의 조절로 만듦
+
+        //  Q1. 버튼하나 아무데나 만들고 버튼 누르면 fade-in 모달창을 띄워오십시오. 
+        document.querySelector('.login-button').addEventListener('click', function(){
+            // document.querySelector('.black-bg').style.opacity = 1;
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+
+        });
+
+        //  Q2. 팝업된 모달창의 [닫기]를 클릭하면, fade-in 다시 없어지게 해라
+        document.querySelector('.btn-danger').addEventListener('click', function(){
+            //document.querySelector('.black-bg').style.opacity = 0;
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+        });
+
+        //  Q3. 우측 상단 아이콘을 클릭하면, silde 방식으로 서브메뉴가 등장하게 해라
+        document.querySelector('.navbar-toggler').addEventListener('click', function(){
+            document.querySelector('.list-group').classList.toggle('slide-off');
+        });
+    </script>
+</body>
+</html>

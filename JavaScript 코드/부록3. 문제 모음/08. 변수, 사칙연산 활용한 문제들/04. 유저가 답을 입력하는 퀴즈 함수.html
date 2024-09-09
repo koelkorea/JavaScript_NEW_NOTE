@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>태조 이성계가 태어난 년도는?</p>
+    <input type="text" id="answer">
+    <button id="send-answer">제출</button>
+    <script>
+
+        // Q4. 유저가 태조 이성계가 태어난 년도는?에 대한 답을 <input>에 적고 제출버튼을 누를 수 있는 퀴즈 UI를 구현
+        //   -> 유저가 답을 맞추면 alert('성공');
+        //   -> 유저가 답을 3번 찍어서 못맞추면 alert('멍청아') 를 띄우자
+
+        let coinLeft = 2;
+
+        document.querySelector('#send-answer').addEventListener('click', function() {
+
+            if(document.querySelector('#answer').value == 1335){
+                alert('성공');
+            }else{
+                if(coinLeft == 0){
+                    alert('멍청아 GAME OVER다!');
+                    coinLeft = 2;
+                }else{
+                    alert('다시 한번 입력해줘');
+                    coinLeft--;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

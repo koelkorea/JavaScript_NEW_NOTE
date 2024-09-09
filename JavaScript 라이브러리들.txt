@@ -1,0 +1,172 @@
+- 외부 JS 라이브러리 
+ : JS 라이브러리를 통한 개발을 쉽게 하기 위한, 외부의 개발자가 개발한 라이브러리들.. 
+    -> 원하는 기능들의 구현을 더 쉬운 패턴으로 가능하게 하는 기능이나 함수등이 추가됨
+
+      # (중요) 어떤 라이브러리를 쓰고 싶으면, 보통 튜토리얼 or get started를 보면 대충 친절하게 설명되어 있음
+          -> 명령어가 바뀌는 경우도 있으니, 안 된다 싶으면 설치 명령어는 다시 확인해볼 것을 추천함 
+
+
+- 외부 JS 라이브러리 리스트 및 사용법
+
+ 0. JQuery
+     : ECMA6가 나오기 전, JS에 문법을 단순화하거나 DOM셀렉터 기능을 사용가능하게 하거나 하는 식의 JS의 기능과 편의성을 대거 끌어올린 JS 라이브러리 계의 복음과도 같았던 라이브러리
+        -> (참고) 현재는 ECMA6에서 일부 기능을 흡수하거나, 구현하여 JS에 기본적으로 해당 라이브러리가 제공하던 기능이 ECMA의 방식으로 반영되어 있어 레거시화가 진행됨
+
+      # JQuery 설치법
+         : JQuery CDN 같은 걸 찾아서, 이를 적용하면 순차적으로 코드를 진행해나가는 JS 특성상, 그 아래 문단에서부터 Jquery를 사용가능
+         
+           ex) <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+
+      # JQuery의 기본문법들
+         : 어차피 ECMA6의 문법에 더 익숙해지는게 나으니, 비슷한 역할의 JS코드를 예시로 듦
+            -> (참고) Jquery의 문법은 JQuery 모듈에서 통용되는 문법이기에 일부 JS 문법와 호환되지만.. Jquery의 기반이 되는 JS는 Jquery와 완전 호환되지 않음을 명심하자
+              
+               ex) $('DOM셀렉터')는 JQuery의 셀렉터 = JQuery에서 지원하는 함수를 쓰는게 안정적
+                     -> $('어쩌구').innerHTML 같은 혼종 문법은 안정성을 추구한 코드가 아니라는 말씀
+
+           1) $('DOM셀렉터') 
+               : (중요) document.querySelectorAll('DOM셀렉터')과 동일한 역할의 DOM API에 해당하는 문법으로 JQuery의 근본이라 할 수 있음
+                  -> (주의) querySelectorAll은 무조건 개별요소에 [index]로 접근해야 함
+                      -> BUT! $('DOM셀렉터')는 융통성이 있어서.. 아무런 [index]가 붙지 않는다면, 잡은 DOM요소들을 일괄선택 및 변경 적용이 가능하기에, 반복문을 억지로 쓸 이유가 1도 없음 
+
+           2) $('DOM셀렉터').css('css속성명', 'css속성값')
+               : document.querySelector('DOM셀렉터').style.css속성명 = 'css속성값'과 동일한 역할의 style 속성을 보거나 바꾸는 문법
+
+           3) $('DOM셀렉터').addClass('클래스명');
+               : document.querySelector('DOM셀렉터').className = '클래스명'   
+                 document.querySelector('DOM셀렉터').classList.add('클래스명') 과 동일한 해당 DOM요소에 class속성을 추가하는 DOM API에 해당하는 메서드
+
+           4) $('DOM셀렉터').removeClass('클래스명');
+               : document.querySelector('DOM셀렉터').remove('클래스명')과 동일한 해당 DOM요소에 class속성을 삭제하는 DOM API에 해당하는 메서드
+
+           5) $('DOM셀렉터').addClass('클래스명');
+               : document.querySelector('DOM셀렉터').classList.toggle('클래스명')과 동일한 해당 DOM요소에 class속성을 추가/삭제하는 DOM API에 해당하는 메서드
+
+           6) $('DOM셀렉터').on('이벤트명', 콜백함수);
+               : document.querySelector('DOM셀렉터').addEventListener("이벤트명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false)에 해당하는 DOM API의 이벤트 관련 기능
+
+           7) $('DOM셀렉터').hide() <-> show()
+               : 특정 DOM요소의 style 속성 중, display : none ~ block을 오가게 하는 것과 마찬가지로, DOM요소를 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
+
+           8) $('DOM셀렉터').fadeOut() <-> fadeIn()
+               : 특정 DOM요소의 style 속성 중, display : none ~ block + Transition : 1s 하는 식의, DOM요소를 서서히 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
+
+           9) $('DOM셀렉터').slideUp() <-> slideDown()
+               : 특정 DOM요소를 수축되게 하는 애니메이션과 함께, 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
+
+
+ 1. Swiper
+     : 여러 패턴의 캐러셀(이미지 슬라이드) 기능을 웹 환경에서 쉽게 구현하게 만들어주는 라이브러리
+
+      # Swiper 설치법
+         : https://swiperjs.com/get-started#use-swiper-from-cdn 로 들어가서, 튜토리얼 그대로 js 파일, css 파일을 다운받아서 첨부한 뒤 예제코드 복사하면 끝
+
+           ex) Swiper 라이브러리 보일러 플레이트 코드 예시
+
+               <!DOCTYPE html>
+               <html>
+                 <head>
+                   <meta charset="utf-8">
+                   <title>Swiper demo</title>
+                   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+                   <!-- Link Swiper's CSS -->
+                   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+                   <style>
+                     .mySwiper {
+                       width: 100%;
+                       height: 300px;
+                     }
+                     .swiper-slide {
+                       display: flex;
+                       justify-content: center;
+                       align-items: center;
+                     }
+                   </style>
+                 </head>
+               
+                 <body>
+                   <div class="swiper mySwiper">
+                     <div class="swiper-wrapper">
+                       <div class="swiper-slide">Slide 1</div>
+                       <div class="swiper-slide">Slide 2</div>
+                       <div class="swiper-slide">Slide 3</div>
+                     </div>
+                     <div class="swiper-button-next"></div>
+                     <div class="swiper-button-prev"></div>
+                   </div>
+               
+                   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+                   <script>
+                     var swiper = new Swiper(".mySwiper", {
+                       navigation: {
+                         nextEl: ".swiper-button-next",
+                         prevEl: ".swiper-button-prev"
+                       }
+                     });
+                   </script>
+               
+                 </body>
+               </html>
+
+
+ 2. Chart.js 
+     : 통계 기능을 개발 시, 여러 패턴의 차트(chart)들을 웹 환경에서 쉽게 그리고 싶을 때 사용...
+        -> 이건 무료 라이브러리고, 좀 더 전문적인 데이터들을 원하는 경우 유료 라이브러리도 당연히 존재함
+
+      # Chart.js 설치법
+         : https://cdnjs.com/libraries/Chart.js 로 들어가서, 튜토리얼 그대로 js파일 다운받아 모듈 import 하거나 cdn 버전으로 구해서 html 파일에 넣으면 끝
+
+      # Chart.js 예시코드
+         : https://www.chartjs.org/docs/latest/
+
+
+ 3. Animate On Scroll(AOS)
+     : scroll을 내릴 때, DOM요소가 서서히 등장하는 이벤트를 쉽게 구현하고 싶을 때 사용하는 라이브러리
+        -> 싫으면, 그냥 scroll 이벤트리스너로 수동으로 짜면 그만이긴 함..
+
+      # AOS 설치법
+         : https://github.com/michalsnik/aos 로 들어가서, 튜토리얼 그대로 css파일, js 파일 cdn버전 찾아서 html에 link적용하고, AOS.init(); 명령어를 script 태그 안에서 실행시키면 됨
+
+      # AOS 예시코드
+         : https://michalsnik.github.io/aos/
+           
+           ex) <div data-aos="fade-up"></div> 원하는 박스에 이런 식으로 data 속성과 속성명을 추가하면 됨
+                 -> 시간, 방향 설정가능하고 원하는 class명 부착도 가능함
+
+
+ 4. Lodash 라이브러리
+     : filter나 map과 같은 [배열]의 메서드가 등장하기 전, array, object, 문자, 숫자 자료를 다루기 편해지는 기본함수들을 제공해주는 라이브러리
+
+       ex) _.pull(배열명, 'a'); 
+            -> JS의 배열명.filter( (a) =>  a != 'a' )과 같은 의미
+
+      # Lodash 라이브러리 설치법
+         : https://lodash.com/ 로 들어가서, 튜토리얼 그대로 적용
+
+
+ 5. EmailJS
+     : 이메일 기능 구현시, 다른 이메일 서비스를 JS를 통해 사용하기 위한 설치하는 라이브러리
+
+       ex) 고객문의 이메일 답변 시, 이메일 전송을 클릭하면, 양식이 나오지만 실제로는 내 Gmail 계정을 Gmail 서버를 통해 보내는 Gmail 관련 API를 호출
+
+      # EmailJS 라이브러리 설치법
+         : https://www.emailjs.com/docs/introduction/how-does-emailjs-work/ 로 들어가서, 가입하고 튜토리얼 잘 따라가면 그만
+
+
+  6. Fullpage.js
+      : 웹페이지를 PPT와 같은 슬라이드쇼와 같이 보여주기 쉽게하는 라이브러리 
+
+      # Fullpage.js 설치법
+         : https://github.com/alvarotrigo/fullPage.js/tree/master/lang/korean#fullpagejs 로 들어가서, 튜토리얼 대로 CDN 방식을 쓰던, CSS, JS파일을 받아서 적용하던 예시를 따르면 됨
+
+      # Fullpage.js 예시코드
+         : https://alvarotrigo.com/fullPage/
+
+
+  7. React, Vue, Svalte 등
+      : 소위 프론트엔트 프레임워크 or 라이브러리로 통칭되는 라이브러리들.. 모바일 환경의 강세에 따른 UI및 DOM재활용이 필요하고, 페이지 이동이 최소화되고 1개 화면에서 기능들 다수가 모인 구조의 SPA(single page aplication)을 개발하기 쉽게 구조가 대강 잡힌 라이브러리들
+
+  
+
+
+
