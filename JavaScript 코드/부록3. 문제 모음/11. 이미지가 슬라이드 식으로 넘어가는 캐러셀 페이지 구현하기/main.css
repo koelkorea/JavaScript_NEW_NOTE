@@ -1,0 +1,48 @@
+.slide-container {
+  width: 300vw;
+  transition: all 1s;
+}
+.slide-box {
+  width: 100vw;
+  float: left;
+}
+.slide-box img {
+  width: 100%;
+} 
+
+.show-modal {
+  /* display : none을 주면 애니메이션이 잘 동작하지 않음 (= visiblity 속성에 hidden 속성값 사용) */
+  visibility : visible;
+  opacity : 1 !important;
+  z-index : 5;
+}
+
+/* 로그인 모덜창 */
+.black-bg {
+  width : 100%;
+  height : 100%;
+  position : fixed;
+  background : rgba(0,0,0,0.5);
+  z-index : -1;
+  padding: 30px;
+  opacity : 0;
+  transition : all 1s;
+}
+
+.white-bg {
+  background: white;
+  border-radius: 5px;
+  padding: 30px;
+} 
+
+/* 서브메뉴 모달창 (slide 애니메이션 구현) */
+.list-group {
+  transition : all 1s;
+  overflow : hidden;
+  /* height: auto는 구체적인 숫자 값이 아니므로 transition이 적용되지 않음 (= max-height, min-height 사용) */
+  max-height: 400px;  
+}
+
+.slide-off {
+  max-height: 0;
+}

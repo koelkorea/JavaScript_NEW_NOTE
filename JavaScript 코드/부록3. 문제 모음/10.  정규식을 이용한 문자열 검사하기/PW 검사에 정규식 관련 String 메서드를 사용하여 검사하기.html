@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand">Navbar</span>
+            <div>
+                <button class="login-button" type="button">로그인</button>
+                <button class="navbar-toggler" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </nav> 
+
+    <div class="black-bg">
+        <div class="white-bg">
+            <h4>로그인하세요</h4>
+            <form action="success.html">
+                <div class="my-3">
+                    <input type="text" class="form-control">
+                </div>
+                <div class="my-3">
+                    <input type="password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">전송</button>
+                <button type="button" class="btn btn-danger" id="close">닫기</button>
+            </form> 
+        </div>
+    </div> 
+
+    <ul class="list-group slide-off">
+        <li class="list-group-item">An item</li>
+        <li class="list-group-item">A second item</li>
+        <li class="list-group-item">A third item</li>
+        <li class="list-group-item">A fourth item</li>
+        <li class="list-group-item">And a fifth one</li>
+    </ul> 
+
+    <div class="alert alert-danger">
+        <span>5</span>초 이내 구매시 사은품 증정
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        document.querySelector('.login-button').addEventListener('click', function(){
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+
+        });
+
+        document.querySelector('.btn-danger').addEventListener('click', function(){
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+        });
+
+        document.querySelector('.navbar-toggler').addEventListener('click', function(){
+            document.querySelector('.list-group').classList.toggle('slide-off');
+        });
+
+        setInterval(function () {
+
+            let num = document.querySelector('.alert-danger span').textContent;
+
+            if(num > 0){
+                num--;
+                document.querySelector('.alert-danger span').textContent = num;
+            }else{
+                document.querySelector('.alert-danger').style.display = 'none';
+            }
+
+        }, 1000);
+        
+        // Q. [정규식]과 string 메서드인 test('검사할 문자열')을 이용하여, 폼 전송시 유저가 입력한 비번에 영어 대문자가 적어도 1개 있는지 검사하고 있으면, alert을 띄워라
+        document.querySelector('.btn-primary').addEventListener('click', function(e){
+
+            if(document.querySelector('input[type="text"].form-control').value == ''){
+                alert('ID를 입력하시오... ');
+            }else if(document.querySelector('input[type="password"].form-control').value == ''){
+                alert('PW를 입력하시오... ');
+            }else {
+
+                if(document.querySelector('input[type="password"].form-control').value.length < 6){
+                    alert('PW는 6자 이상으로 입력하시오... ');
+                }
+
+                if(/[A-Z]/.test(document.querySelector('input[type="password"].form-control').value) == true){
+                    alert('비번에 대문자는 입력하지 말아주시죠');
+                }
+            }
+
+            e.preventDefault();
+        });
+
+    </script>
+</body>
+</html>

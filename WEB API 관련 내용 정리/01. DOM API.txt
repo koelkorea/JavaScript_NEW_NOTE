@@ -396,10 +396,10 @@
                                    ex) <p dir="rtl">هذا نص بالعربية</p>
  
                        - style
-                          : 기준 <HTML태그>의 inline style 속성을 조작할 수 있는 CSSStyleDeclaration 객체를 반환
-                            (= CSSStyleDeclaration 객체는 대상 <HTML태그>의 inline style 속성들에 해당하는 프로퍼티들을 가짐)
+                          : 기준 <HTML태그>의 inline style 속성을 조작할 수 있는 {CSSStyleDeclaration 객체}를 반환
+                            (= {CSSStyleDeclaration 객체}는 대상 <HTML태그>의 inline style 속성들에 해당하는 프로퍼티들을 가짐)
  
-                            (CSSStyleDeclaration 객체의 프로퍼티들)
+                            ({CSSStyleDeclaration 객체}의 프로퍼티들)
                               : 원하는 style 속성에 해당하는 'camelCase' 형식으로 적힌 style명칭 = 프로퍼티 라고 생각하면 OK 
                                   -> (주의) camelCase 형식으로 적는 예시
                                        : background-color >> backgroundColor
@@ -411,8 +411,9 @@
                                              element.style.backgroundColor = 'blue'; // 배경 색상을 파란색으로 설정
                                              element.style.fontSize = '20px';        // 폰트 크기를 20px로 설정
  
-                            (CSSStyleDeclaration 객체의 메서드 setProperty)
-                              1. CSSStyleDeclaration.setProperty('kebab-case CSS속성명','속성값');
+                            ({CSSStyleDeclaration 객체}의 메서드 setProperty)
+
+                              1. {CSSStyleDeclaration 객체}.setProperty('kebab-case CSS속성명','속성값');
                                   : CSS 속성을 설정하는 보다 공식적인 방법으로 'CSS속성명'을 parameter로 작성시 본래 방식인 kebab-case 형식으로 사용이 가능
  
                                      -> (참고) setProperty를 사용시 장점
@@ -436,11 +437,21 @@
                                                  const propertyName = 'background-color';
                                                  element.style.setProperty(propertyName, 'blue');
  
-                              2. CSSStyleDeclaration.setProperty('kebab-case CSS속성명','속성값', 'important');
+                              2. {CSSStyleDeclaration 객체}.setProperty('kebab-case CSS속성명','속성값', 'important');
                                   : 3번째 parameter로 'important'를 적으면, CSS의 important 플래그를 해당 <HTML 태그>에 설정이 가능함
  
                                     ex) element.style.setProperty('color', 'red', 'important');
 
+                              3. {CSSStyleDeclaration 객체}.getPropertyValue('kebab-case CSS속성명') 
+                                  : {CSSStyleDeclaration 객체}에 있는 CSS속성명의 값을 문자열로 반환
+                                    (= {CSSStyleDeclaration 객체}.CSS속성명 과 같은 내용)
+
+                                    ex) document.querySelector('.example').style.color;
+                                        document.querySelector('.example').style.getPropertyValue('color');
+
+                                    ex) 사용자가 정의한 'CSS 커스텀 속성'(= CSS 변수)의 값도 가져올 수 있음
+                                    
+                                        document.querySelector('.example').style.getPropertyValue('--변수명');
 
                     b. 대상 {HTMLElement 객체}의 <HTML태그> 상태 관련 속성 정보 담은 프로퍼티
                         : boolean값으로 가져옴

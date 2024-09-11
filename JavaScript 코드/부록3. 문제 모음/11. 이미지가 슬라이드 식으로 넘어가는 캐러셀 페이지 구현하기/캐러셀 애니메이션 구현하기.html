@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand">Navbar</span>
+            <div>
+                <button class="login-button" type="button">로그인</button>
+                <button class="navbar-toggler" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </nav> 
+
+    <div class="black-bg">
+        <div class="white-bg">
+            <h4>로그인하세요</h4>
+            <form action="success.html">
+                <div class="my-3">
+                    <input type="text" class="form-control">
+                </div>
+                <div class="my-3">
+                    <input type="password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">전송</button>
+                <button type="button" class="btn btn-danger" id="close">닫기</button>
+            </form> 
+        </div>
+    </div> 
+
+    <ul class="list-group slide-off">
+        <li class="list-group-item">An item</li>
+        <li class="list-group-item">A second item</li>
+        <li class="list-group-item">A third item</li>
+        <li class="list-group-item">A fourth item</li>
+        <li class="list-group-item">And a fifth one</li>
+    </ul> 
+
+    <div class="alert alert-danger">
+        <span>5</span>초 이내 구매시 사은품 증정
+    </div>
+
+    <div style="overflow: hidden">
+        <div class="slide-container">
+            <div class="slide-box">
+                <img src="car1.png">
+            </div>
+            <div class="slide-box">
+                <img src="car2.png">
+            </div>
+            <div class="slide-box">
+                <img src="car3.png">
+            </div>
+        </div>
+    </div> 
+
+    <button class="before" type="button">이전</button>
+    <button class="slide-1" type="button">1</button>
+    <button class="slide-2" type="button">2</button>
+    <button class="slide-3" type="button">3</button>
+    <button class="next" type="button">다음</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        document.querySelector('.login-button').addEventListener('click', function(){
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+
+        });
+
+        document.querySelector('.btn-danger').addEventListener('click', function(){
+            document.querySelector('.black-bg').classList.toggle('show-modal');
+        });
+
+        document.querySelector('.navbar-toggler').addEventListener('click', function(){
+            document.querySelector('.list-group').classList.toggle('slide-off');
+        });
+
+        let repeat = setInterval(function () {
+
+            let num = document.querySelector('.alert-danger span').textContent;
+
+            if(num > 0){
+                num--;
+                document.querySelector('.alert-danger span').textContent = num;
+            }else{
+                document.querySelector('.alert-danger').style.display = 'none';
+                clearTimeout(repeat);
+            }
+
+        }, 1000);
+        
+        document.querySelector('.btn-primary').addEventListener('click', function(e){
+
+            if(document.querySelector('input[type="text"].form-control').value == ''){
+                alert('ID를 입력하시오... ');
+            }else if(document.querySelector('input[type="password"].form-control').value == ''){
+                alert('PW를 입력하시오... ');
+            }else {
+
+                if(document.querySelector('input[type="password"].form-control').value.length < 6){
+                    alert('PW는 6자 이상으로 입력하시오... ');
+                }
+
+                if(/[A-Z]/.test(document.querySelector('input[type="password"].form-control').value) == true){
+                    alert('비번에 대문자는 입력하지 말아주시죠');
+                }
+            }
+
+            e.preventDefault();
+        });
+
+        //  Q1. 각 번호의 [버튼]을 누르면, 해당 번호에 해당하는 이미지가 슬라이드 되서 나타나도록 캐러샐 애니메이션을 구현해라
+        //      -> 캐러셀 애니메이션은 그림들을 다닥다닥 한 덩어리로 묶은 뒤, 한 그림이 100vw에 해당하는 너비를 차지하게 한 뒤, 
+        //         이벤트리스너로 그 그림이 움직이도록 transformX 속성과 transistion 속성의 조합으로 구현하면 됨
+        //           -> CSS속성을 class 탈착으로 부여해도 되지만, JS의 {CSSStyleDeclaration 객체}.setProperty('kebab-case CSS속성명','속성값', 'important')로 부여해도 됨
+        document.querySelector('.slide-1').addEventListener('click', function(e) {
+            document.querySelector('.slide-container').style.setProperty('transform', 'translateX(0vw)');
+        });
+
+        document.querySelector('.slide-2').addEventListener('click', function(e) {
+            document.querySelector('.slide-container').style.setProperty('transform', 'translateX(-100vw)');
+        });
+
+        document.querySelector('.slide-3').addEventListener('click', function(e) {
+            document.querySelector('.slide-container').style.setProperty('transform', 'translateX(-200vw)');
+        });
+
+        function numberSlide(){
+
+        }
+
+        //  Q2. 이전, 다음의 [버튼]을 누르면, 이전, 다음 이미지가 슬라이드 되서 나타나도록 캐러샐 애니메이션을 구현해라
+
+        var currentTranslateX = 0;
+        var currentImg = 1;
+
+        document.querySelector('.before').addEventListener('click', function(e) {
+
+            if(currentImg > 1){
+                currentImg--;
+                currentTranslateX += 100; 
+                document.querySelector('.slide-container').style.setProperty('transform', 'translateX(' + currentTranslateX +'vw)');
+            }else{
+                alert('최초 이미지 데스웅~');
+            }
+
+        });
+
+        document.querySelector('.next').addEventListener('click', function(e) {
+
+            if(currentImg < document.querySelectorAll('.slide-container img').length){
+                currentImg++;
+                currentTranslateX -= 100; 
+                document.querySelector('.slide-container').style.setProperty('transform', 'translateX(' + currentTranslateX +'vw)');
+            }else{
+                alert('마지막 이미지 데스웅~');
+            }
+
+        });
+
+    </script>
+</body>
+</html>
