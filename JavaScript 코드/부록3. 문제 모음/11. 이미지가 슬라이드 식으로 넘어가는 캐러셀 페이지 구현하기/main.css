@@ -14,7 +14,8 @@
   /* display : none을 주면 애니메이션이 잘 동작하지 않음 (= visiblity 속성에 hidden 속성값 사용) */
   visibility : visible;
   opacity : 1 !important;
-  z-index : 5;
+    /* 모달 창이 보일 때는 가장 앞으로 나와야 함 */
+  z-index : 99;  
 }
 
 /* 로그인 모덜창 */
@@ -23,6 +24,7 @@
   height : 100%;
   position : fixed;
   background : rgba(0,0,0,0.5);
+  /* 모달 창이 보이지 않을때는 다른 요소들을 가로막아서는 안됨.. 그래서 최대한 뒤로 보낼 목적으로 음수를 적음 */
   z-index : -1;
   padding: 30px;
   opacity : 0;

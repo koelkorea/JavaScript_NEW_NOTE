@@ -121,6 +121,7 @@
 
         //  Q1. 각 번호의 [버튼]을 누르면, 해당 번호에 해당하는 이미지가 슬라이드 되서 나타나도록 캐러샐 애니메이션을 구현해라
         //      -> 캐러셀 애니메이션은 그림들을 다닥다닥 한 덩어리로 묶은 뒤, 한 그림이 100vw에 해당하는 너비를 차지하게 한 뒤, 
+        //         overflow: hidden 속성을 컨테이너 DOM요소에 부여하여 보이지 않는 애들은 화면에서 안보이게 하고,
         //         이벤트리스너로 그 그림이 움직이도록 transformX 속성과 transistion 속성의 조합으로 구현하면 됨
         //           -> CSS속성을 class 탈착으로 부여해도 되지만, JS의 {CSSStyleDeclaration 객체}.setProperty('kebab-case CSS속성명','속성값', 'important')로 부여해도 됨
         document.querySelector('.slide-1').addEventListener('click', function(e) {
