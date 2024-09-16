@@ -1,3 +1,16 @@
+/* 네비게이션 관련 */
+.navbar {
+  position : fixed;
+  width : 100%;
+  z-index : 5
+}
+.navbar-brand {
+  font-size : 30px;
+  transition : all 1s;
+}
+
+
+/* 캐래셀 관련 */
 .slide-container {
   width: 300vw;
   transition: all 1s;
@@ -15,7 +28,7 @@
   visibility : visible;
   opacity : 1 !important;
     /* 모달 창이 보일 때는 가장 앞으로 나와야 함 */
-  z-index : 99 !important;
+  z-index : 99 !important;  
 }
 
 /* 로그인 모덜창 */
@@ -47,4 +60,12 @@
 
 .slide-off {
   max-height: 0;
+}
+
+html{
+  height : 1900px;
+}
+
+body{
+  height : 100%;
 }

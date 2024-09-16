@@ -32,6 +32,7 @@
                : JS를 실행 해석하는 주체가 'Node JS'인 경우의 최상위 단계에 존재하는 {전역 객체}
                  (= 'Node JS'의 공통 기능 및 상태 정보에 대한 내용을 프로퍼티(= 전역변수), 메서드(= 전역함수)로 가지게 됨)
 
+
        @ 대표적인 {전역 객체}의 메서드들
        
           1) setInterval(콜백함수, (선택) 숫자(ms단위))
@@ -60,8 +61,39 @@
               : 해당 '문자열'을 질문으로 띄우면, 사용자가 '값'을 입력하는 것을 대입하여 반환하는 메서드
                  -> 선택인 2번째 인자(augument)인 '기본값'이 있으면, 이를 입력란에 띄우고 시작
 
-          5) comfirm('문자열')
+          5) confirm('문자열')
               : 해당 '문자열'을 질문으로 띄우면, 사용자가 yes/no를 선택함에 따라 true/false를 반환하는 메서드
 
           6) getComputedStyle({Node 객체}) = {Node 객체}.style
               : 해당 DOM요소에 해당하는 {Node 객체}에 전역적으로 적용된 모든 형태의 style속성들을 담은 {CSSStyleDeclaration 객체} 형식으로 반환
+
+          7) parseFloat('숫자로 적힌 문자열')
+              : 문자'로 된 숫자 -> '부동소수'로 변경해주는 메서드
+
+          8) parseInt('숫자로 적힌 문자열')
+              : 문자'로 된 숫자 -> '정수'로 변경해주는 메서드
+
+
+       @ 스크롤바(scrollbar)와 관련된 {window 전역 객체}의 프로퍼티와 메서드
+
+          1) 스크롤바(scrollbar)와 관련된 {window 전역 객체}의 프로퍼티
+              : 스크롤 위치에 대한 정보를 담음
+  
+                a. scrollX = document.querySelector('html').scrollLeft;
+                    : 현재 x축의 스크롤 위치를 px단위로 저장
+  
+                b. scrollY = document.querySelector('html').scrollTop;
+                    : 현재 y축의 스크롤 위치를 px단위로 저장
+  
+
+          2) 스크롤바(scrollbar)와 관련된 {window 전역 객체}의 메서드
+              : 스크롤을 강제 이동시키는 기능들에 해당하며, 순간이동이 되지 않는다면, CSS에 :root { scroll-behavior : auto }를 추가함
+                  -> (주의) 스크롤 내린 양은 정수 단위 표기 X에 OS 마다 부정확함..  = 스크롤 양의 여유를 두고 비교하는게 좋음
+  
+                     ex)  끝까지 스크롤했는지? -> 끝에서 10px 정도 남기고 스크롤했는지로 변경
+  
+                a. scrollTo(x, y)
+                    : paramter로 적은 x, y축에 해당하는 (x, y) 좌표에 해당하는 위치에 스크롤을 강제 이동
+     
+                b. scrollBy(x, y)
+                    : 현재 (x, y) 좌표에 해당하는 스크롤 위치에서 x, y축에 적은 숫자만큼 +하여 스크롤을 강제 이동

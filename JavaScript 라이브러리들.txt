@@ -26,34 +26,48 @@
 
            1) $('DOM셀렉터') 
                : (중요) document.querySelectorAll('DOM셀렉터')과 동일한 역할의 DOM API에 해당하는 문법으로 JQuery의 근본이라 할 수 있음
-                  -> (주의) querySelectorAll은 무조건 개별요소에 [index]로 접근해야 함
+                  -> (주의1) querySelectorAll은 무조건 개별요소에 [index]로 접근해야 함
                       -> BUT! $('DOM셀렉터')는 융통성이 있어서.. 아무런 [index]가 붙지 않는다면, 잡은 DOM요소들을 일괄선택 및 변경 적용이 가능하기에, 반복문을 억지로 쓸 이유가 1도 없음 
 
-           2) $('DOM셀렉터').css('css속성명', 'css속성값')
+                  -> (주의2) jQuery 셀렉터끼리 등호비교는 불가능 함!
+                      -> $('DOM셀렉터').is($('DOM셀렉터')) 메서드를 써야 하는 이유
+
+           2) $('DOM셀렉터').eq(숫자)
+                : (중요) document.querySelectorAll('DOM셀렉터')[index]과 동일한 역할의 DOM API에 해당하는 문법
+
+           3) $('DOM셀렉터').css('css속성명', 'css속성값')
                : document.querySelector('DOM셀렉터').style.css속성명 = 'css속성값'과 동일한 역할의 style 속성을 보거나 바꾸는 문법
 
-           3) $('DOM셀렉터').addClass('클래스명');
+           4) $('DOM셀렉터').addClass('클래스명');
                : document.querySelector('DOM셀렉터').className = '클래스명'   
                  document.querySelector('DOM셀렉터').classList.add('클래스명') 과 동일한 해당 DOM요소에 class속성을 추가하는 DOM API에 해당하는 메서드
 
-           4) $('DOM셀렉터').removeClass('클래스명');
+           5) $('DOM셀렉터').removeClass('클래스명');
                : document.querySelector('DOM셀렉터').remove('클래스명')과 동일한 해당 DOM요소에 class속성을 삭제하는 DOM API에 해당하는 메서드
 
-           5) $('DOM셀렉터').addClass('클래스명');
+           6) $('DOM셀렉터').addClass('클래스명');
                : document.querySelector('DOM셀렉터').classList.toggle('클래스명')과 동일한 해당 DOM요소에 class속성을 추가/삭제하는 DOM API에 해당하는 메서드
 
-           6) $('DOM셀렉터').on('이벤트명', 콜백함수);
+           7) $('DOM셀렉터').on('이벤트명', 콜백함수);
                : document.querySelector('DOM셀렉터').addEventListener("이벤트명" , 콜백함수 , (생략가능) capturing 단계까지 적용 true/false)에 해당하는 DOM API의 이벤트 관련 기능
 
-           7) $('DOM셀렉터').hide() <-> show()
+           8) $('DOM셀렉터').hide() <-> show()
                : 특정 DOM요소의 style 속성 중, display : none ~ block을 오가게 하는 것과 마찬가지로, DOM요소를 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
 
-           8) $('DOM셀렉터').fadeOut() <-> fadeIn()
+           9) $('DOM셀렉터').fadeOut() <-> fadeIn()
                : 특정 DOM요소의 style 속성 중, display : none ~ block + Transition : 1s 하는 식의, DOM요소를 서서히 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
 
-           9) $('DOM셀렉터').slideUp() <-> slideDown()
+           10) $('DOM셀렉터').slideUp() <-> slideDown()
                : 특정 DOM요소를 수축되게 하는 애니메이션과 함께, 보이고 안 보이게 하는 애니메이션 기능을 메서드로 쓸 수 있게 구현
 
+           11) $('window').scrollTop()
+                : 현재 브라우저 창의 스크롤된 크기를 반환하는 함수
+
+           12) $('window').scrollTop(숫자)
+                : 현재 브라우저 창의 스크롤을 parameter로 입력된 숫자의 크기만큼 강제 이동해주는 함수
+
+           13) $('DOM셀렉터').is( $('DOM셀렉터'))
+                : jQuery 셀렉터끼리의 비교를 위한 메서드
 
  1. Swiper
      : 여러 패턴의 캐러셀(이미지 슬라이드) 기능을 웹 환경에서 쉽게 구현하게 만들어주는 라이브러리

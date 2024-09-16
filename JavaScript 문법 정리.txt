@@ -551,16 +551,42 @@
                              ex) var hoisting의 황당함 예시3
                                   -> 반복문의 index에 해당하는 변수 i는 모든 반복에 대해 반복문 스코프{}가 아닌 상위 스코프{}에 var i라는 동일한 변수를 참조함
                                      (사실 var i; 부분은 실행 시점에서 맨 위로 올라가고, setTimeout을 통해 1초 후 반복문들을 코드를 실행하는 시점에서는 이미 반복이 끝나 i = 5가 들어가 있음)
+                                       -> (중요) 해당 사항이 문제가 되는 부분은 반복문에 들어가는 코드가 당장 콜스택(callstack)에 들어가지 않고, 주요 업무 대기열(macro task queue)나 보조 업무 대기열(micro task queue)에 들어가서 나중에 실행되는 경우에 있음
 
-                                     for (var i = 0; i < 5; i++) {
-                                         setTimeout(function() {
-                                             console.log(i);          // 5 5 5 5 5 출력
-                                         }, 1000);
-                                     }
+                                     예시1) setTimeout의 경우
+
+                                            for (var i = 0; i < 5; i++) {
+                                                setTimeout(function() {
+                                                    console.log(i);          // 5 5 5 5 5 출력
+                                                }, 1000);
+                                            }
+
+                                     예시2) addEventListener의 경우
+                                             : var의 경우 i, j 둘 다 for문의 {} 밖에 생성되어 추후 뭘 눌러도 [4]에 해당하는 같은 이벤트만 수행됨, 
+                                               let의 경우 i, j의 반복문이 진행될 때마다, 매번 새로운 {}을 전개하고 index를 해당 {}의 새로운 변수를 생성하여 대입하여 해당 {}에 index는 고정되게 설정함
+                                     
+                                               for (var i = 0; i < 5; i++) {
+                                                  document.querySelectorAll('.tab-button')[i].addEventListener('click', function (e) {
+                                      
+                                                      for(var j = 0; j < 5; j++){
+                                      
+                                                          if(i == j){
+                                                              document.querySelectorAll('.tab-button')[j].classList.add('orange');  
+                                                              document.querySelectorAll('.tab-content')[j].classList.add('show');  
+                                                          }else{
+                                                              document.querySelectorAll('.tab-button')[j].classList.remove('orange');  
+                                                              document.querySelectorAll('.tab-content')[j].classList.remove('show');  
+                                                          }
+                                                      }
+                                                  });
+                                               }
 
           2) (ES6 이후) let
                : ES6에 추가된 '블록 스코프'를 기반으로 하는 변수 
                  (= 함수 스코프 {}만을 영역의 기준으로 삼고 hoisting을 일삼던 상식을 벗아나는 var변수의 약점을 일반적 언어의 변수들의 원칙이 적용되는 방향으로 보완)
+
+                # block scope (블록 스코프)
+                   : {}로 직접 변수들이 통용되는 영역 구분을 위한 '결계'와 같은 영역을 설정
 
                 # let 변수 만의 특징
                    1. var의 문제점을 보완하기 위해 탄생
@@ -577,13 +603,23 @@
                    3. for, if, function에 제한되지 않고, 어디에서라도 {}를 기준으로 한 블록 스코프 {}를 기준으로 변수들의 영역을 판별함
                       (= 모든 {}가 let의 범위를 따지는 영역의 기준)
 
-                   4. TDZ개념을 도입하여, 변수를 선언하기 이전에 사용을 할수 없다는 원칙을 구현
+                   4. for문에서 index 변수를 let으로 설정하는 경우, 각 반복(iteration)마다 해당되는 스코프 {}이 생성되고, 거기에 변수가 생성된 뒤 현재 반복 index값을 대입한 뒤 해당 반복문 내용을 작성함
+                        -> 그렇게 만들어진 각 반복의 영역에 해당하는 {}는 해당 반복 {} 내부에서만 접근 가능하며, 각 {}의 index값은 늘 고정됨
+                            -> (중요) 이 부분이 콜스택 이후 실행되는 주요 업무 대기열(macro task queue)나 보조 업무 대기열(micro task queue)에 해당하는 코드가 들어있는 반복문의 내용도 늘 일정함을 보장해주는 부분임
+
+                               ex) i는 let으로 선언되었기 때문에 각 반복마다 새로운 블록 스코프가 생성
+                                   (= 반복문이 한 번 실행될 때마다, i는 해당 블록 스코프에서 새로운 변수로 생성되고 유지)
+                                       -> i값은 해당 반복의 블록 스코프에 고정되어 있기에, 나중에 실행되더라도 각 i 값은 올바르게 유지
+
+                                          for (let i = 0; i < 3; i++) {
+                                              setTimeout(function() {
+                                                  console.log(i);
+                                              }, 100);
+                                          }
+
+                   5. TDZ개념을 도입하여, 변수를 선언하기 이전에 사용을 할수 없다는 원칙을 구현
                       (TDZ : Temperary Dead Zone의 약자로, 해당 스코프에서 변수 선언 위치 이전 영역을 의미함)
                         -> let의 경우 변수 선언 이전에 사용을 하게 되면, error를 호출
-
-                # block scope (블록 스코프)
-                   : {}로 직접 변수들이 통용되는 영역 구분을 위한 '결계'와 같은 영역을 설정
-
 
      @ JS의 상수(constant) const
         : 어떤 값을 일단 한번 할당히면, 오직 읽기(= r(read))만 가능한 녀석을 의미 
@@ -652,9 +688,13 @@
                                  (Number.MAX_SAFE_INTEGER ~ Number.MIN_SAFE_INTEGER 범위 밖의 정수는 정확하지 않을 수 있음)
  
                        # number의 메서드
-                          : '숫자.메서드명(...parameter)' 형식으로 호출하며
+                          : '숫자.메서드명(...parameter)' 메서드 체이닝 형식으로 호출
 
-                            ex) (1.4).toFixed(1)
+                             1) 숫자.toFixed(원하는소수님자리수)
+                                 : 해당 숫자가 실수인 경우, 원하는 소수점 자리수에 해당하는 자리수로 반올림해주는 메서드..
+                                    -> (주의) 해당 메서드의 반환값은 '문자열'이니, 추후 연산을 할거면 반드시 형변환을 해줘야 함
+
+                                        ex) (1.4).toFixed(1)
  
                         # (중요) 'string'과 '+' 연산자
                           : JS는 동적 자료형과 극한의 약타입에 해당하는 언어의 특성 상, '산술 연산자'나 '논리 연산자' 관련 연산을 수행시 꼴리는데로 형변환(casting)을 시도해서 사람을 복창터지게 하는 특성이 있음

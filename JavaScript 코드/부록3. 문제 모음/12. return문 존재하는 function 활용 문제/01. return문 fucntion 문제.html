@@ -12,23 +12,46 @@
         //  (결과 예시)
         //    - 함수(1,30) -> 90000 반환 (90초 * 1000)
         //    - 함수(2,10) -> 130000 반환 (130초 * 1000)
-        function StoMs(){
 
+        function StoMs(분, 초){
+            return 분 * 60 * 1000 + 초 * 1000;
         }
 
-        while(true){
+        let StoMsRepeat = true;
+        while(StoMsRepeat){
             let 분 = prompt('분 단위 시간을 입력해줘라');
             let 초 = prompt('초 단위 시간을 입력해줘라');
-            StoMs(분, 초);
+            alert(StoMs(분, 초));
+            StoMsRepeat = confirm('계속 할까요?');
         }
 
-        // Q2. 가격을 파라미터로 입력하면 10% 할인된 가격을 뱉는 함수를 만들어봅시다.
-        // 근데 첫 구매여부도 true/false로 둘째파라미터에 입력해서 첫 구매가 맞을 경우 추가로 1.5 달러도 할인해줘야합니다. 
-        // 주의사항은 가격으로 10.3 이런거 넣으면 소수로 인한 오차도 나올 수도 있으니 오차는 깔끔하게 처리해보든가 합시다.
+        // Q2. 가격을 파라미터로 입력하면 10% 할인해주고, 첫구매 여부가 boolean 확인되면 1.5 달라를 추가로 할인까지 해주는 discounted(가격, 첫구매boolean)함수를 만들어봅시다.
+        //   -> (주의사항) 가격으로 10.3 이런거 넣으면 소수로 인한 오차도 나올 수도 있음.. 오차는 깔끔하게 처리해보든가 하자
+
+        //       ex) 반올림(.toFixed() 같은 메서드 or 수동으로 '대상 / 10 * 10')하거나 외부 라이브러리 사용
 
         //  (결과 예시)
         //    - 함수(70,false) -> 63 반환 (70 * 0.9)
         //    - 함수(10,true)  -> 63 반환 (10 * 0.9 - 1.5)
+
+        function discounted(가격, 첫구매boolean){
+            
+            let addedDiscounted = 0;
+
+            if(첫구매boolean == true){
+                addedDiscounted = 1.5;
+            }
+
+            return parseFloat( (가격 * 0.9 - addedDiscounted).toFixed(3) );
+        }
+
+        let discountedRepeat = true;
+        while(discountedRepeat){
+            let 가격 = prompt('가격을 $단위로 입력해줘라');
+            let 첫구매boolean = confirm('첫구매한 고객인지요?');
+            alert(discounted(가격, 첫구매boolean));
+            discountedRepeat = confirm('계속 할까요?');
+        }
 
     </script>
 </body>
