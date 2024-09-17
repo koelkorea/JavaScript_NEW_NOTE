@@ -69,6 +69,49 @@
            13) $('DOM셀렉터').is( $('DOM셀렉터'))
                 : jQuery 셀렉터끼리의 비교를 위한 메서드
 
+           14) $(document).ready(무명콜백함수)
+                : DOMContentLoaded 이벤트를 사용하여 DOM트리 작성시기로 JS코드의 실행기간을 미루는 DOM API의 이벤트리스너 함수에 대응되는 메서드
+          
+           15) $(window).on('load', 무명콜백함수)
+                : load 이벤트를 사용하여 document 영역에 포함된 모든 이미지, 파일 등이 전부 로딩되었을 때를 기준으로 JS코드의 실행기간을 미루는 DOM API의 이벤트리스너 함수에 대응되는 메서드
+
+      # JQuery를 통한 Ajax 전송
+         : $HTTP메서드명('url명').후속메서드(콜백함수) 형식으로 {Promise 객체} 기반의 fetch API처럼 활용 가능
+
+           @ JQuery를 활용한 Ajax의 HTTP 메서드
+
+              1) GET 메서드
+                  : $.get('url명') 으로 호출 가능한 웹서버로부터 데이터를 요청하여 가져오는 HTTP 메서드
+                      -> 이후 then, catch, finally와 같은 디자인패턴으로 성공/실패 시의 후속 로직을 설계 가능
+
+                         ex) $.get('https://codingapple1.github.io/hello.txt').done(function(data){
+                               console.log(data)
+                             });
+
+              2) POST 메서드
+                  : $.POST('url명', {객체} ) 으로 호출 가능한 웹서버로 데이터를 전송하고, 이를 가공한 뒤 결과값을 줄 걸 요청하는 HTTP 메서드
+                      -> 이후 then, catch, finally와 같은 디자인패턴으로 성공/실패 시의 후속 로직을 설계 가능
+
+                         ex) $.post('https://codingapple1.github.io/hello.txt', {name : 'kim'})
+
+           @ JQuery를 활용한 Ajax 디자인 패턴
+              : then, catch, finally을 사용한 Ajax 방식의 API호출 과정을 고전적으로 promise 체이닝 메서드 형식과 유사하나.. 
+                 -> 'then(콜백함수) -> done(콜백함수)' , 'catch(콜백함수) -> fail(콜백함수)'로 변경해서 활용 가능
+        
+                     ex) fetch API에 익숙하다면, 금방 적응 가능함
+                         (= done/fail 말고 then/catch 써도 문제없음)
+
+                         $.get('https://codingapple1.github.io/hello.txt')
+                         .done(function(data){
+                           console.log(data)
+                         })
+                         .fail(function(error){
+                           console.log('실패함')
+                         });
+
+
+
+
  1. Swiper
      : 여러 패턴의 캐러셀(이미지 슬라이드) 기능을 웹 환경에서 쉽게 구현하게 만들어주는 라이브러리
 

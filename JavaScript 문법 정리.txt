@@ -59,9 +59,20 @@
               -> 구글의 크롬 브라우저에 탑재된 V8이 매우 유명하며, 해당 JS엔진을 기반으로 웹서버로서도 기능할 수 있도록 제작한 JS런타임 환경이 Node.js
 
      @ HTML과 JS 관련 팁
-        : JS는 조작할 html 위에 작성하지 않는 것이 좋음
-           -> 브라우저가 html 파일을 읽을 때 위에서부터 순차적으로 읽는데 미리 html을 읽어놔야 해당 DOM요소를 조작이 가능하기 때문
+        1) JS는 조작할 html 위에 작성하지 않는 것이 좋음
+            -> 브라우저가 html 파일을 위에서부터 순차적으로 읽어서 DOM트리를 구성하는데, 미리 html을 읽어놔야 해당 DOM요소를 조작이 가능하기 때문
+               (= 요즘 <script> 태그가 <body> 끝나기 직전에 작성되는게 관습화 되는 이유... 이게 싫으면 load, DOMContentLoaded 이벤트를 활용한 이벤트리스너 함수를 쓰는 방법이 존재)
 
+               ex) 아직 <p id="test">를 읽기 전이라 p태그에 대한 DOM이 아직 생성되지 않은 상태라, 갑자기 자바스크립트로 id="test"인 요소를 DOM에서 찾으라고 하면 에러가 남
+
+                   <script>
+                     document.getElementById('test').innerHTML = '안녕'
+                   </script>
+                   
+                   <p id="test">임시글자</p>
+
+        2) <script> 태그 안에 적은 JavaScript 코드는 페이지 로드시 1회만 메인 쓰레드(main thread)에 의해 콜스택(call stack)에 올라가서 실행
+            -> 특정 상황에 반복되서 실행되는 이벤트 같은게 있다면, 반드시 그렇게 반복 실행되는 코드를 입력해줘야 함
  
  - 이벤트 루프(event loop) = JavaScript의 코드 실행방식
     : 프로그램 실행시 코드를 실행하는 주체인 쓰레드가 1개인 '싱글 쓰레드(single thread)' 구조라 코드를 '병렬 프로그래밍(Parallel Programming)'적으로 처리가 불가능해 보이는 JS 런타임 환경에서, 유사 '병렬적 프로그래밍'의 작동이 가능하게 구현해주는 코드 작동 로직
@@ -1689,6 +1700,18 @@
                                                          }
                                                        }
 
+                                       5) (주의) arrow function(화살 함수)가 어떤 DOM API의 이벤트리스너의 콜백함수로 사용되었을 시 그 내부의 this
+                                           : this = {이벤트 객체}.target
+
+                                             ex) 이벤트리스너의 무명콜백함수를 arrow function(화살 함수)으로 작성하고 그 내용부에서 this를 쓰면 이는 {이벤트 객체}.target으로 인식
+         
+                                                     document.getElementById('버튼').addEventListener('click', function(e){
+                     
+                                                        if(this == e.currentTarget){
+                                                           console.log(this)
+                                                        }
+                                                     });
+
                   D. 이벤트리스너 메서드에서의 콜백함수 내부의 this
                       : 현재 이벤트가 발생하는 대상인 {DOM 객체} 내부의 요소인 <HTML>를 의미하는 e.currentTarget
                          -> e.currentTarget은 이벤트리스너 함수의 콜백함수 1번째 parameter변수에 할당된 {arguments 객체}에 해당하는 {이벤트 객체}의 프로퍼티 중 하나
@@ -3239,7 +3262,6 @@
                       ex) [arrNum]의 내부요소를 활용한 forEach() 메서드의 parameter인 무명콜백함수의 1번째 parameter인 num은 각 [arrNum]의 내부요소를 의미
                             -> 이를 통해, '내부요소 * 2'가 순환되어 실행
                                 
-
                           let arrNum = [1, 2, 3];
                           
                           arrNum.forEach(num => {
@@ -3983,4 +4005,4 @@
 
 -> 따로 작성 필요
 
-   [배열] API 정리, c++의 파워포인트 업로드, 자동형변환 원칙 업로드 
+   [배열] API 정리(SORT, FILTER, MAP부터), c++의 파워포인트 업로드, 자동형변환 원칙 업로드 , dom요소 생성/변경 관련 메서드 프로퍼티 

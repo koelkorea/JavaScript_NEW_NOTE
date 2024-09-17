@@ -791,6 +791,9 @@
                      ex) click, change, focus, keydown, keyup, load, mousedown, mouseout, mouseover, mousemove, mouseup, select, touchstart, scroll 등...
                           -> 종류는 ㅈㄴ게 많기에 필요할 때 찾아서 응용하기
 
+                     ex) load, DOMContentLoaded 
+                          -> JS의 실행 타이밍 조절을 위해 사용하는 특수한 이벤트
+
                b. 콜백함수
                    : 해당 HTML 요소에 대한 사용자의 조작이 성립할 시, 이를 기다렸던 이벤트 리스너(EventListener)에 의해 수행해야 할 내용부를 담는 '모듈' 역할을 담당하는 2번째 parameter 
                       -> (참고) 무명함수를 콜백함수로 작성해도 상관없음 
@@ -891,6 +894,57 @@
 
                                 ex) <a> 태그에 해당하는 HTML 요소에 이벤트를 정의하는데, 콜백함수의 내용부에 event.preventDefalut()를 사용한다면?
                                       -> <a> 태그의 href 변경을 통한 링크 기능이 작동하지 않음
+
+             @ (중요!) 부수 효과(side effect)에 해당하는 코드의 실행타이밍 연장 조정을 목적으로 사용하는 특수한 '이벤트명'
+                 : 시간이 오래걸리거나 성능에 영향을 주는 부수 효과(side effect)에 해당하는 코드들을 인위적으로 늦게 실행하도록 조정하는 이벤트리스너 API에 사용하는 이벤트들
+                   (= DOM트리나 모든 요소들의 로딩이 완성된 다음, JS를 실행하니 안정적이라 최적화 안된 예전에는 많이 사용되었음.. 특히 과거 스타일 강의에서는 이를 강조함)
+                       -> BUT! 요즘에는 최적화가 많이 이뤄지고, <script>는 <body>태그 끝나기 직전 작성하는 관습이 정착해서, 딱히 의미가 없을수도 있으나 알아둬서 나쁠건 없음
+
+                  1. DOMContentLoaded 이벤트
+                      : 이벤트리스너 함수의 2번쨰 parameter인 콜백함수에 해당하는 내용부는 'HTML 전부 다 읽어 DOM트리가 생성된 시점'에서 실행하게 됨
+                          -> document.addEventListener('DOMContentLoaded', function() { 실행할 코드 }) 이런 식으로 보통 사용
+
+                             ex) '안녕'이란 문구를 test라는 id를 가진 DOM요소의 자식요소로 넣는건, 무조건 DOM트리 완성 후 시작함
+
+                                 <script>
+                                   document.addEventListener('DOMContentLoaded', function() { 
+                                     document.getElementById('test').innerHTML = '안녕'
+                                   })
+                                 </script>
+                                 
+                                 <p id="test">임시글자</p>
+
+                  2. load 이벤트
+                      : 이벤트리스너 함수의 2번쨰 parameter인 콜백함수에 해당하는 내용부는 '해당 DOM영역의 요소들이 전부 다 로딩되는 시점'에서 실행하게 됨
+                        (= 특정 이미지나 CSS파일, JS파일에도 걸 수 있으며, {window 전역객체}를 대상으로 걸면 document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 해당 코드를 실행하게 됨)
+
+                        ex) {window 전역객체}에 load 이벤트를 쓰는 경우
+                              -> document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+
+                                 window.addEventListener('load', function(){
+                                   // document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+                                 })
+
+                        ex) 어떤 DOM요소에 load 이벤트를 쓰는 경우
+                              -> 해당 DOM요소 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+
+                                 document.getElementById('child').addEventListener('load', function(){
+                                   // 해당 DOM요소 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+                                 })
+
+                        ex) 이미지, 파일과 같은 DOM요소에 load 이벤트를 쓰는 경우
+                              -> 해당 요소의 로딩완료 시점을 기준으로 해당 코드를 실행
+                                  -> (주의) 해당 코드가 외부 JS모듈화된 파일에 작성되어 이를 불러오는 경우, 해당 js 파일보다 이미지가 더 먼저 로드외어 이벤트 발생체크를 못할 수도 있음
+
+                                     셀렉터로찾은이미지.addEventListener('load', function(){
+                                       // 이미지 로드되면 실행할 코드 
+                                     })
+
+                  - DOMContentLoaded VS load
+                     : 부수 효과(side effect)에 해당하는 코드의 실행타이밍 연장 조정을 목적으로 하는 건 동일
+                        -> BUT! JS 코드실행 기준이 다름 
+                            - DOMContentLoaded은 DOM트리 생성을 기준으로 잡음
+                            - load는 대상 DOM요소의 모든 파일과 이미지의 로드상태를 체크하고 완료되는 시점을 기준으로 잡음
 
              @ (중요!) 스크롤바(scrollbar) 특수성
                 : 스크롤바(scrollbar)는 브라우저에 속한 요소 O = 스크롤바(scrollbar)는 window객체와 모든 것이 연관되어 있음
@@ -1021,6 +1075,7 @@
              @ (참고) DOM요소를 조작하는 DOM API 명령어가 의도한 데로 실행되려면, 반드시 명령어 실행시점에 대상 DOM요소가 위치를 알고 있어야 함
                  : HTML영역이 보통 <script> 영역보다 위쪽에 있는 이유
                     -> WHY?  명령어를 순차적으로 읽어들이는 JS런타임 환경 특성을 고려했을 떄, DOM API로 조작할 html이 더 상단에 있어야 DOM API의 실행시점에 대상 HTML 위치를 알 수 있기 떄문
+
 
  - WEB component
     : 사용자가 스스로 정의해서 제작한 만들어진 '커스텀 HTML <태그>'라고 생각하면 됨

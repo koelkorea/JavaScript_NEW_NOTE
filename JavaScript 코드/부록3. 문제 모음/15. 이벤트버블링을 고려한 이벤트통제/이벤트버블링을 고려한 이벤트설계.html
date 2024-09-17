@@ -84,14 +84,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
-        //  Q. 로그인 '모달 창'이 뜬 이후, 검은 바탕을 클릭했을 떄만, 해당 모달창이 닫히도록 만들어라
+        // Q. 로그인 '모달 창'이 뜬 이후, 검은 바탕을 클릭했을 떄만, 해당 모달창이 닫히도록 만들어라
         //   -> 검은 배경인 .black-bg는 하위요소로 <form>을 가지는데, 이 경우 이벤트버블링이 일어나서 뜻하지 않게 이벤트가 발생할 것이니 이를 고려해서 코딩을 할 것
         //       -> (힌트) 현재 이벤트가 실제로 일어난 요소를 찾는 이벤트객체의 프로퍼티를 사용해라
+
+        // 답안1) 해당 이벤트가 .black-bg 내부의 .white-bg 이하로 들어가면 버블링을 통해 해당 이벤트가 발생될 수 밖에 없음
+        //  -> 실제 이벤트 발생지가 .black-bg인 DOM요소가 아니면, 버블링 된 DOM요소로 해당 이벤트를 발생시켜도 아무일도 없게 조건문 놓으면 됨
         document.querySelector('.black-bg').addEventListener('click', function(e){
-            if(e.currentTarget == e.target){
+            if(e.target == e.currentTarget){
                 document.querySelector('.black-bg').classList.toggle('show-modal');
             }
         });
+
+        // 답안2) 실제 이벤트 발생지가 .black-bg인 DOM요소일 때만 이벤트를 발생시키기
+        // document.querySelector('.black-bg').addEventListener('click', function(e){
+        //     if(e.target == document.querySelector('.black-bg')){
+        //         document.querySelector('.black-bg').classList.toggle('show-modal');
+        //     }
+        // });
 
         document.querySelector('.login-button').addEventListener('click', function(){
             document.querySelector('.black-bg').classList.toggle('show-modal');

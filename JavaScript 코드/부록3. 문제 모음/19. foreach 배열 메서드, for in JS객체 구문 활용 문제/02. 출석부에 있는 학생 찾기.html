@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    // Q1. Array에서 이름이 [출석부]라는 배열에 있으면 콘솔창에 출력해주는 함수 '이름찾기(이름)'를 만들어라
+    //  -> (조건) 
+    //      - find, indexOf 같은 JS 기본함수들 사용금지 
+    //      - 결과는 1번만 출력되게해라
+
+    //  (결과 예시)
+    //    - 이름찾기('철수'); 라고 쓰면 콘솔창에 '있어요'라는 글자가 떠야합니다.
+    //    - 이름찾기('명수'); 라고 쓰면 콘솔창에 아무 글자도 뜨지 않아야합니다.
+    function 이름찾기(이름) {
+
+        var 출석부 = ['흥민', '영희', '철수', '재석'];
+
+        var isHere = false;
+
+        출석부.forEach(function(학생, 인덱스){
+
+            if(학생 == 이름 ){
+                return isHere = true;
+            }
+        });
+        
+        return isHere;
+    }
+
+    while(true){
+        let 변수 = prompt('찾고 싶은 이름을 입력해줘라');
+        let isHere = 이름찾기(변수);
+
+        if(isHere){
+            alert('있습니다');
+        }else{
+            alert('없습니다');
+        }
+    }
+
+    </script>
+</body>
+</html>

@@ -1,3 +1,62 @@
+- Ajax(Asynchronous JavaScript and XML)
+   : JavaScript와 마크업 언어인 XML을 이용, 브라우저에서 새로고침을 하지 않고도 웹서버와 데이터를 주고받을 수 있게 도와주는 비동기적 정보 교환 기법
+      -> Ajax의 등장으로 화면에서 새로고침 하지 않고도 웹서버에서 데이터를 요청하고 받아서 화면의 데이터를 새로 그릴 수 있음
+         (= <form> 태그의 한계를 더이상 겪지 않아도 되는 신문물이라고 볼 수 있음)
+
+    @ Ajax의 특성
+
+      - Ajax의 장점
+         1) 웹서버에 내용을 전송해도 새로고침을 안해도 됨
+         2) 비동기적 데이터 교환이 이뤄짐 = 데이터 전송과 관련없이 화면이 유지되고 사용자는 조작이 가능
+             -> (참고!) 화면 전환없이 이뤄지는 요청과 리턴이기에 ajax를 통한 통신을 주고받는 기능에서는 다른 페이지로 연결하여 새로고침을 유발하는 redirect나 render 같은 함수를 server.js의 API {}안에 써봐야 작동하지 않음.. 
+         3) NodeJs 환경에서는 Js를 사용하므로, 서버나 화면에서나 같은 방식으로 데이터를 주고받기 쉽다
+            (JS의 fetch() 비동기 함수를 사용하는걸 추천)
+
+      - Ajax의 단점
+         : 기본적으로 버튼을 지원하는 FORM 태그랑 다르게, JS의 이벤트리스너를 통해 스스로 버튼 동작과 기능을 연결시킬 줄 알아야 해서 좀 과정이 귀찮음
+
+    @ JS기반 언어에서 Ajax(Asynchronous JavaScript and XML) 사용하는 방법
+
+       1. XMLHttpRequest라는 옛날 고전적인 js에서의 ajax 문법 사용
+       2. js ECMA6 이후 등장한 fetch() 사용
+       3. axios라는 js 외부 라이브러리 사용
+
+    @ axios VS fetch
+
+      1. 공통적인 부분
+
+         1) 둘 다 JS의 promise가 상태를 관리하여 다른 코드가 비동기적으로 실행될 수 있도록 만드는 객체인 Promise 객체의 API를 기반으로 사용하여 구현된 기능
+         2) 둘 다 JS의 사용자가 서버로 http 메서드 + url로 요청을 보내는 짓은 비동기로 병렬적 실행을 하지만, 각 요청은 요청에 대한 결과가 나올 때까지 기다려야 함..
+             -> 각 http 메서드를 통한 요청에 대한 결과를 기다린 뒤에는? 
+                 a. then(), catch(), finally() 함수
+                     : 비동기 작업의 '성공 or 실패 or 무조건 실행' 이라는 조건에 맞춰 try, catch, finally와 유사한 느낌으로 then(), catch(), finally() 함수를 연쇄적으로 사용해서 시도에 대한 성공 실패여부를 따지는 조건분기 진행루트를 만들 수 있음
+                    (= try ~ catch가 switch 문법 기반이니 만큼, then(), catch(), finally() )
+             
+         3) (둘 다 ajax 방식으로 서버와 통신하기에) 받아오는 데이터는 json이나 html종류를 받아옴
+         4) (둘 다 ajax 방식으로 서버와 통신하기에) 비동기식으로 병렬적으로 코드를 수행함 = 연달아 들어오는 fetch()나 axios 구문이 있으면, 거의 시간차 없이 수행된다 보면 됨
+             -> 그래도... 동시에 수행하는건 아니기에.. 어쩄든 진짜 여러 ajax 요청들을 최대한 동시기에 비동기적으로 보내기 위해 사용하는게, js의 Promise 객체의 정적 함수 임 
+    
+      2. 차이점
+
+         1) axios 특성
+
+           - axios 장점
+               a. 받아오는 json 형식의 데이터를 사용자가 보기 좋게 자동으로 array로 변환해 줌
+               b. http메서드를 단순히 axios 객체의 멤버함수로 제공해서 쓰게 함으로서, 개발자로 하여금 직관적으로 http 메서드를 사용하게 함
+ 
+           - axios 단점
+              : 외부 js 라이브러리이기에 어쩄든 개발자가 조금이라도 번거로워지고, 서비스에서 로딩시간 증가에 영향을 줄 소지는 있음
+
+         2) fetch API 특성
+
+           - fetch API 장점
+               : ECMA6에서 기본으로 지원되는 함수라서, 별 다른 과정없이 그냥 써먹을 수가 있음
+ 
+           - fetch API 단점
+               a. 받아오는 json 형식의 데이터를 자동으로 array로 변환해주진 않아서, 요청이 성공해서 데이터를 받으면 이를 변환하는 코드가 추가되어야함
+               b. axios 라이브러리 처럼, http메서드를 단순히 axios 객체의 멤버함수로 제공해서 쓰게 하는게 아니라... 2번쨰 parameter로 js객체 형식으로 옵션값을 통해 http 메서드의 속성들을 하나하나 지정해줘야 함
+
+
 - fetch API
    : ECMA 6에서 브라우저 및 JS 런타임 환경의 어플리케이션에서 공식적으로 지원하는 Ajax API기능
       -> {promise 객체}를 기반으로 만들어져, 브라우저 및 JS 런타임 환경의 어플리케이션에서 수신성공/실패에 따른 콜백함수 처리를 공식적으로 쉽게 할 수 있도록 함
@@ -70,14 +129,10 @@
       2) 메서드 
           : 웹서버의 API 응답에 대한 데이터의 본문을 파싱하기 위한 메서드
             (= 보통은 json으로 변환하게 될 것)
-               -> (주의사항)
-                    1. fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해줘야 client측이 알아먹을 수 있음
-                    2. 단! 한번만 사용이 가능함 
-                       (= 가장 먼저 실행한 메서드로 데이터는 파싱됨)
 
-            a. response.text()        : 응답객체 body 본문을 텍스트 형태로 반환함
-            b. response.json()        : 응답객체 body 본문을  파싱해 JSON 객체로 변경함
-            c. response.formData()    : 응답객체 body 본문을 FormData 객체 형태로 반환
+            a. response.text()        : 응답객체 body 본문을 '문자열' 형태로 반환함
+            b. response.json()        : 응답객체 body 본문을 파싱해 {JSON 객체}로 변경함
+            c. response.formData()    : 응답객체 body 본문을 {FormData 객체} 형태로 반환
             d. response.blob()        : 응답객체 body 본문을  Blob(타입이 있는 바이너리 데이터) 형태로 반환
             e. response.arrayBuffer() : 응답을 ArrayBuffer(바이너리 데이터를 로우 레벨로 표현한 것) 형태로 반환
 
@@ -98,19 +153,52 @@
                      console.log(error)
                    })
 
+           # fetch API {응답(response) 객체} 메서드 사용 시 주의점
+              1) fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해줘야 client측이 알아먹을 수 있음
+              2) 단! 한번만 사용이 가능함 
+                 (= 가장 먼저 실행한 메서드로 데이터는 파싱됨)
+              3) (중요) {응답(response) 객체} 메서드는 결국 {Promise 객체}를 반환하기 때문에, 변환한 결과물을 보고 싶다면, 무조건 적으로 그 다음 then() 또는 await를 사용하여 응답
+                 
+                 ex) 잘못 사용한 예
+                      : 응답.json()이 반환하는 건 {promise 객체}라서 원하는 본문 데이터를 볼 수 없음
+
+                        fetch('https://codingapple1.github.io/js/more1.json', {method: 'get'})
+                        .then((응답) => console.log(응답.json())) 
+
+                 ex) 옳게 사용한 예
+                      : 응답.json()이 반환하는 건 {promise 객체}라서 원하는 본문 데이터를 볼 수 없기에, 새로운 then을 체이닝 하여 콜백함수의 parameter로 전달된 변환 데이터를 통해 접근
+                         -> (참고) 이 과정이 은근 귀찮은 과정이라... ㅈ같다고 생각되는 사람들이 axios 라이브러리를 사용하여, 자동 형변환의 편안함을 맛봄 
+
+                        fetch('https://codingapple1.github.io/js/more1.json', {method: 'get'})
+                        .then((응답) => 응답.json()) 
+                        .then((data) => console.log(data);
+
+    @ (참고) JSON 객체의 메서드
+       : [배열] or {JS객체} -> JSON형태의 "문자열" 로 변환 or 역으로 JSON형태의 "문자열" -> [배열] or {JS객체} 로 파싱하는 역할의 도구들
+
+          1) JSON.stringify( {JS객체} or [배열] )
+              : parameter로 들어간 {JS객체} or [배열]을  JSON형태의 "문자열"로 변환하는 메서드
+                 -> (주의) BUT! {JS객체}의 메서드는 파싱 및 변환 과정에서 복구가 불가능해지니 주의
+
+          2) JSON.parse ( JSON 형식의 "문자열" )
+              : parameter로 들어간 JSON 형식의 "문자열" 을  {JS객체} or [배열]로 파싱하여 복구해주는 메서드
+                 -> {JS객체}의 메서드는 복구가 불가능
+
     @ fetch API 주의사항 모음
       1) fetch 요청시 {JS객체}, [배열]을 보내려도 '문자열'로 보내야 하므로, 반드시 JSON 형식으로 변환하여 보낼 것
-
+          <-> axios 라이브러리는 그딴거 없어도 됨
       2) fetch 요청시, option에 body속성을 넣어야 한다면, 반드시 데이터를 넣어야 함
-
       3) fetch 요청시, POST 요청을 보낼 때 body속성값이 문자열이면 Content-Type 헤더가 text/plain;charset=UTF-8로 기본 설정됨
-
       4) fetch 요청시, URL을 적을 때 URL parameter와 queryString 형식까지 포함해서 데이터를 보내는 거도 가능은 함
-
-      5) fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해줘야 client측이 알아먹을 수 있음
+      5) fetch API에서는 응답을 받았으면, 반드시 해당 메서드들을 써서 서버가 보낸 응답객체의 body데이터를 파싱해주자
+           -> (중요) 파싱과정을 거쳐야 client측이 [array]인지 {object}인지 알아먹을 수 있음
 
       6) fetch API에서는 응답 변환 메서드는 단! 한번만 사용이 가능함
           (= 가장 먼저 실행한 메서드로 데이터는 파싱됨)
 
       7) server component를 사용한다면, fetch API를 사용할 것이 Nextjs 13부터는 권장됨 
           -> fetch에 특별한 기능이 추가되어 있기에 때문
+
+      8) (Node.js를 사용하는 경우) fetch를 통해 server.js의 API를 호출하고, 그 {}안에서 redirect나 render로 다른 페이지로 이동시키는 코드는 <form> 태그나 <a> 태그를 통한 API 호출처럼 바로 동작하지 않음
+          -> (추정) 비동기적으로 서버와 데이터를 교환하는 fetch api를 사용할 경우, 새로고침이 일어나지 않게 설계되었기에.. redirect 결정은 화면의 fetch 체이닝 로직 영역에서 결정함..
+               -> server.js의 redirect나 render로 다른 페이지로 이동시키는 커맨드에 반응하지 않게하고, 그 redirect(url)를 fetch의 체이닝 응답결과에 포함시켜 브라우저 주소창인 window.location.href 요소에 바로 주입해 해결

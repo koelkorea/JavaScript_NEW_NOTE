@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container mt-3">
+        <div class="card p-3">
+            <div>
+                <span>상품명 : </span>
+            </div>
+            <div>
+                <span>가격 : </span>
+            </div>
+        </div>
+    </div> 
+    
+    <script>
+        // Q. car2 에 저장된 소나타라는 상품명과 50000이라는 가격을 JS로 뽑아서 html에 집어 넣어보아라
+        //   -> DOM요소 생성, 추가에 대한 메서드를 사용해라
+        var car2 = { name : '소나타', price : 50000 };
+
+        var {name, price} = car2;
+
+        var nameSpan = `<span>${name}</span>`
+        var priceSpan = `<span>${price}</span>`
+
+        document.querySelectorAll('.card.p-3 div')[0].insertAdjacentHTML( 'beforeend', nameSpan );
+        document.querySelectorAll('.card.p-3 div')[1].insertAdjacentHTML( 'beforeend', priceSpan );
+
+    </script>
+</body>
+</html>
