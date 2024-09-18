@@ -31,6 +31,183 @@
            3. document 객체 자체는 해당 화면의 DOM tree의 root(= 뿌리)에 해당하는 부분으로 사실상 DOM객체로 변환된 화면 전체를 의미
                -> (중요) document객체의 root에 해당하는 부분은 <html> 태그
 
+    # (중요) DOM트리에 DOM요소를 CRUD 하는 프로퍼티/메서드 모음
+
+      1. DOM요소를 생성 관련 메서드
+
+         1) {Node 객체}.createTextNode('문자열')
+             : parameter인 '문자열' 데이터를 가진 {text 노드}를 생성하여 반환하는 메서드
+                 -> 이 반환 값을  DOM트리에 추가(= 끼워넣기)하는 메서드를 통해 DOM트리에 반영
+ 
+                    ex) '안녕?'이란 값을 가진 {text 노드} 생성 후 반환
+ 
+                         let text = document.createTextNode('안녕?');
+ 
+         2) {element 객체}.createElement(태그명)
+            : parameter인 태그명에 해당하는 {element 객체}를 생성하여 반환하는 메서드
+                -> 이 반환 값을 DOM트리에 추가(= 끼워넣기)하는 메서드를 통해 DOM트리에 반영
+      
+                   ex) <div>태그에 해당하는 {element 객체} 생성 후 반환
+      
+                        let element = document.createElement(div);
+
+         3) {Node 객체}.cloneNode( boolean값 )
+            : {기준 Node 객체}를 복사한 뒤 {복사된 Node 객체}를 반환하는 메서드
+                -> paramter에 해당하는 내용은 '깊은 복사' 여부를 의미
+                    - true  : 기준 노드의 하위 노드의 내용까지 싸그리 복사
+                    - false : 기준 노드의 자신의 내용만 복사
+ 
+                      ex) helloCopy라는 변수는 hello라는 변수의 {복사된 Node 객체} 전부를 복사하여 저장함
+                      
+                          const helloCopy = hello.cloneNode(true);
+
+      2. DOM요소를 추가(= 삽입) 관련 메서드
+     
+         A. 기준 DOM요소의 '직속 형제'로 추가
+     
+            1) {element 객체}.before( ... {element 객체} or {text 노드 객체})
+               : parameter인 {element 객체들}를 {기준 element 객체}의 '형'에 해당하는 위치에 추가
+    
+            2) {element 객체}.after( ... {element 객체} or {text 노드 객체})
+               : parameter인 {element 객체들}를 {기준 element 객체}의 '동생'에 해당하는 위치에 추가
+
+                 ex) list 변수가 저장하는 {elememt 객체}의 '직속 동생'에 해당하는 위치에 after1, after2에 해당하는 {element 객체}를 동생들로 순차적으로 추가
+
+                     const list = document.getElementById('list');
+                   
+                     const after1 = document.createElement('li');
+                     after1.innerHTML = 'after1';
+                   
+                     const append2 = document.createElement('li');
+                     after2.innerHTML = 'after2';
+
+                     list.after(append1, append);
+
+         B. 기준 DOM요소의의 '자식'으로 추가
+     
+            1) {element 객체}.prepend( ... {element 객체} or {text 노드 객체})
+                : parameter인 {element 객체들}를 {기준 element 객체}의 '1번째 자식'에 해당하는 위치에 추가
+  
+            2) {element 객체}.append( ... {element 객체} or {text 노드 객체})
+                : parameter인 {element 객체들}를 {기준 element 객체}의 '마지막 자식'에 해당하는 위치에 추가
+
+                  ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 '새 div 1, 새 div 2, 새 div 3, '라는 문자열 추가
+
+                      my_div.append('새 div 1, ', '새 div 2, ', '새 div 3, ');
+
+            3) {Node 객체}.appendChild( {Node 객체} )
+                : parameter인 {Node 객체}를 {기준 Node 객체}의 '마지막 자식'에 해당하는 위치에 추가하고, 그 {자식 Node 객체}를 반환
+                   -> (주의) 한번에 1개의 {Node 객체}만 DOM트리에 삽입 가능
+ 
+            4) {Node 객체}.insertBefore( {추가 Node 객체}, {참조 자식 Node 객체} )
+                : {기준 Node 객체}에 존재하는 {참조 자식 Node 객체}의 '직속 형'으로 {추가 Node 객체}를 추가하는 메서드
+
+                  ex) newNode는 referenceNode인 ';<li>2</li>' 앞에 '직속 형'으로서 추가
+
+                      list.insertBefore(newNode, referenceNode);
+
+                  ex) referenceNode가 null 이므로, newNode는 '<ul>' 노드의 마지막 자식 노드인 '<li>3</li>' 뒤에 추가
+
+                      list.insertBefore(newNode, null);
+
+         C. {기준 element 객체}를 기준으로 '위치'와 추가할 '데이터 종류'를 정해서 추가하는 insertAdjacent 메서드 시리즈
+              -> (중요) 위치값 키워드
+                   : insertAdjacent 메서드 시리즈에 1번째 parameter로 공통적으로 들어가는 문자열 데이터 
+                      -> beforebegin : {기준 element 객체}의 '직속 형'으로 추가
+                      -> afterend    : {기준 element 객체}의 '직속 동생'으로 추가
+                      -> afterbegin  : {기준 element 객체}의 '1번쨰 자식'으로 추가
+                      -> beforeend : {기준 element 객체}의 '마지막 자식'으로 추가
+
+            1) {element 객체}.insertAdjacentHTML(위치값 키워드, '문자열로 작성된 HTML');
+                : parameter인 '문자열로 작성된 HTML'를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+                    -> (참고) 이 녀석을 제외하면, '문자열로 작성된 HTML'을 HTML <태그>로 알아먹는건 innerHTML 밖에 없음
+
+                       ex) list 변수가 저장하는 {elememt 객체}의 '직속 형'에 해당하는 위치에 '<div>beforebegin</div>'을 HTML로 파싱 하여 생성한 <HTML 태그>가 추가
+                      
+                           list.insertAdjacentHTML('beforebegin', '<div>beforebegin</div>');
+
+                       ex) list 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 '<div>beforebegin</div>'을 HTML로 파싱 하여 생성한 <HTML 태그>가 추가
+                      
+                           list.insertAdjacentHTML('beforeend', '<div>beforeend</div>');
+
+            2) {element 객체}.insertAdjacentText(위치값 키워드, '문자열');
+                : parameter인 '문자열'를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+
+                   ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 'insertAdjacentElement'을 추가
+                  
+                       my_div.insertAdjacentText('beforeend', 'insertAdjacentElement');
+
+            3) {element 객체}.insertAdjacentText(위치값 키워드, {element 객체});
+                : parameter인 {element 객체}를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+
+                   ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 element에 저장된 {elememt 객체}을 추가
+                  
+                       my_div.insertAdjacentElement('beforeend', element);
+
+         D. {element 객체}.innerHTML 프로퍼티
+             : 기준 <HTML태그> '내부'의 HTML 또는 XML 마크업을 문자열로 저장하는 프로퍼티
+                -> {element 객체}.innerHTML의 내용을 변경해서, 해당 HTML 내부를 수정할 수 있는 이유는 innerHTML 프로퍼티가 {element 객체} 내부의 태그 내용을 '문자열'로 저장하고 있게 때문
+                   (= innerHTML 프로퍼티 자체가 '문자열'을 저장하니, 반드시 '문자열' 형식으로 변경할 HTML태그 내용을 입력해야 함)
+
+                    ex) innerHTML를 호출하면, 기준 <HTML태그> '내부'의 HTML 내용을 '문자열'로 가져옴
+                        innerHTML에 다른 HTML 태그값을 '문자열'로 대입하면, 해당 {element 객체} 내부의 HTML태그을 새롭게 변경 가능 (= 덮어씌우기)
+       
+                        <div id="my-div" class="my-class">Hello, world!</div>
+
+                        element.innerHTML = '<p>Hello, world!</p>'; 
+
+                        let content = element.innerHTML; 
+                          -> <p>Hello, world!</p> 출력
+
+      3. DOM요소를 삭제 관련 메서드
+
+         1) {element 객체}.remove()
+             : {기준 element 객체}를 DOM트리에 제거하는 메서드
+ 
+               ex) 선택한 노드(<li id='second'>2</li>)를 삭제
+ 
+                   const child = document.getElementById('second');
+
+         2) {Node 객체}.removeChild( {Node 객체} )
+             : {기준 Node 객체}의 자식 중 {parameter Node 객체}에 해당하는 HTML요소를 제거한 뒤, 제거 된 {parameter Node 객체}를 반환
+
+      4. DOM요소를 변경 관련 메서드
+
+         1) {element 객체}.replaceWith(...  {새로운 element 객체} or {text 노드 객체})
+             : {기준 Node 객체}를 {새로운 element 객체들} or {text 노드 객체들}로 대체하는 메서드
+ 
+               ex) oldNode에 해당하는 DOM요소를 newNode1와 newNode2에 해당하는 {새로운 element 객체} or {text 노드 객체}로 교체
+ 
+                   const oldNode = document.getElementById('second');
+                   
+                   // 교체할 새 노드, <li>2-1(new)</li>
+                   const newNode1 = document.createElement('li');
+                   newNode1.id='second';
+                   newNode1.innerHTML = '2-1(new)';
+                   
+                   // 교체할 새 노드, <li>2-2(new)</li>
+                   const newNode2 = document.createElement('li');
+                   newNode2.id='second_2';
+                   newNode2.innerHTML = '2-2(new)';
+                   
+                   oldNode.replaceWith(newNode1, newNode2);
+
+         2) {Node 객체}.replaceChild( {새로운 Node 객체}, {교체 대상 Node 객체} )
+            : {기준 Node 객체}에 해당하는 HTML요소 중 {교체 대상 Node 객체}을 {새로운 Node 객체}로 변환하고, 그 {새로운 Node 객체}를 반환하는 메서드
+
+      5. 특정 DOM요소의 자식 중 특정 {Node 객체}가 있는지를 확인하는 메서드
+
+         1) hasChildNodes()
+             : {기준 Node 객체}의 자식 중 {자식 Node 객체}가 있는지를 확인한 뒤 boolean값으로 반환
+                 - true  : {자식 Node 객체}가 존재 O
+                 - false : {자식 Node 객체}가 존재 X
+ 
+         2) contains( {Node 객체} )
+            : {기준 Node 객체}의 자식 중 {parameter인 Node 객체}에 해당하는 HTML요소가 있는지를 확인한 뒤 boolean값으로 반환
+                - true  : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계
+                - false : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계 X
+
+
     # DOM객체를 이루는 {객체}들의 상속 관계
        : {Node 객체} -> {Element 객체} -> {HTMLElement 객체} -> {Specific HTML Elements 객체}
            -> DOM(Document Object Model)의 개별 HTML 단위를 구성하는 {객체} 단위들이며, {Node 객체}를 최고 선조로 한 상속 관계를 이룸
@@ -123,33 +300,65 @@
                @ {Node 객체}의 메서드
                  (= {Node 객체}를 상속한 {element 객체} 같은 {객체}들도 당연히 가지고 있음)
 
-                    - appendChild( {Node 객체} )
-                       : {parameter Node 객체}를 기준 노드의 마지막 자식노드로 추가
+                  a. {Node 객체} 생성 메서드
+                       : (중요) DOM요소를 생성하는 메서드 중 하나
 
-                    - removeChild( {Node 객체} )
-                       : 기준 노드의 {parameter Node 객체}에 해당하는 HTML요소를 제거한 뒤, 제거 된 {parameter Node 객체}를 반환
+                     - createTextNode('문자열')
+                         : parameter인 '문자열' 데이터를 가진 {text 노드}를 생성하여 반환하는 메서드
+                             -> 이 반환 값을  DOM트리에 추가(= 끼워넣기)하는 메서드를 통해 DOM트리에 반영
+ 
+                                ex) '안녕?'이란 값을 가진 {text 노드} 생성 후 반환
+ 
+                                     let text = document.createTextNode('안녕?');
+ 
+                     - cloneNode( boolean값 )
+                        : {기준 Node 객체}를 복사한 뒤 {복사된 Node 객체}를 반환하는 메서드
+                            -> paramter에 해당하는 내용은 '깊은 복사' 여부를 의미
+                                - true  : 기준 노드의 하위 노드의 내용까지 싸그리 복사
+                                - false : 기준 노드의 자신의 내용만 복사
+ 
+                                  ex) helloCopy라는 변수는 hello라는 변수의 {복사된 Node 객체} 전부를 복사하여 저장함
+                                  
+                                      const helloCopy = hello.cloneNode(true);
 
-                    - insertBefore( {대상 Node 객체}, {위치 Node 객체} )
-                       : {위치 Node 객체}에 해당하는 HTML요소가 기준 노드에 위치한 자식 노드라면? 그 위치 바로 앞에 {대상 Node 객체}를 삽입하는 메서드
+                  b. parameter인 {Node 객체}를 {기준 Node 객체}의 '자식'으로서 추가(= 끼워넣기)하는 메서드
 
-                    - replaceChild( {대상 Node 객체}, {위치 Node 객체} )
-                       : {위치 Node 객체}에 해당하는 HTML요소가 기준 노드에 위치한 자식 노드라면? 그 위치에 {대상 Node 객체}로 대체하는 메서드
+                     - appendChild( {Node 객체} )
+                        : parameter인 {Node 객체}를 {기준 Node 객체}의 '마지막 자식'에 해당하는 위치에 추가하고, 그 {자식 Node 객체}를 반환
+                           -> (주의) 한번에 1개의 {Node 객체}만 DOM트리에 삽입 가능
+ 
+                     - insertBefore( {추가 Node 객체}, {참조 자식 Node 객체} )
+                        : {기준 Node 객체}에 존재하는 {참조 자식 Node 객체}의 '직속 형'으로 {추가 Node 객체}를 추가하는 메서드
 
-                    - hasChildNodes()
-                       : 기준 노드가 자식 노드를 가지고 있는지를 확인한 뒤 boolean값으로 반환
-                           - true  : 자식 노드가 존재 O
-                           - false : 자식 노드가 존재 X
+                          ex) newNode는 referenceNode인 ';<li>2</li>' 앞에 '직속 형'으로서 추가
 
-                    - contains( {Node 객체} )
-                       : 기준 노드에서 {parameter Node 객체}에 해당하는 HTML요소를 자식 노드로 가지고 있는지를 확인한 뒤 boolean값으로 반환
-                           - true  : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계
-                           - false : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계 X
+                              list.insertBefore(newNode, referenceNode);
 
-                    - cloneNode( boolean값 )
-                       : 기준 노드의 {Node 객체}를 복사한 뒤 복사된 {Node 객체}를 반환하는 메서드
-                           -> paramter에 해당하는 내용은 '깊은 복사' 여부를 의미
-                               - true  : 기준 노드의 하위 노드의 내용까지 싸그리 복사
-                               - false : 기준 노드의 자신의 내용만 복사
+                          ex) referenceNode가 null 이므로, newNode는 '<ul>' 노드의 마지막 자식 노드인 '<li>3</li>' 뒤에 추가
+
+                              list.insertBefore(newNode, null);
+
+                  c.  {기준 Node 객체}의 자식 중 parameter인 {Node 객체}를 제거하는 메서드
+
+                     - removeChild( {Node 객체} )
+                        : {기준 Node 객체}의 자식 중 {parameter Node 객체}에 해당하는 HTML요소를 제거한 뒤, 제거 된 {parameter Node 객체}를 반환
+
+                  d. {기준 Node 객체}의 자식 중 {교체 대상 Node 객체} -> 새로운 {Node 객체}로 변환하는 메서드
+
+                     - replaceChild( {새로운 Node 객체}, {교체 대상 Node 객체} )
+                        : {기준 Node 객체}에 해당하는 HTML요소 중 {교체 대상 Node 객체}을 {새로운 Node 객체}로 변환하고, 그 {새로운 Node 객체}를 반환하는 메서드
+
+                  e. {기준 Node 객체}가 자식 중 특정 {Node 객체}가 있는지를 확인하는 메서드
+
+                     - hasChildNodes()
+                        : {기준 Node 객체}의 자식 중 {자식 Node 객체}가 있는지를 확인한 뒤 boolean값으로 반환
+                            - true  : {자식 Node 객체}가 존재 O
+                            - false : {자식 Node 객체}가 존재 X
+ 
+                     - contains( {Node 객체} )
+                        : {기준 Node 객체}의 자식 중 parameter인 {Node 객체}에 해당하는 HTML요소가 있는지를 확인한 뒤 boolean값으로 반환
+                            - true  : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계
+                            - false : {해당 Node 객체} : {parameter Node 객체} 는 부모 : 자식 관계 X
 
                @ (참고) {live DOM 객체} VS {non-live DOM 객체}
                   : 어떤 {객체}가 저장하는 HTML요소의 정보의 상태 변화가 실시간으로 반영되는가?
@@ -365,39 +574,157 @@
                    : (중요) querySelector(), querySelectorAll() 역시 {Element 객체}의 메서드 
                        -> DOM객체를 구성하는 가장 하위 단계인 {Node 객체} 단위는 자손에 해당하는 DOM요소가 없을 수도 있음
 
-                   - getAttribute('HTML속성명')
-                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 반환하는 메서드
-        
-                        ex) img태그의 src속성 가져오기
+                    A. 대상 element객체의 HTML 속성 관련 메서드
 
-                            document.querySelector('img').getAttribute("src");
+                       - getAttribute('HTML속성명')
+                          : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 반환하는 메서드
+            
+                            ex) img태그의 src속성 가져오기
+    
+                                document.querySelector('img').getAttribute("src");
+    
+                       - setAttribute('HTML속성명', 'HTML속성값')
+                          : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 'HTML속성값'로 설정해주는 메서드
+            
+                            ex) img태그의 src속성을 main 이미지로 변경하기
+    
+                                document.querySelector('img').setAttribute("src,"./imges/main.jpg");
+    
+                       - removeAttribute('HTML속성명')
+                          : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 삭제해주는 메서드
+            
+                            ex) input태그의 onclick 속성값을 삭제
+    
+                                document.querySelector('input').removeAttribute("onclick");
+    
+                       - hasAttribute('HTML속성명')
+                          : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값이 있는지 없는지를 boolean값으로 반환
+            
+                            ex) div태그의 id 속성의 속성값이 있는지 없는지를 확인 후, 결과값을 boolean값으로 반환
+    
+                                document.querySelector('div').hasAttribute("id");
 
-                   - setAttribute('HTML속성명', 'HTML속성값')
-                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 'HTML속성값'로 설정해주는 메서드
-        
-                        ex) img태그의 src속성을 main 이미지로 변경하기
+                    B. 대상 element객체 내부를 대상으로 querySelector가 호환되도록 하는 메서드
 
-                            document.querySelector('img').setAttribute("src,"./imges/main.jpg");
+                       - querySelector('CSS셀렉터명')
+                          : 해당 {Element 객체} 내부에서 일치하는 1번째 자식 요소를 {Node 계열 객체}로 반환
+     
+                       - querySelectorAll('CSS셀렉터명')
+                          : 해당 {Element 객체} 내부에서 일치하는 모든 자식 요소를 {NodeList 객체}로 반환
 
-                   - removeAttribute('HTML속성명')
-                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값을 삭제해주는 메서드
-        
-                        ex) input태그의 onclick 속성값을 삭제
+                    C. (중요) {element객체} 생성/추가/제거 등의 제어 메서드
 
-                            document.querySelector('input').removeAttribute("onclick");
+                       a. {element 객체} 생성 메서드
+                            : (중요) DOM요소를 생성하는 메서드 중 하나
+     
+                          - createElement(태그명)
+                              : parameter인 태그명에 해당하는 {element 객체}를 생성하여 반환하는 메서드
+                                  -> 이 반환 값을 DOM트리에 추가(= 끼워넣기)하는 메서드를 통해 DOM트리에 반영
+      
+                                     ex) <div>태그에 해당하는 {element 객체} 생성 후 반환
+      
+                                          let element = document.createElement(div);
+     
+                       b. parameter인 {element 객체}를 {기준 element 객체}를 기준으로 추가(= 끼워넣기)하는 메서드
+                           -> DOM트리에 반영된 {element 객체}에 추가하면 화면에 보이게 됨
 
-                   - hasAttribute('HTML속성명')
-                      : 기준 <HTML태그>에서 parameter로 입력한 'HTML속성명'에 해당하는 속성의 속성값이 있는지 없는지를 boolean값으로 반환
-        
-                        ex) div태그의 id 속성의 속성값이 있는지 없는지를 확인 후, 결과값을 boolean값으로 반환
+                          [1] {기준 element 객체}의 '직속 형제'로 추가
+     
+                              - before( ... {element 객체} or {text 노드 객체})
+                                 : parameter인 {element 객체들}를 {기준 element 객체}의 '형'에 해당하는 위치에 추가
+    
+                              - after( ... {element 객체} or {text 노드 객체})
+                                 : parameter인 {element 객체들}를 {기준 element 객체}의 '동생'에 해당하는 위치에 추가
 
-                            document.querySelector('div').hasAttribute("id");
+                                   ex) list 변수가 저장하는 {elememt 객체}의 '직속 동생'에 해당하는 위치에 after1, after2에 해당하는 {element 객체}를 동생들로 순차적으로 추가
+
+                                       const list = document.getElementById('list');
+                                     
+                                       const after1 = document.createElement('li');
+                                       after1.innerHTML = 'after1';
+                                     
+                                       const append2 = document.createElement('li');
+                                       after2.innerHTML = 'after2';
+
+                                       list.after(append1, append);
+
+                          [2] {기준 element 객체}의 '자식'으로 추가
+     
+                              - prepend( ... {element 객체} or {text 노드 객체})
+                                 : parameter인 {element 객체들}를 {기준 element 객체}의 '1번째 자식'에 해당하는 위치에 추가
   
-                  - querySelector('CSS셀렉터명')
-                     : 해당 {Element 객체} 내부에서 일치하는 1번째 자식 요소를 {Node 계열 객체}로 반환
+                              - append( ... {element 객체} or {text 노드 객체})
+                                 : parameter인 {element 객체들}를 {기준 element 객체}의 '마지막 자식'에 해당하는 위치에 추가
 
-                  - querySelectorAll('CSS셀렉터명')
-                     : 해당 {Element 객체} 내부에서 일치하는 모든 자식 요소를 {NodeList 객체}로 반환
+                                   ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 '새 div 1, 새 div 2, 새 div 3, '라는 문자열 추가
+
+                                       my_div.append('새 div 1, ', '새 div 2, ', '새 div 3, ');
+
+                          [3] {기준 element 객체}를 기준으로 '위치'와 추가할 '데이터 종류'를 정해서 추가하는 insertAdjacent 메서드 시리즈
+                                -> (중요) 위치값 키워드
+                                     : insertAdjacent 메서드 시리즈에 1번째 parameter로 공통적으로 들어가는 문자열 데이터 
+                                        -> beforebegin : {기준 element 객체}의 '직속 형'으로 추가
+                                        -> afterend    : {기준 element 객체}의 '직속 동생'으로 추가
+                                        -> afterbegin  : {기준 element 객체}의 '1번쨰 자식'으로 추가
+                                        -> beforeend : {기준 element 객체}의 '1번쨰 자식'으로 추가
+
+                              - insertAdjacentHTML(위치값 키워드, '문자열로 작성된 HTML');
+                                 : parameter인 '문자열로 작성된 HTML'를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+                                     -> (참고) 이 녀석을 제외하면, '문자열로 작성된 HTML'을 HTML <태그>로 알아먹는건 innerHTML 밖에 없음
+
+                                        ex) list 변수가 저장하는 {elememt 객체}의 '직속 형'에 해당하는 위치에 '<div>beforebegin</div>'을 HTML로 파싱 하여 생성한 <HTML 태그>가 추가
+                                        
+                                            list.insertAdjacentHTML('beforebegin', '<div>beforebegin</div>');
+
+                                         ex) list 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 '<div>beforebegin</div>'을 HTML로 파싱 하여 생성한 <HTML 태그>가 추가
+                                        
+                                             list.insertAdjacentHTML('beforeend', '<div>beforeend</div>');
+
+                              - insertAdjacentText(위치값 키워드, '문자열');
+                                 : parameter인 '문자열'를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+
+                                    ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 'insertAdjacentElement'을 추가
+                                    
+                                        my_div.insertAdjacentText('beforeend', 'insertAdjacentElement');
+
+                              - insertAdjacentText(위치값 키워드, {element 객체});
+                                 : parameter인 {element 객체}를 {기준 element 객체}의 '위치값'에 해당하는 위치에 추가
+
+                                    ex) my_div 변수가 저장하는 {elememt 객체}의 '마지막 자식'에 해당하는 위치에 element에 저장된 {elememt 객체}을 추가
+                                    
+                                        my_div.insertAdjacentElement('beforeend', element);
+
+                       c. {기준 element 객체}를 DOM트리에 제거하는 메서드
+     
+                          - remove()
+                             : {기준 element 객체}를 DOM트리에 제거하는 메서드
+
+                               ex) 선택한 노드(<li id='second'>2</li>)를 삭제
+
+                                   const child = document.getElementById('second');
+                                   child.remove();
+     
+                       d. {기준 element 객체} -> {새로운 element 객체} or {text 노드 객체}로 변환하는 메서드
+     
+                          - replaceWith(...  {새로운 element 객체} or {text 노드 객체})
+                             : {기준 Node 객체}를 {새로운 element 객체들} or {text 노드 객체들}로 대체하는 메서드
+
+                               ex) oldNode에 해당하는 DOM요소를 newNode1와 newNode2에 해당하는 {새로운 element 객체} or {text 노드 객체}로 교체
+
+                                   const oldNode = document.getElementById('second');
+                                   
+                                   // 교체할 새 노드, <li>2-1(new)</li>
+                                   const newNode1 = document.createElement('li');
+                                   newNode1.id='second';
+                                   newNode1.innerHTML = '2-1(new)';
+                                   
+                                   // 교체할 새 노드, <li>2-2(new)</li>
+                                   const newNode2 = document.createElement('li');
+                                   newNode2.id='second_2';
+                                   newNode2.innerHTML = '2-2(new)';
+                                   
+                                   oldNode.replaceWith(newNode1, newNode2);
+
 
           3. {HTMLElement 객체} 
               : 표현되는 HTML요소 단위 기준이 엄격하게 '<HTML 태그> 단위 만'을 기반으로 하는 {Element 객체}를 상속 받는 {객체}

@@ -29,115 +29,182 @@
 
         2. <canvas>선택자.getContext('2d') 이후 메서드 체이닝
 
-          1) <canvas>선택자.getContext('2d').fillStyle = '색깔'
-              : 해당 <canvas> 태그 영역에 그려질 모형의 색
-        
-          2) <canvas>선택자.getContext('2d').fillRect(x좌표, y좌표, 너비, 높이)
-              : 해당 <canvas> 태그 영역에 그려질 4각형 모형의 좌표(x,y)와 너비 * 높이
-                 -> 보통 해당되는 부분이 <canvas> 내 다른 도형과 상호작용을 하게되 어있음
-        
-          3) <canvas>선택자.getContext('2d').drawImage(이미지객체, x좌표, y좌표, 너비, 높이)
-              : 해당 <canvas> 태그 영역에 그려질 이미지객체의 좌표(x,y)와 너비 * 높이
-                 -> 이쪽은 보통 게임에 등장하는 {객체}의 스킨에 해당됨
-        
-                    ex) 선인장이란 class를 통해서 <canvas> 태그 영역에 어떻게 그려질지 명시 가능
-                    
-                        class Cactus { 
-                        
-                            constructor() {
-                                this.x = 500;
-                                this.y = 200;
-                                this.width = 50;
-                                this.height = 50;
-                            }
-                        
-                            draw(){
-                                ctx.fillStyle = 'red';
-                                ctx.fillRect(cactusImg.x, this.y, this.width, this.height);
-                                ctx.drawImage(img1, this.x, this.y, this.width, this.height);
-                            }
-                        }
-        
-          4) <canvas>선택자.getContext('2d').beginPath();
-              : 해당 <canvas> 태그 영역에 이전에 정의된 경로와 별개로 새로운 경로를 정의할 수 있게 해주는 함수
-                (= 그림판에서 사용자 임의로 도형 그리는 그거 맞음)
-        
-          5) <canvas>선택자.getContext('2d').moveTo(x좌표, y좌표)
-              : 이전 경로에서 얼마나 더 떨어질지 지정하는 함수
-                (= 경로를 그리지 않고, 펜을 새로운 위치로 옮기는 역할.. 시작지점을 다시 설정하는데 유용)
-        
-          6) <canvas>선택자.getContext('2d').lineTo(x좌표, y좌표)
-              : 현재 좌표를 기준으로 어떤 방향으로 직선을 그을지 지정하는 함수
-                 -> 여러 번 호출하여 직선으로 이루어진 다각형을 그릴 수 있음
-                     -> BUT! 사용자에게 보여질거면 stroke()까지 호출을 해야함
-        
-          7) <canvas>선택자.getContext('2d').closePath();
-              : 현재 경로의 마지막 지점을 시작(beginPath()로 인해 설정된) 지점과 연결하는 함수
-                 -> (중요) 마지막 점을 첫 번째 점과 연결하여 도형의 윤곽선을 완전히 연결하는 것을 의미 + closePath()를 호출한 후에도 다른 경로를 이어서 그릴 수 있음
-        
-          8) <canvas>선택자.getContext('2d').stroke()
-              : moveTo와 lineTo로 정의된 현재 경로를 따라 윤곽선을 그리는 함수
-                 -> (중요) 이 녀석이 호출되기 전까지는 경로가 실제로 그려지지 않으며, 화면에 나타나지 않음
-        
-          9) <canvas>선택자.getContext('2d').fill()
-              : 현재 정의된 경로 내부를 fillStyle 속성을 찾은 뒤 그걸로 채우는 함수
-                 -> 경로가 닫혀 있지 않다면 자동으로 닫히고, 채워지게 함
-                ex) 다각형 그리기
-                    const canvas = document.getElementById('myCanvas');
-                    const ctx = canvas.getContext('2d');
-                    ctx.beginPath();       // 새로운 경로 시작
-                    ctx.moveTo(50, 50);
-                    ctx.lineTo(200, 50);
-                    ctx.lineTo(200, 200);
-                    ctx.lineTo(50, 200);
-                    ctx.closePath();
-                    ctx.fillStyle = 'red'; // 채울 색상을 빨간색으로 설정
-                    ctx.fill();            // 경로 내부를 빨간색으로 채웁니다.
-                    ctx.stroke();          // 경로를 그립니다.
-        
-          10) <canvas>선택자.getContext('2d').arc(x좌표, y좌표, 반지름, 시작각도, 끝각도, 시계방향설정 boolean값)
-               : 해당 <canvas> 태그 영역에 원, 호(arc), 또는 원의 일부를 그릴 때 사용하는 메서드
-        
-                # requestAnimationFrame(callback) 특징
-                   1) 시작각도, 끝각도의 기준은 라디안(radians) 단위로 표기
-                       -> 0 라디안  : 원의 오른쪽(3시 방향)에서 시작
-                          1 라디안  : 57.3도
-                          2π 라디안 : 360도(원 전체)
-        
-                   2) arc 메서드를 사용하면 beginPath와 함께 사용해야, 새로운 도형이 기존 경로와 연결되지 않음
-        
-                   3) 시계방향(anticlockwise) parameter 변수는 호를 그리는 방향을 지정
-        
-                      ex) 반원 그리기
-                           -> 좌표 (100, 75)을 중심으로 반지름이 50인 반원을 그림
-                          const canvas = document.getElementById('myCanvas');
-                          const ctx = canvas.getContext('2d');
-                          ctx.beginPath();
-                          ctx.arc(100, 75, 50, 0, Math.PI, false); // 중심 (100, 75), 반지름 50, 0 라디안부터 π 라디안까지 그리기 (시계 방향)
-                          ctx.stroke();        
-        
-                      ex) 원 그리기
-                           -> 좌표 (100, 75)을 중심으로 반지름이 50인 원을 그림
-                          const canvas = document.getElementById('myCanvas');
-                          const ctx = canvas.getContext('2d');
-                          ctx.beginPath();
-                          ctx.arc(100, 75, 50, 0, 2 * Math.PI, false); // 중심 (100, 75), 반지름 50, 0 라디안부터 2π 라디안까지 그리기
-                          ctx.stroke();       
-        
-          11) <canvas>선택자.getContext('2d').clearRect(x좌표, y좌표, 너비, 높이)
-               : <canvas> 태그 영역의 특정 영역을 투명하게 지우는 데 사용되는 메서드로 좌표(x,y)와 그 위치를 기준으로 너비, 높이에 해당하는 영역을 지워 초기화
-                   -> 대충, <canvas> 태그 영역에서의 현재의 모습만을 남기기 위해 과거의 모습을 지우는 용도로 사용된다고 생각하면 됨
-        
-                # clearRect 메서드 용도
-                   a. 캔버스 초기화
-                       : 그림을 그리기 전, 이전에 그려진 내용을 지우는데 사용
-                         (= 조치를 안 취해두면, 이전에 그려놓은 부분과 겹침)
-        
-                   b. 애니메이션 구현
-                       : 프레임 간의 이전 그림을 지우고, 새로운 그림을 그려 부드러운 애니메이션 효과를 구현할 때 활용
-        
-                   c. 동적 그래픽 업데이트
-                       : 사용자 인터랙션이나 실시간 데이터에 따라 그래픽을 업데이트할 때 필요
+          # 글자 관련
+            
+            A. 글자 관련 프로퍼티
+
+               1) <canvas>선택자.getContext('2d').fillStyle = '색깔'
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 색
+
+               1) <canvas>선택자.getContext('2d').strokeStyle = '색깔'
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 외곽선 색
+                     (= stokeText() 메서드로 '문자열' 외곽선을 그릴때만 적용됨)          
+   
+               2) <canvas>선택자.getContext('2d').font  = '스타일 굵기 크기 서체'
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 색
+                     (값을 미지정시 "10px sans-serif" 라는 기본값이 적용됨)
+   
+                       - 스타일 키워드 : normal(기본), italic, oblique
+                       - 굵기 키워드   : normal(기본), bold, bolder, lighter
+                       - 크기 키워드   : 숫자px(기본 10px)
+                       - 서체 키워드   : sans-serif(기본) , Arial ...
+   
+               3) <canvas>선택자.getContext('2d').textAlign = '글자 좌우 정렬 위치';
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 좌우 정렬 위치의 기준을 정함
+                      -> (참고) 글자정렬 좌우 위치 키워드
+                           - start(기본) : 브라우저의 텍스트 시작점을 기준으로 정렬
+                           - end         : 브라우저의 텍스트 끝점을 기준으로 정렬
+                           - center      : 무조건 가운데 정렬
+                           - left        : 무조건 왼쪽 정렬
+                           - right       : 무조건 오른쪽 정렬
+               
+               4) <canvas>선택자.getContext('2d').textBaseline = 'text baseline 위치';
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 text baseline 기준을 정함
+                      -> (참고) 글자정렬 상하 위치 키워드
+                           - alphabetic(기본) : 알파벳을 쓸 때의 표준 text baseline을 사용
+                           - top              : text baseline이 문자열 위쪽으로 맞춰짐
+                           - middle           : text baseline이 문자열 중앙으로 맞춰짐
+                           - bottom           : text baseline이 문자열 아래쪽으로 맞춰짐
+                           - hanging          : 문자의 위쪽에 text baseline을 맞춤 (= 인도의 언어방식)
+                           - ideographic      : 한자나 일본어와 같은 text baseline 기준 (= alphabetic보다 조금 아래를 기준)
+   
+               5) <canvas>선택자.getContext('2d').derection = '텍스트 작성 방향';
+                   : 해당 <canvas> 태그 영역에 그려질 글자의 텍스트 작성 방향(LTR, RTL)을 정함
+                      -> inherit이 기본값
+
+            B. 글자 관련 메서드
+
+               1) <canvas>선택자.getContext('2d').fillText('문자열', x좌표, y좌표, 최대너비값)
+                   : 해당 <canvas> 태그 영역에 프로퍼티들을 참고하여, '문자열' 내용을 parameter로 보낸 좌표에 그려넣는 메서드
+                      -> (참고) '문자열' 너비 > 최대 너비값이면 '문자열'이 그만큼 줄어듦 (생략시, 텍스트 길이만큼 표시)
+
+               2) <canvas>선택자.getContext('2d').stokeText('문자열', x좌표, y좌표, 최대너비값)
+                   : 해당 <canvas> 태그 영역에 프로퍼티들을 참고하여, '문자열' 내용의 외곽선 모양을 parameter로 보낸 좌표에 그려넣는 메서드
+                      -> (참고) 외곽선의 색은 strokeStyle = "색상"; 으로 지정
+
+               3) <canvas>선택자.getContext('2d').measureText('문자열')
+                   : 현재 스타일로 특정 '문자열'이 그려질 때 폭, 픽셀등을 포함하는 {TextMetrics 객체}를 반환하는 메서드
+                      -> (참고) {TextMetrics 객체}에 프로퍼티들로 정보를 얻을 수 있음
+
+                         ex) text라는 {TextMetrics 객체}를 저장하는 변수에서 width를 찾아서 로그로 출력 가능
+
+                             function draw() {
+                               var ctx = document.getElementById('canvas').getContext('2d');
+                               var text = ctx.measureText('foo');
+                               text.width; // 16;
+                             }
+
+          # 도형 관련
+            1) <canvas>선택자.getContext('2d').fillStyle = '색깔'
+                : 해당 <canvas> 태그 영역에 그려질 모형의 색
+          
+            2) <canvas>선택자.getContext('2d').fillRect(x좌표, y좌표, 너비, 높이)
+                : 해당 <canvas> 태그 영역에 그려질 4각형 모형의 좌표(x,y)와 너비 * 높이
+                   -> 보통 해당되는 부분이 <canvas> 내 다른 도형과 상호작용을 하게되 어있음
+          
+            3) <canvas>선택자.getContext('2d').drawImage(이미지객체, x좌표, y좌표, 너비, 높이)
+                : 해당 <canvas> 태그 영역에 그려질 이미지객체의 좌표(x,y)와 너비 * 높이
+                   -> 이쪽은 보통 게임에 등장하는 {객체}의 스킨에 해당됨
+          
+                      ex) 선인장이란 class를 통해서 <canvas> 태그 영역에 어떻게 그려질지 명시 가능
+                      
+                          class Cactus { 
+                          
+                              constructor() {
+                                  this.x = 500;
+                                  this.y = 200;
+                                  this.width = 50;
+                                  this.height = 50;
+                              }
+                          
+                              draw(){
+                                  ctx.fillStyle = 'red';
+                                  ctx.fillRect(cactusImg.x, this.y, this.width, this.height);
+                                  ctx.drawImage(img1, this.x, this.y, this.width, this.height);
+                              }
+                          }
+          
+            4) <canvas>선택자.getContext('2d').beginPath();
+                : 해당 <canvas> 태그 영역에 이전에 정의된 경로와 별개로 새로운 경로를 정의할 수 있게 해주는 함수
+                  (= 그림판에서 사용자 임의로 도형 그리는 그거 맞음)
+          
+            5) <canvas>선택자.getContext('2d').moveTo(x좌표, y좌표)
+                : 이전 경로에서 얼마나 더 떨어질지 지정하는 함수
+                  (= 경로를 그리지 않고, 펜을 새로운 위치로 옮기는 역할.. 시작지점을 다시 설정하는데 유용)
+          
+            6) <canvas>선택자.getContext('2d').lineTo(x좌표, y좌표)
+                : 현재 좌표를 기준으로 어떤 방향으로 직선을 그을지 지정하는 함수
+                   -> 여러 번 호출하여 직선으로 이루어진 다각형을 그릴 수 있음
+                       -> BUT! 사용자에게 보여질거면 stroke()까지 호출을 해야함
+          
+            7) <canvas>선택자.getContext('2d').closePath();
+                : 현재 경로의 마지막 지점을 시작(beginPath()로 인해 설정된) 지점과 연결하는 함수
+                   -> (중요) 마지막 점을 첫 번째 점과 연결하여 도형의 윤곽선을 완전히 연결하는 것을 의미 + closePath()를 호출한 후에도 다른 경로를 이어서 그릴 수 있음
+          
+            8) <canvas>선택자.getContext('2d').stroke()
+                : moveTo와 lineTo로 정의된 현재 경로를 따라 윤곽선을 그리는 함수
+                   -> (중요) 이 녀석이 호출되기 전까지는 경로가 실제로 그려지지 않으며, 화면에 나타나지 않음
+          
+            9) <canvas>선택자.getContext('2d').fill()
+                : 현재 정의된 경로 내부를 fillStyle 속성을 찾은 뒤 그걸로 채우는 함수
+                   -> 경로가 닫혀 있지 않다면 자동으로 닫히고, 채워지게 함
+                   
+                  ex) 다각형 그리기
+                      const canvas = document.getElementById('myCanvas');
+                      const ctx = canvas.getContext('2d');
+                      ctx.beginPath();       // 새로운 경로 시작
+                      ctx.moveTo(50, 50);
+                      ctx.lineTo(200, 50);
+                      ctx.lineTo(200, 200);
+                      ctx.lineTo(50, 200);
+                      ctx.closePath();
+                      ctx.fillStyle = 'red'; // 채울 색상을 빨간색으로 설정
+                      ctx.fill();            // 경로 내부를 빨간색으로 채웁니다.
+                      ctx.stroke();          // 경로를 그립니다.
+          
+            10) <canvas>선택자.getContext('2d').arc(x좌표, y좌표, 반지름, 시작각도, 끝각도, 시계방향설정 boolean값)
+                 : 해당 <canvas> 태그 영역에 원, 호(arc), 또는 원의 일부를 그릴 때 사용하는 메서드
+          
+                  # requestAnimationFrame(callback) 특징
+                     1) 시작각도, 끝각도의 기준은 라디안(radians) 단위로 표기
+                         -> 0 라디안  : 원의 오른쪽(3시 방향)에서 시작
+                            1 라디안  : 57.3도
+                            2π 라디안 : 360도(원 전체)
+          
+                     2) arc 메서드를 사용하면 beginPath와 함께 사용해야, 새로운 도형이 기존 경로와 연결되지 않음
+          
+                     3) 시계방향(anticlockwise) parameter 변수는 호를 그리는 방향을 지정
+          
+                        ex) 반원 그리기
+                             -> 좌표 (100, 75)을 중심으로 반지름이 50인 반원을 그림
+                            const canvas = document.getElementById('myCanvas');
+                            const ctx = canvas.getContext('2d');
+                            ctx.beginPath();
+                            ctx.arc(100, 75, 50, 0, Math.PI, false); // 중심 (100, 75), 반지름 50, 0 라디안부터 π 라디안까지 그리기 (시계 방향)
+                            ctx.stroke();        
+          
+                        ex) 원 그리기
+                             -> 좌표 (100, 75)을 중심으로 반지름이 50인 원을 그림
+                            const canvas = document.getElementById('myCanvas');
+                            const ctx = canvas.getContext('2d');
+                            ctx.beginPath();
+                            ctx.arc(100, 75, 50, 0, 2 * Math.PI, false); // 중심 (100, 75), 반지름 50, 0 라디안부터 2π 라디안까지 그리기
+                            ctx.stroke();       
+          
+            11) <canvas>선택자.getContext('2d').clearRect(x좌표, y좌표, 너비, 높이)
+                 : <canvas> 태그 영역의 특정 영역을 투명하게 지우는 데 사용되는 메서드로 좌표(x,y)와 그 위치를 기준으로 너비, 높이에 해당하는 영역을 지워 초기화
+                     -> 대충, <canvas> 태그 영역에서의 현재의 모습만을 남기기 위해 과거의 모습을 지우는 용도로 사용된다고 생각하면 됨
+          
+                  # clearRect 메서드 용도
+                     a. 캔버스 초기화
+                         : 그림을 그리기 전, 이전에 그려진 내용을 지우는데 사용
+                           (= 조치를 안 취해두면, 이전에 그려놓은 부분과 겹침)
+          
+                     b. 애니메이션 구현
+                         : 프레임 간의 이전 그림을 지우고, 새로운 그림을 그려 부드러운 애니메이션 효과를 구현할 때 활용
+          
+                     c. 동적 그래픽 업데이트
+                         : 사용자 인터랙션이나 실시간 데이터에 따라 그래픽을 업데이트할 때 필요
 
     @ <Canvas> 태그의 애니메이션관 연관된 전역함수 일람
 

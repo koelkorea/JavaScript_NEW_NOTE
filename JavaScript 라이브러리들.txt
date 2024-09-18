@@ -69,10 +69,19 @@
            13) $('DOM셀렉터').is( $('DOM셀렉터'))
                 : jQuery 셀렉터끼리의 비교를 위한 메서드
 
-           14) $(document).ready(무명콜백함수)
+           14) $('DOM셀렉터').val()
+                : document.querySelectorAll('DOM셀렉터').value 프로퍼티와 같음
+
+           15) $('DOM셀렉터').html('문자열' or '문자열 HTML 태그')
+                : {Node 객체}.innerHTML에 해당하는 역할을 수행하는 메서드
+
+           16) $('DOM셀렉터').append('문자열' or '문자열 HTML 태그')
+                : {elememt 객체}.insertAdjacentHTML('beforeend', '문자열 HTML 태그')에 해당하는 역할을 수행하는 메서드
+
+           17) $(document).ready(무명콜백함수)
                 : DOMContentLoaded 이벤트를 사용하여 DOM트리 작성시기로 JS코드의 실행기간을 미루는 DOM API의 이벤트리스너 함수에 대응되는 메서드
           
-           15) $(window).on('load', 무명콜백함수)
+           18) $(window).on('load', 무명콜백함수)
                 : load 이벤트를 사용하여 document 영역에 포함된 모든 이미지, 파일 등이 전부 로딩되었을 때를 기준으로 JS코드의 실행기간을 미루는 DOM API의 이벤트리스너 함수에 대응되는 메서드
 
       # JQuery를 통한 Ajax 전송
@@ -108,8 +117,6 @@
                          .fail(function(error){
                            console.log('실패함')
                          });
-
-
 
 
  1. Swiper
