@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // Q2. cart.html 같은 장바구니 페이지 하나 만들어서, 방문시 localStorage에 있던 상품명들을 꺼내서 전부 진열해서 보여주기
+        //  -> 디자인은 신경 꺼도 됨
+        function renderTemplate(array){
+
+            array.forEach(function(상품, 인덱스){
+
+                var 템플릿 = `  
+                                <div class="col-sm-4">
+                                    <img src="https://via.placeholder.com/600" class="w-100">
+                                    <h5>${상품}</h5>
+                                </div>
+                            `
+
+                document.querySelector('.row').insertAdjacentHTML('beforeend', 템플릿);
+            });
+        }
+
+        let 새장바구니 = JSON.parse( localStorage.cart );
+        renderTemplate(새장바구니);
+
+        function renderTemplate2(arrayObject){
+
+            arrayObject.forEach(function(상품객체, 인덱스){
+
+                var 템플릿 = `  
+                                <div class="col-sm-4">
+                                    <img src="https://via.placeholder.com/600" class="w-100">
+                                    <h5>${상품객체.title}</h5>
+                                </div>
+                            `
+
+                document.querySelector('.row').insertAdjacentHTML('beforeend', 템플릿);
+            });
+        }
+
+        let 새장바구니2 = JSON.parse( localStorage.cartNcount );
+        renderTemplate2(새장바구니2);
+
+    </script>
+</body>
+</html>

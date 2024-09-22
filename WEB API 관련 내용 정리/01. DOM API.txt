@@ -399,7 +399,7 @@
                          : 기준 <HTML태그>의 자식 <HTML태그>들을 담은 {HTMLCollection 객체}로 반환
 
                       - parentElement
-                         : 기준 <HTML태그>의 {부모 Element 객체}를 참조합니다.
+                         : 기준 <HTML태그>의 {부모 Element 객체}를 참조
                             -> (중요) {Element 객체}를 저장함 = test 노드는 저장 대상에서 제외
     
                       - firstElementChild
@@ -1112,7 +1112,7 @@
 
              @ 이벤트리스너(EventListener) 메서드의 parameter 요소 설명
 
-               a. 이벤트
+               A. 이벤트
                    : 사용자가 해당 HTML 요소에 취하는 조작에 해당하는 명칭에 해당하는 1번째 parameter... 
                    
                      ex) click, change, focus, keydown, keyup, load, mousedown, mouseout, mouseover, mousemove, mouseup, select, touchstart, scroll 등...
@@ -1121,7 +1121,42 @@
                      ex) load, DOMContentLoaded 
                           -> JS의 실행 타이밍 조절을 위해 사용하는 특수한 이벤트
 
-               b. 콜백함수
+                    a. 마우스 이벤트
+                    
+                       1) click 
+                           : 해당 element를 클릭했을 때(버튼을 눌렀다가 떼었을 때) 발생
+
+                       2) dblclick 
+                           : 해당 element에서 마우스 버튼을 더블 클릭했을 때 발생
+
+                       3) mousedown 
+                           : 해당 element에서 마우스 버튼을 눌렀을 때 발생
+
+                       4) mouseup 
+                           : 해당 element에서 눌렀던 마우스 버튼을 떼었을 때 발생
+
+                       5) mousemove 
+                           : 해당 element에서 마우스를 움직였을 때 발생
+                              -> (주의) drag와 drop 이벤트 관련해서 의도와 다르게 충돌 날 수 있으니... DOM요소의 draggable속성을 false로 놓는거도 고려해라
+
+                       6) mouseover 
+                           : 마우스를 해당 element 바깥에서 안으로 옮겼을 때 발생
+
+                       7) mouseout 
+                           : 마우스를 해당 element 안에서 바깥으로 옮겼을 때 발생
+                           
+                       8) mouseenter 
+                           : 마우스를 해당 element 바깥에서 안으로 옮겼을 때 발생
+                              -> (중요) 버블링이 발생하지 않음
+
+                       9) mouseleave 
+                           : 마우스를 해당 element 안에서 바깥으로 옮겼을 때 발생
+                              -> (중요) 버블링이 발생하지 않음
+
+                       10) contextmenu 
+                            : 마우스 오른쪽 버튼을 눌렀을 때 발생
+
+               B. 콜백함수
                    : 해당 HTML 요소에 대한 사용자의 조작이 성립할 시, 이를 기다렸던 이벤트 리스너(EventListener)에 의해 수행해야 할 내용부를 담는 '모듈' 역할을 담당하는 2번째 parameter 
                       -> (참고) 무명함수를 콜백함수로 작성해도 상관없음 
                       -> (중요) 무명함수의 1번째 parameter인자를 붙이게 된다면, {event객체}에 해당함
@@ -1134,7 +1169,7 @@
                                     event.stopPropagation();  // 부모 요소로 이벤트 전파를 막음
                                   }, false);
 
-               c. (생략 가능) capturing 단계까지 적용 여부
+               C. (생략 가능) capturing 단계까지 적용 여부
                     : 이벤트 흐름(Event Flow)에 있어 capturing까지 모두 적용할 건지 true/false(기본값)로 사용 여부를 정하는 (생략 가능한) 3번째 parameter 
                        -> false (기본값)
                            : 이벤트 발생시 'capturing 단계를 제외'한 나머지 이벤트 흐름(Event Flow)을 전개함 
@@ -1662,3 +1697,12 @@
                            appearance : none;  <- 기존 브라우저의 HTML 스타일을 아예 꺼버리는 기능 (shadow DOM 커스텀 스타일링 적용할거면 잘 참고하자) 
                            display : block;
                          }
+
+
+ - Virtual DOM (= VDOM)
+    : DOM API를 통해 직접 HTML요소를 변경하고 랜더링하지 않고, HTML요소가 바뀌는 부분만 효율적으로 변경 랜더링을 하기 위해 DOM복사본(= 가상 DOM)을 만들고 이를 변화된 원본과 비교하여 변화하는 부분만 부드럽게 처리되게 만드는 일종의 DOM 랜더링 로직
+      (= 화면에 HTML을 복잡하게 랜더링이 자주 일어나게 되는 기능을 써야 할 때, 일일이 DOM API로 감놔라 배놔라 안해도 된다는 점에서 효율적 기능이기에 React, Vue를 쓰면 편리함)
+         -> CSR(Client Side Rendering) 기반의 SPA(Single Page application)를 제작하는데 효율적인 React, Vue 라이브러리에서 활용함
+             -> BUT! 2010년대에 브라우저 성능이 쓰레기였을 때나 쓸데없는 DOM 조작을 약간 줄일 수 있어서 성능이 좋아진다는 장점이 있지, 지금은 직접 DOM을 조작하는 식으로 코드짜놔도 최적화되서 성능저하 없음
+
+                ex) Svelte 라이브러리가 그런 식으로 작동함

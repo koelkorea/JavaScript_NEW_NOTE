@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <a href="./03. Web Storage의 장바구니 데이터를 화면에 출력해라.html" title="장바구니 페이지">장바구니 페이지</a>
+        </div>
+        <div class="row">
+            
+        </div>
+        
+        <hr>
+        <button class="btn btn-danger" id="more">더보기</button>
+        <button class="btn btn-danger" id="price">products 낮은 가격 정렬</button>
+        <button class="btn btn-danger" id="title">상품명 내림차순 정렬</button>
+        <button class="btn btn-danger" id="sixtyThousand">6만원 이하 상품보기</button>
+        <button class="btn btn-danger" id="reset">초기화</button>
+        <div style="margin-top: 5px;">
+            <input type="text">
+            <button class="btn btn-danger" id="lessPriceFilter">입력 가격 이하 상품</button>
+            <button class="btn btn-danger" id="morePriceFilter">입력 가격 이상 상품</button>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        var products = [
+            { id : 0, price : 70000, title : 'Blossom Dress' },
+            { id : 1, price : 50000, title : 'Springfield Shirt' },
+            { id : 2, price : 60000, title : 'Black Monastery' }
+        ];
+
+        renderTemplate(products)
+
+        let count = 0;
+
+        document.querySelector('#more').addEventListener('click', function() {
+
+            if( count == 0){
+                callApi('more1.json');
+                count++;
+            }else if( count == 1){
+                callApi('more2.json');
+                document.querySelector('#more').disabled = 'disabled'
+            }
+        });
+
+        // fetch 호출 부분
+        function callApi(urlParameter){
+
+            fetch(`https://codingapple1.github.io/js/${urlParameter}`, {method : 'get'} )
+                .then((응답) => 응답.json())  
+                .then((data) => {
+
+                    console.log(data);  // 변환된 JSON 데이터를 로그에 출력
+                    renderTemplate(data)
+                })
+        }
+
+        // 받은 [{객체}] 배열 자료를 템플릿 렌더링에 활용하는 함수
+        function renderTemplate(array){
+
+            array.forEach(function(상품객체, 인덱스){
+
+                var 템플릿 = `  
+                                <div class="col-sm-4">
+                                    <img src="https://via.placeholder.com/600" class="w-100">
+                                    <h5>${상품객체.title}</h5>
+                                    <p>가격 : ${상품객체.price}</p>
+                                    <button class="btn btn-danger cart">장바구니</button>
+                                </div>
+                            `
+
+                document.querySelector('.row').insertAdjacentHTML('beforeend', 템플릿);
+            });
+        }
+        
+        // 정렬 기능
+        document.querySelector('#price').addEventListener('click', function() {
+
+            products.sort((비교1, 비교2) =>{
+                return 비교1.price - 비교2.price;
+            })
+
+            console.log(products);
+
+            document.querySelector('.row').innerHTML = '';
+            renderTemplate(products);
+        });        
+
+        document.querySelector('#title').addEventListener('click', function() {
+
+            products.sort((비교1, 비교2) =>{
+                if (비교1.title < 비교2.title) {
+                    return 1 
+                } else {
+                    return -1
+                }
+            })
+
+            console.log(products);
+
+            document.querySelector('.row').innerHTML = '';
+            renderTemplate(products);
+        });        
+
+        document.querySelector('#sixtyThousand').addEventListener('click', function() {
+
+            let newArray = products.filter((a) =>{
+                return a.price <= 60000;
+            })
+
+            console.log(newArray);
+
+            document.querySelector('.row').innerHTML = '';
+            renderTemplate(newArray);
+        });        
+
+        document.querySelector('#lessPriceFilter').addEventListener('click', function() {
+
+            let newArray = products.filter((a) =>{
+                return a.price <= document.querySelector('input').value;
+            })
+
+            console.log(newArray);
+
+            document.querySelector('.row').innerHTML = '';
+            renderTemplate(newArray);
+        });   
+
+        document.querySelector('#reset').addEventListener('click', function() {
+
+            products.sort((비교1, 비교2) =>{
+                return 비교1.id - 비교2.id;
+            })
+
+            console.log(products);
+
+            document.querySelector('.row').innerHTML = '';
+            renderTemplate(products);
+        });   
+
+        // Q. [Web Storge API] 기능을 이용하여 다음과 같은 기능들을 구현하시오
+
+        // Q1. 상품기능 별로 '장바구니' 버튼을 만들고, 그걸 누를시 상품의 이름을 localStorage에 'key : cart' value는 [배열] 형태로 최근에 누를 순서대로 보이게 해야하며 + 중복 기재를 피해라
+        //  -> (힌트1) '참조 자료형(reference)'를 넣으려면, 이들을 '문자열'로 바꿔줌 + 받을 때는 원상복구 시켜야 할 필요 존재 = {JSON 객체}의 메서드 사용 필요
+        //  -> (힌트2) [배열]에 최신순으로 정렬시키는 건, [배열] API를 통해 순차적으로 기능을 구현하는 식으로 가면 됨
+
+        let cart = document.querySelectorAll('.cart');
+
+        for(let i = 0; i < cart.length; i++){
+
+            cart[i].addEventListener('click', function(e) {
+
+                let goods = e.target.parentNode.querySelector('h5').textContent;
+                console.log(goods);
+
+                let 새장바구니;
+
+                // cart라는 key에 데이터가 없으면, [배열]을 새로 만들기
+                if( localStorage.getItem('cart') == null ){
+
+                    새장바구니 = [goods];
+                    localStorage.setItem('cart', JSON.stringify(새장바구니));
+
+                }else{
+
+                    새장바구니 = JSON.parse( localStorage.cart );
+                    새장바구니 = 새장바구니.filter((cart, index) => {
+                        return cart != goods;
+                    });
+
+                    새장바구니.unshift(goods);
+                }
+
+                localStorage.setItem('cart', JSON.stringify(새장바구니));
+                console.log('새장바구니 : ' + 새장바구니);
+            });
+        }
+
+        // Q2. cart.html 같은 장바구니 페이지 하나 만들어서, 방문시 localStorage에 있던 상품명들을 꺼내서 전부 진열해서 보여주기
+        //  -> 디자인은 신경 꺼도 됨
+
+    </script>
+</body>
+</html>

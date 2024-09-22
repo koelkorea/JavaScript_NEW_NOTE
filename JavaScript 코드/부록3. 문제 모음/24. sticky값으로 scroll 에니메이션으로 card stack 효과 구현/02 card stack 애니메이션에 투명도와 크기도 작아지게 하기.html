@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="card-background">
+        <div class="card-box">
+            <img src="./card1.png">
+        </div>
+        <div class="card-box">
+            <img src="./card2.png">
+        </div>
+        <div class="card-box">
+            <img src="./card3.png">
+        </div>
+    </div>
+    <script>
+        // Q. [scroll 이벤트 리스너]와 CSS [opacity 속성], [position : sticky], [transform : scale속성], [transition : all 숫자s]를 이용하여 다음을 구하라
+
+        // Q1. scroll 할때마다 조금씩 이미지 크기가 작아지되 90% 이후로는 안보이게 해라 (각 구간은 400 ~ 2000px 800단위)
+        //  -> opacity와 transform : scale속성을 잘 이용해서, 특정 스크롤 구간에서 조금씩 조절되게 해라
+        //     (= 수학이 좀 필요하다... 방정식 잘 세워라)
+
+        window.addEventListener('scroll', function(){
+
+            // 스크롤 위치 측정을 위해 사용
+            console.log(window.scrollY);
+
+            // 1번째 그림
+            if( window.scrollY > 400){
+
+                // 투명도
+                let 투명도 = (-1) * (window.scrollY / 800) + 1.5;
+                document.querySelectorAll('.card-box')[0].style.opacity = 투명도;
+
+                // 크기
+                let 크기 = 0.9 + 투명도/10;
+                document.querySelectorAll('.card-box')[0].style.setProperty('transform', 'scale(' + 크기 + ')');
+            }
+
+            // 2번쨰 그림
+            if( window.scrollY > 1200){
+                // 투명도
+                let 투명도 = (-1) * (window.scrollY / 800) + 2.5;
+                document.querySelectorAll('.card-box')[1].style.opacity = 투명도;
+
+                // 크기
+                let 크기 = 0.9 + 투명도/10;
+                document.querySelectorAll('.card-box')[1].style.setProperty('transform', 'scale(' + 크기 + ')');
+            }
+
+        });
+    </script>
+</body>
+</html>

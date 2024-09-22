@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="card-background">
+        <div class="card-box">
+            <img src="./card1.png">
+        </div>
+        <div class="card-box">
+            <img src="./card2.png">
+        </div>
+        <div class="card-box">
+            <img src="./card3.png">
+        </div>
+    </div>
+    <script>
+        // position : sticky를 어떤 요소에 쓰면
+        //   -> 스크롤이 되어서 이 요소가 화면에 나오면 고정시킨다는 특성이 존재
+        //       -> (중요) 스크롤을 할 만한 부모 박스 있어야하며 + 고정될 좌표 속성과 함께 입력해야 함
+
+        //  이미지들을 감싸는 <div>들에 position : sticky를 주시면
+        //  1. 스크롤이 되어서 이미지가 각각 보이는 순간
+        //  2. .card-box인 요소들 3개가 순차적으로 viewport의 맨 위에서부터 100px 위치에서 고정이 됩니다.
+        //       -> .card-box인 요소들 3개가 고정되는 위치는 같으니, 걔네가 점점 겹쳐지는 듯한 효과를 냄
+        //  3. 그리고 부모 박스를 넘어서 스크롤 되면 이미지도 같이 사라집니다. 
+    </script>
+</body>
+</html>
