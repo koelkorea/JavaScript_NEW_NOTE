@@ -227,7 +227,13 @@
          : https://alvarotrigo.com/fullPage/
 
 
-  7. React, Vue, Svalte 등
+  7. Hammer.js
+      : 이벤트리스너 개발에 있어 꽤 많은 편의를 제공하는 라이브러리
+         - 브라우저 호환성도 알아서 잡아줌
+         - 이벤트리스너 6개대신 1개만 써도 됨
+         - 스와이프, pinch, rotate 등 여러 제스쳐를 감지하는 이벤트리스너 제공해서 편리함
+
+  8. React, Vue, Svalte 등
       : 소위 프론트엔트 프레임워크 or 라이브러리로 통칭되는 라이브러리들.. 모바일 환경의 강세에 따른 UI및 DOM재활용이 필요하고, 페이지 이동이 최소화되고 1개 화면에서 기능들 다수가 모인 구조의 SPA(single page aplication)을 개발하기 쉽게 구조가 대강 잡힌 라이브러리들
 
   

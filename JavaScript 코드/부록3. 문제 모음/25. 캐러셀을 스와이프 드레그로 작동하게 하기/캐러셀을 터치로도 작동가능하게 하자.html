@@ -198,62 +198,93 @@
         //   -> (주의) 이미지가 대상이니 draggable="false" HTML 속성을 반드시 줘야 제대로 작동함
 
         let 시작좌표 = 0;
-        let 움직인거리 = 0;
-        let 현재그림시작좌표VM단위 = 0;
-        let 현재화면너비 = 0;
+        let 화면너비 = 0;
+        let 마우스이동거리 = 0;
+        let 이동방향비율 = 0;
+
+        let 현재그림VM좌표 = 0;
+        let 드래그VM좌표 = 0;
 
         let 클릭중 = false;
 
-        element.ondragstart = function() {
-            return false;
-        };
-
+        // 마우스 클릭지속시 : 시작점, 화면너비 기록 + 클릭중 감지
         document.querySelector('.slide-container').addEventListener('mousedown', function (e) {
 
             시작좌표 = e.clientX;
+            화면너비 = document.querySelector('body').clientWidth;
             클릭중 = true;
         });
 
+        // 마우스 클릭지속시 + 움직일시 : (움직임 거리 / 화면너비) 의 방향에 따라 마우스이동거리 -> 이동방향비율 -> 드래그VM좌표 구하고
+        //  ->  그림 이동 퍼포먼스 보여주나, 처음과 마지막인 경우는 움직이면 안 됨
         document.querySelector('.slide-container').addEventListener('mousemove', function (e) {
 
             if(클릭중){
 
-                console.log(e.clientX - 시작좌표);
+                마우스이동거리 = 시작좌표 - e.clientX;
+                이동방향비율 = (마우스이동거리 / 화면너비 * 100);
 
-                움직인거리 = e.clientX - 시작좌표;
-                현재화면너비 = document.querySelector('body').clientWidth;
-                현재그림시작좌표VM단위 = 0;
+                드래그VM좌표 = 현재그림VM좌표 - 이동방향비율;
 
-                for(let i = 0; i < document.querySelectorAll('.slide-box').length; i++){
-                
-                    if(e.target == document.querySelectorAll('.slide-box')[i].querySelector('img')){
-                        현재그림시작좌표VM단위 += ((-i) * 100);
-                        // console.log('현재그림시작좌표VM단위 : '+ 현재그림시작좌표VM단위);
-                        break;
-                    }
+                if(드래그VM좌표 < 0 && 드래그VM좌표 > -200){
+                    document.querySelector('.slide-container').style.setProperty('transform', `translateX(${드래그VM좌표}vw)`);
                 }
-                
-                document.querySelector('.slide-container').style.setProperty('transform', `translateX(${현재그림시작좌표VM단위 - (움직인거리 / 현재화면너비 * 100)}vw)`);
             }
         });
 
         //  Q2. Q1의 기능 수행 중 마우스 떼었을 때, 일정거리 이상 이동했으면 다음 사진을 보여주고, 아니면 다시 원래 보여주는 기능을 구현해라
+        //  Q3. 이미지 이동이 부드럽게 시행되기 위해서는 이동순간에만 transition : all 0.5s 속성값이 필요하니, 이동 순간에만 해당 CSS속성을 붙이고 그 이후에는 떨어지게 구현해봐라
+    
+        // 마우스 클릭을 땔시 : 이동방향비율의 방향에 따라 진짜로 움직이면 됨 + 현재그림VM좌표에 해당 하는 뷰포트 좌표를 변경해라 + 클릭중 해제
+        //  ->  처음과 마지막인 경우는 움직이면 안 됨
         document.querySelector('.slide-container').addEventListener('mouseup', function (e) {
 
             클릭중 = false;
-            console.log('클릭중 : ' + 클릭중);
 
-            let 사용자드레그비율 = 움직인거리 / 현재화면너비 * 100;
-            console.log('사용자드레그비율 : ' + 사용자드레그비율);
+            console.log('이동방향비율 : ' + 이동방향비율);
+            console.log('현재그림VM좌표 : ' + 현재그림VM좌표);
 
-            if(사용자드레그비율 > 0.5){
-                document.querySelector('.slide-container').style.setProperty('transform', `translateX(${현재그림시작좌표VM단위 - 100}vw)`);
+            if( 이동방향비율 > 0.5 && 현재그림VM좌표 > -200){
+
+                console.log('다음 그림');
+
+                
+                현재그림VM좌표 -= 100
+
+            }else if( 이동방향비율 < -0.5  && 현재그림VM좌표 < 0 ){
+
+                console.log('이전 그림');
+                현재그림VM좌표 += 100
+
             }else{
-                document.querySelector('.slide-container').style.setProperty('transform', `translateX(${현재그림시작좌표VM단위}vw)`);
+                alert('처음이거나 마지막 그림입니다!~')
             }
 
+            document.querySelector('.slide-container').style.setProperty('transform', `translateX(${현재그림VM좌표}vw)`);
 
+            // 이미지 이동시에만 transition 속성을 붙이기
+            document.querySelector('.slide-container').style.setProperty('transition', 'all 0.5s');
+
+            setTimeout( ()=> {
+                document.querySelector('.slide-container').style.setProperty('transition', 'none');
+            }, 500)
         });
+
+        //  Q4. 해당 기능을 터치로도 구현해봐라 (모바일은 터치이벤트리스너를 달아줘야 터치에 반응)
+        //   -> 터치로 테스트 하는 법은 디버깅 모드에서 좌상단 toggle device toolbar 버튼 선택하면 됨 
+
+        // [터치 이벤트]
+        //   -> (참고) touch 이벤트는 좌표를 볼때, e.clientX -> e.touches[0].clientX로 변경해야 작동함
+        //        -> 터치는 여러 손가락으로 할 수 있어서, 그 중 몇번째로 터치된 손가락인지 지정해줘야하는 메커니즘이 존재
+
+        //  1. touchstart 
+        //      : 해당 element를 터치 시작시 발생
+        //  2. touchmove 
+        //      : 해당 element에서 터치중일 때 계속 발동
+        //  3. touchend 
+        //      : 해당 element에서 터치 종료시 발생
+        //         -> (중요) touchend 이벤트리스너에선 e.changedTouches[0].clientX 써야 함
+ 
     </script>
 </body>
 </html>
