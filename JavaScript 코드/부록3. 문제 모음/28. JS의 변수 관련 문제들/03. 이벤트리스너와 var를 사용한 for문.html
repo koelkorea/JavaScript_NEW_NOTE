@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="display : none">모달창0</div>
+    <div style="display : none">모달창1</div>
+    <div style="display : none">모달창2</div>
+
+    <button>버튼0</button>
+    <button>버튼1</button>
+    <button>버튼2</button>
+
+    <script>
+
+        // Q8. 다음의 반복문을 통해 이벤트리스너를 작성하고 실행하면, 예상과 다르게 작동이 안되는데, 그 이유는 무엇이며 뭘 어떻게 고치면 되겠냐?
+        var 버튼들 = document.querySelectorAll('button');
+        var 모달창들 = document.querySelectorAll('div');
+
+        // [why?] 
+        //  : 1, 2의 이유로 반복문이 다 돈 이후에 실행되게 되는데, 이 때 i는 이미 3이 된 이후이기 때문에.. 4번쨰 요소가 없어 작동되는게 없음
+        //     - 1) var 변수가 함수 스코프 영역을 따름 + 자신이 속한 함수 스코프 가장 위로 호이스팅(hoisting)됨
+        //     - 2) addEventListener가 시간도 그렇고, 별개의 대기열에서 콜스택이 끝나고 실행
+
+        // for (var i = 0; i < 3; i++){
+
+        //     버튼들[i].addEventListener('click', function(){
+        //         모달창들[i].style.display = 'block';
+        //     });
+        // }
+
+        // [교정]
+        //  : var 대신 let을 써서, 각 루프에 해당하는 반복문이 자신만의 스코프{}를 형성하여 거기서 실행이 되게 만듦
+        //    (= let을 쓰게 되면, 각 루프의 스코프{}의 i는 자신의 루프에 해당하는 값을 정적으로 가지게 됨)
+        for (var i = 0; i < 3; i++){
+
+            console.log(i);
+
+            버튼들[i].addEventListener('click', function(){
+                모달창들[i].style.display = 'block';
+            });
+
+            console.log(i);
+        }
+    </script>
+</body>
+</html>

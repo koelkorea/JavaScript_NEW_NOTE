@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button id="버튼">버튼이에요</button>
+
+    <script>
+
+        // [이벤트리스너에서의 this], [arrow function]을 사용
+        
+        // Q1. setTimeout의 콜백함수에 arrow function을 사용하여 작성하고, 1초 후에 this.innerHTML을 콘솔창에 출력하라
+        //  -> 1초 후에 '버튼이에요'라는 글자가 콘솔창에 등장하면 성공
+        document.getElementById('버튼').addEventListener('click', function(){
+            setTimeout( () => {
+                console.log(this.innerHTML);
+                alert(this.innerHTML);
+            }, 1000);
+        });
+
+    </script>
+</body>
+</html>

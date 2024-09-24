@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // Q. 백틱(`)을 이용한 문자열인 [tagged literal]의 순서를 변환하는 tagged literal 해체분석기 함수로 문제를 풀어라
+
+        // Q1. `바지20 양말100` -> `양말20 바지100` 으로 변환하게 하는 해체분석기 함수를 작성하고 호출해라 
+
+        // Q2. pants라는 변수가 0인 경우 `바지다팔렸어요 양말100` 이런 식으로 호출되게 해라
+
+        var pants = 20;
+        var socks = 100;
+
+        function 해체분석기(문자열배열분리, 변수1번, 변수2번){
+
+            if( 변수1번 != 0){
+                console.log(문자열배열분리[1] + 변수1번 + 문자열배열분리[0] + 변수2번);
+                alert(문자열배열분리[1] + 변수2번 + 문자열배열분리[0] + 변수1번);
+            }else{
+                console.log('바지 다 팔렸어요 ' + 문자열배열분리[1] + 변수2번);
+                alert('바지 다 팔렸어요 ' + 문자열배열분리[1] + 변수2번);
+            }
+        }
+
+        해체분석기 `바지${pants} 양말${socks}`;
+
+        pants = 0;
+
+        해체분석기 `바지${pants} 양말${socks}`;
+
+    </script>
+</body>
+</html>
+
+

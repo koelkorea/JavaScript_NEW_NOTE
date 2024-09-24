@@ -9,6 +9,7 @@
     <title>Document</title>
 </head>
 <body>
+    <!-- 네비게이션 라인 -->
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-brand">Navbar</span>
@@ -21,6 +22,7 @@
         </div>
     </nav> 
 
+    <!-- 로그인 폼 모달창 -->
     <div class="black-bg">
         <div class="white-bg">
             <h4>로그인하세요</h4>
@@ -37,6 +39,7 @@
         </div>
     </div> 
 
+    <!-- 메뉴 모달창 -->
     <ul class="list-group slide-off">
         <li class="list-group-item">An item</li>
         <li class="list-group-item">A second item</li>
@@ -45,10 +48,12 @@
         <li class="list-group-item">And a fifth one</li>
     </ul> 
 
+    <!-- 5초후 사라지는 페이지 -->
     <div class="alert alert-danger">
         <span>5</span>초 이내 구매시 사은품 증정
     </div>
 
+    <!-- 슬라이드 이미지들 -->
     <div style="overflow: hidden">
         <div class="slide-container">
             <div class="slide-box">
@@ -63,6 +68,7 @@
         </div>
     </div> 
 
+    <!-- 슬라이드 통제를 위한 버튼 -->
     <button class="before" type="button">이전</button>
     <button class="slide-1" type="button">1</button>
     <button class="slide-2" type="button">2</button>
@@ -200,67 +206,68 @@
         let 시작좌표 = 0;
         let 화면너비 = 0;
         let 마우스이동거리 = 0;
+        let 클릭여부 = false;
+
         let 이동방향비율 = 0;
+        let 이미지VM위치 = 0;
 
-        let 현재그림VM좌표 = 0;
-        let 드래그VM좌표 = 0;
+        let 드래그한VM위치 = 0;
 
-        let 클릭중 = false;
 
-        // 마우스 클릭지속시 : 시작점, 화면너비 기록 + 클릭중 감지
+        // 마우스 클릭지속시 : 시작점, 화면너비 기록 + 클릭여부 감지
         document.querySelector('.slide-container').addEventListener('mousedown', function (e) {
 
             시작좌표 = e.clientX;
             화면너비 = document.querySelector('body').clientWidth;
-            클릭중 = true;
+            클릭여부 = true;
         });
 
-        // 마우스 클릭지속시 + 움직일시 : (움직임 거리 / 화면너비) 의 방향에 따라 마우스이동거리 -> 이동방향비율 -> 드래그VM좌표 구하고
+        // 마우스 클릭지속시 + 움직일시 : (움직임 거리 / 화면너비) 의 방향에 따라 마우스이동거리 -> 이동방향비율 -> 드래그한VM위치 구하고
         //  ->  그림 이동 퍼포먼스 보여주나, 처음과 마지막인 경우는 움직이면 안 됨
         document.querySelector('.slide-container').addEventListener('mousemove', function (e) {
 
-            if(클릭중){
+            if(클릭여부){
 
                 마우스이동거리 = 시작좌표 - e.clientX;
                 이동방향비율 = (마우스이동거리 / 화면너비 * 100);
 
-                드래그VM좌표 = 현재그림VM좌표 - 이동방향비율;
+                드래그한VM위치 = 이미지VM위치 - 이동방향비율;
 
-                if(드래그VM좌표 < 0 && 드래그VM좌표 > -200){
-                    document.querySelector('.slide-container').style.setProperty('transform', `translateX(${드래그VM좌표}vw)`);
+                if(드래그한VM위치 < 0 && 드래그한VM위치 > -200){
+                    document.querySelector('.slide-container').style.setProperty('transform', `translateX(${드래그한VM위치}vw)`);
                 }
             }
         });
 
         //  Q2. Q1의 기능 수행 중 마우스 떼었을 때, 일정거리 이상 이동했으면 다음 사진을 보여주고, 아니면 다시 원래 보여주는 기능을 구현해라
-        //  Q3. 이미지 이동이 부드럽게 시행되기 위해서는 이동순간에만 transition : all 0.5s 속성값이 필요하니, 이동 순간에만 해당 CSS속성을 붙이고 그 이후에는 떨어지게 구현해봐라
+        //  Q3. 이미지 이동이 시작되는 이벤트에서는 첫사진에서는 이전 화면으로 넘어가지 못하게하고, 마지막 사진에서는 다음 화면으로 넘어가지 못하도록 해라 
+        //  Q4. 이미지 이동이 부드럽게 시행되기 위해서는 이동순간에만 transition : all 0.5s 속성값이 필요하니, 이동 순간에만 해당 CSS속성을 붙이고 그 이후에는 떨어지게 구현해봐라
     
-        // 마우스 클릭을 땔시 : 이동방향비율의 방향에 따라 진짜로 움직이면 됨 + 현재그림VM좌표에 해당 하는 뷰포트 좌표를 변경해라 + 클릭중 해제
+        // 마우스 클릭을 땔시 : 이동방향비율의 방향에 따라 진짜로 움직이면 됨 + 이미지VM위치에 해당 하는 뷰포트 좌표를 변경해라 + 클릭여부 해제
         //  ->  처음과 마지막인 경우는 움직이면 안 됨
         document.querySelector('.slide-container').addEventListener('mouseup', function (e) {
 
-            클릭중 = false;
+            클릭여부 = false;
 
             console.log('이동방향비율 : ' + 이동방향비율);
-            console.log('현재그림VM좌표 : ' + 현재그림VM좌표);
+            console.log('이미지VM위치 : ' + 이미지VM위치);
 
-            if( 이동방향비율 > 0.5 && 현재그림VM좌표 > -200){
+            if( 이동방향비율 > 0.5 && 이미지VM위치 > -200){
 
                 console.log('다음 그림');
+                이미지VM위치 -= 100
 
-                
-                현재그림VM좌표 -= 100
-
-            }else if( 이동방향비율 < -0.5  && 현재그림VM좌표 < 0 ){
+            }else if( 이동방향비율 < -0.5  && 이미지VM위치 < 0 ){
 
                 console.log('이전 그림');
-                현재그림VM좌표 += 100
+                이미지VM위치 += 100
 
             }else{
                 alert('처음이거나 마지막 그림입니다!~')
             }
 
-            document.querySelector('.slide-container').style.setProperty('transform', `translateX(${현재그림VM좌표}vw)`);
+            // 움직이는 만큼 페이지를 이동
+            document.querySelector('.slide-container').style.setProperty('transform', `translateX(${이미지VM위치}vw)`);
 
             // 이미지 이동시에만 transition 속성을 붙이기
             document.querySelector('.slide-container').style.setProperty('transition', 'all 0.5s');
@@ -270,7 +277,7 @@
             }, 500)
         });
 
-        //  Q4. 해당 기능을 터치로도 구현해봐라 (모바일은 터치이벤트리스너를 달아줘야 터치에 반응)
+        //  Q5. 해당 기능을 터치로도 구현해봐라 (모바일은 터치이벤트리스너를 달아줘야 터치에 반응)
         //   -> 터치로 테스트 하는 법은 디버깅 모드에서 좌상단 toggle device toolbar 버튼 선택하면 됨 
 
         // [터치 이벤트]
@@ -284,7 +291,65 @@
         //  3. touchend 
         //      : 해당 element에서 터치 종료시 발생
         //         -> (중요) touchend 이벤트리스너에선 e.changedTouches[0].clientX 써야 함
- 
+
+        // 터치 지속시 : 시작점, 화면너비 기록 + 클릭여부 감지
+        document.querySelector('.slide-container').addEventListener('touchstart', function (e) {
+
+            시작좌표 = e.touches[0].clientX;
+            화면너비 = document.querySelector('body').clientWidth;
+            클릭여부 = true;
+        });
+
+        // 터치 손가락 지속 + 움직일시 : (움직임 거리 / 화면너비) 의 방향에 따라 마우스이동거리 -> 이동방향비율 -> 드래그한VM위치 구하고
+        //  ->  그림 이동 퍼포먼스 보여주나, 처음과 마지막인 경우는 움직이면 안 됨
+        document.querySelector('.slide-container').addEventListener('touchmove', function (e) {
+
+            if(클릭여부){
+
+                마우스이동거리 = 시작좌표 - e.touches[0].clientX;
+                이동방향비율 = (마우스이동거리 / 화면너비 * 100);
+
+                드래그한VM위치 = 이미지VM위치 - 이동방향비율;
+
+                if(드래그한VM위치 < 0 && 드래그한VM위치 > -200){
+                    document.querySelector('.slide-container').style.setProperty('transform', `translateX(${드래그한VM위치}vw)`);
+                }
+            }
+        });
+
+        // 터치를 땔시 : 이동방향비율의 방향에 따라 진짜로 움직이면 됨 + 이미지VM위치에 해당 하는 뷰포트 좌표를 변경해라 + 클릭여부 해제
+        //  ->  처음과 마지막인 경우는 움직이면 안 됨
+        document.querySelector('.slide-container').addEventListener('touchend', function (e) {
+
+            클릭여부 = false;
+
+            console.log('이동방향비율 : ' + 이동방향비율);
+            console.log('이미지VM위치 : ' + 이미지VM위치);
+
+            if( 이동방향비율 > 0.5 && 이미지VM위치 > -200){
+
+                console.log('다음 그림');
+                이미지VM위치 -= 100
+
+            }else if( 이동방향비율 < -0.5  && 이미지VM위치 < 0 ){
+
+                console.log('이전 그림');
+                이미지VM위치 += 100
+
+            }else{
+                alert('처음이거나 마지막 그림입니다!~')
+            }
+
+            // 움직이는 만큼 페이지를 이동
+            document.querySelector('.slide-container').style.setProperty('transform', `translateX(${이미지VM위치}vw)`);
+
+            // 이미지 이동시에만 transition 속성을 붙이기
+            document.querySelector('.slide-container').style.setProperty('transition', 'all 0.5s');
+
+            setTimeout( ()=> {
+                document.querySelector('.slide-container').style.setProperty('transition', 'none');
+            }, 500)
+        });
     </script>
 </body>
 </html>
