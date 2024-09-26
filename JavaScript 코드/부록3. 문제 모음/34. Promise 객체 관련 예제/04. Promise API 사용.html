@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // Q2. https://codingapple1.github.io/hello.txt 라는 URL에 GET 요청을 해서 성공하면, Promise의 then 함수를 이용해서 Ajax로 받아온 인삿말을 콘솔창에 출력해라
+        //  -> (중요) fetch의 결과는 promise 객체를 반환하고, 이후 메서드 체이닝을 통해 서버로부터 받은 값을 변환하는 것 또한 promise 객체를 반환
+        //     (= 다음 then, catch 체이닝 하기 전에 반드시 return을 붙여서 그 결과값을 반환해야 함)
+
+        // Q3. Q2에서 구현한 기능 직후 https://codingapple1.github.io/hello2.txt 라는 URL에 GET 요청을 해서 성공하면 또 출력하도록 then, catch, finally로 완성해라
+        //  -> 1. Q1의 hello.txt GET 요청
+        //     2. 그게 완료되면 hello2.txt GET 요청
+        //     3. 그게 완료되면 hello2.txt 결과를 콘솔창에 출력
+
+        //  -> (힌트) 프로미스.then(()=>{둘째실행할거}).then(()=>{셋째실행할거}) 이렇게 then을 여러개 이어붙여 체이닝함
+        //  -> (힌트) .then()은 당연히 new Promise()로 생성한 프로미스 오브젝트들에 붙일 수 있음
+        //  -> (힌트) promise 메서드는 결국 promise 객체를 대상으로 함 = 다음을 이어갈 promise객체를 잘 반환해주면, 연결고리 흐름에 도움이 됨
+
+        // Q5. 02번의 그 문제를 Promise.all ~ 그외 메서드들을 사용해서
+        //  -> (힌트) then, catch와 호환이 되지만, async/await은 기본적으로 성공했을 경우만 따짐 = 굳이 에러를 잡고 싶으면 try ~ catch를 써라
+
+        async function 프로미스(params) {
+
+            try {  
+                var 요청 = await fetch(params); 
+                var 변환 = await 요청.text()
+                console.log(변환);
+            }catch { 
+                throw new Error('데이터를 못 받음 ㅇㅇ');
+            }
+
+        }
+
+        Promise.allSettled([
+
+            프로미스('https://codingapple1.github.io/hello.txt'),
+            프로미스('https://codingapple1.github.io/hello2.txt')
+
+        ]).catch(alert); 
+
+    </script>
+</body>
+</html>
