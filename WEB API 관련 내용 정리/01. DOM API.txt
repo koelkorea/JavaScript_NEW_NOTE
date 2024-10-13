@@ -1233,8 +1233,25 @@
                       1) 이벤트 대상(target)을 알려주는 프로퍼티
                           a. event.target
                               : 이벤트가 실제로 발생한 정확한 타깃 단계 (Target Phase)의 목표가 되는 DOM 요소인 {node 객체}를 반환
-                                 -> (중요) 버블링 단계 (Bubbling Phase)고 뭐고 얘는 무조건 이벤트가 실제로 발생한 타깃 DOM 요소를 반환함
-                                      -> 이벤트리스너를 건 'DOM 셀렉터'에 정확히 해당하는 DOM 요소를 반환한다고 보면 됨
+                                 -> (중요) 버블링 단계 (Bubbling Phase)고 뭐고 얘는 무조건 이벤트가 실제로 발생한 타깃 DOM 요소를 {DOM 객체} 형식으로 반환함
+                                      -> 이벤트리스너를 건 'DOM 셀렉터'에 정확히 해당하는 {DOM 객체}를 반환한다고 보면 됨
+                                         
+                                         ex) event.target.files는 목표가 되는 DOM 요소에서 업로드한 [파일]들을 [배열] 형식으로 출력함
+                                              -> (참고) URL 생성해주는 URL API의 URL.createObjectURL()과 연계하면, 업로드한 이미지를 서버전송없이 바로 보여줄 수 있는 기능을 구현 가능
+
+                                                  ex) let 파일 = e.target.files;
+                                                      let url = URL.createObjectURL(파일[0]);
+                                                      console.log(url);
+
+                                              -> (참고) event.target.files[0].type 속성으로 파일이 어떤 종류인지와 확장자를 알 수 있는데, 이걸로 특정 파일 종류만 업로드 가능하게 막을 수 있음
+
+                                                  ex) let 파일 = e.target.files;
+                                                      let url = URL.createObjectURL(파일[0]);
+
+                                                      if(url.type == 'image/png'){
+                                                         console.log(url);
+                                                      }
+
 
                           b. event.currentTarget (= 이벤트리스너에서의 this)
                               : 이벤트가 현재 처리되고 있는 이벤트 리스너가 부착된 DOM 요소인 {node 객체}를 반환

@@ -265,6 +265,22 @@
       : 소위 프론트엔트 프레임워크 or 라이브러리로 통칭되는 라이브러리들.. 모바일 환경의 강세에 따른 UI및 DOM재활용이 필요하고, 페이지 이동이 최소화되고 1개 화면에서 기능들 다수가 모인 구조의 SPA(single page aplication)을 개발하기 쉽게 구조가 대강 잡힌 라이브러리들
 
   
+  9. CSSgram 
+      : style 속성만으로도 instagram의 필터 기능을 쓸 수 있도록 재현한 엄밀하게는 CSS용 라이브러리
+         -> (참고) filter 속성과 linear-gradient 속성만으로 instagram의 필터 기능을 카피 구현하였으며, 필터를 구현하고 나서 class명을 instagram의 공식 필터명을 줘버림
 
+      # CSSgram 설치법
+         : 다음의 CDN방식의 <link> 태그를 index.html에 붙여넣으면 끝
+            -> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.12/cssgram.min.css" integrity="sha512-kr3JaEexN5V5Br47Lbg4B548Db46ulHRGGwvyZMVjnghW1BKmqIjgEgVHV8D7V+Cbqm/VBgo3Rcbtv+mGLoWXA==" crossorigin="anonymous" />
 
+      # CSSgram 사용법
+         : 원하는 이미지의 class속성에 적용을 원하는 instagram의 공식 필터명을 가져다 붙이면 됨
 
+           ex) hudson 필터를 적용하길 원한다면, class속성에 hudson을 적용하자
+
+               <img class="filter-item aden" src="~~~">
+
+      # CSSgram에서 지원하는 필터명(= class명)
+         : "aden", "_1977", "brannan", "brooklyn", "clarendon", "earlybird", "gingham", "hudson", 
+           "inkwell", "kelvin", "lark", "lofi", "maven", "mayfair", "moon", "nashville", "perpetua", 
+           "reyes", "rise", "slumber", "stinson", "toaster", "valencia", "walden", "willow", "xpro2"
