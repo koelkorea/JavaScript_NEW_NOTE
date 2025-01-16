@@ -902,9 +902,9 @@
   
                                               ex) String(null);      -> "null"
                                                   String(undefined); -> "undefined"
-                                                  String(NaN);       ->  "NaN"
+                                                  String(NaN);       -> "NaN"
   
-                              c.  규식형식/.test('검사할 문자열') 
+                              c. /정 규식형식/.test('검사할 문자열') 
                                   : '검사할 문자열'의 형식이 작성된 /정규식/의 규칙을 준수하는지를  true/false의 boolean값으로 반환
   
                                     ex) /\S+@\S+\.\S+/.test('검사할 이메일주소') 
