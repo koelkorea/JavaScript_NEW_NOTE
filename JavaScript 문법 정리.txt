@@ -723,9 +723,9 @@
      @ JavaScript의 변수(variable) 종류
         : 어떤 값을 할당 가능하며, 읽고/쓰기(= rw(read/write) ) 가능한 녀석을 의미
            -> (정리된 내용)
-                | var   | 변수(= 재할당O)   재선언O   함수{}   TDZ O
+                | var   | 변수(= 재할당O)   재선언O   함수{}   TDZ X
                 | let   | 변수(= 재할당O)   재선언X   블록{}   TDZ O
-                | const | 상수(= 재할당X)   재선언X   블록{}   TDZ X
+                | const | 상수(= 재할당X)   재선언X   블록{}   TDZ O
 
           1) (ES6 이전) var
               : ES6 이전에 쓰이던 '전역 스코프' or '함수 스코프(function scope)' 영역을 기반으로 하는 변수
